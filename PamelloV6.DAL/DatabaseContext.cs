@@ -1,0 +1,28 @@
+﻿using Microsoft.EntityFrameworkCore;
+using PamelloV6.DAL.Entity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PamelloV6.DAL
+{
+    public class DatabaseContext : DbContext
+    {
+        DbSet<UserEntity> Users { get; set; }
+        DbSet<SongEntity> Songs { get; set; }
+        DbSet<EpisodeEntity> Episodes { get; set; }
+        DbSet<PlaylistEntity> Playlists { get; set; }
+
+        public DatabaseContext()
+        {
+
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite(@"Data Source=C:\.PamelloV6Data\data.db");
+        }
+    }
+}
