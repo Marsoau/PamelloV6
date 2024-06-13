@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35004.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PamelloV6.DAL", "PamelloV6.DAL\PamelloV6.DAL.csproj", "{EEDA90BD-60B5-40D1-A7A3-06279DD813D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PamelloV6.Server", "PamelloV6.Server\PamelloV6.Server.csproj", "{E00D6FFF-5E39-4483-A230-EA8039578A61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PamelloV6.Core", "PamelloV6.Core\PamelloV6.Core.csproj", "{32469806-F4B0-4695-954F-05E4B92E4C62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PamelloV6.API", "PamelloV6.API\PamelloV6.API.csproj", "{F8CB1827-321C-4A7F-BEEA-EBD3C6FAD87B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PamelloV6.ClientASP", "PamelloV6.ClientASP\PamelloV6.ClientASP.csproj", "{7A9DE2FD-55B4-4841-928E-D82C1B566842}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PamelloV6.ClientWPF", "PamelloV6.ClientWPF\PamelloV6.ClientWPF.csproj", "{3B3B053C-D323-488D-B60A-165FF69651C0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EEDA90BD-60B5-40D1-A7A3-06279DD813D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEDA90BD-60B5-40D1-A7A3-06279DD813D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEDA90BD-60B5-40D1-A7A3-06279DD813D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEDA90BD-60B5-40D1-A7A3-06279DD813D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E00D6FFF-5E39-4483-A230-EA8039578A61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E00D6FFF-5E39-4483-A230-EA8039578A61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E00D6FFF-5E39-4483-A230-EA8039578A61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E00D6FFF-5E39-4483-A230-EA8039578A61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32469806-F4B0-4695-954F-05E4B92E4C62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32469806-F4B0-4695-954F-05E4B92E4C62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32469806-F4B0-4695-954F-05E4B92E4C62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32469806-F4B0-4695-954F-05E4B92E4C62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8CB1827-321C-4A7F-BEEA-EBD3C6FAD87B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8CB1827-321C-4A7F-BEEA-EBD3C6FAD87B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8CB1827-321C-4A7F-BEEA-EBD3C6FAD87B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8CB1827-321C-4A7F-BEEA-EBD3C6FAD87B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A9DE2FD-55B4-4841-928E-D82C1B566842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A9DE2FD-55B4-4841-928E-D82C1B566842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A9DE2FD-55B4-4841-928E-D82C1B566842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A9DE2FD-55B4-4841-928E-D82C1B566842}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B3B053C-D323-488D-B60A-165FF69651C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B3B053C-D323-488D-B60A-165FF69651C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B3B053C-D323-488D-B60A-165FF69651C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B3B053C-D323-488D-B60A-165FF69651C0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {18E35FAB-41C5-4DD4-85D6-0B39FF4977CC}
+	EndGlobalSection
+EndGlobal
