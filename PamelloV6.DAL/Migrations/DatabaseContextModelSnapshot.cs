@@ -105,6 +105,9 @@ namespace PamelloV6.DAL.Migrations
                     b.Property<ulong>("DiscordId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsAdministrator")
+                        .HasColumnType("INTEGER");
+
                     b.Property<Guid>("Token")
                         .HasColumnType("TEXT");
 
@@ -113,19 +116,19 @@ namespace PamelloV6.DAL.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("PlaylistSong", b =>
+            modelBuilder.Entity("PlaylistEntitySongEntity", b =>
                 {
-                    b.Property<int>("PlaylistId")
+                    b.Property<int>("PlaylistsId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("SongId")
+                    b.Property<int>("SongsId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("PlaylistId", "SongId");
+                    b.HasKey("PlaylistsId", "SongsId");
 
-                    b.HasIndex("SongId");
+                    b.HasIndex("SongsId");
 
-                    b.ToTable("PlaylistSong");
+                    b.ToTable("PlaylistEntitySongEntity");
                 });
 
             modelBuilder.Entity("PamelloV6.DAL.Entity.EpisodeEntity", b =>
@@ -150,17 +153,17 @@ namespace PamelloV6.DAL.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("PlaylistSong", b =>
+            modelBuilder.Entity("PlaylistEntitySongEntity", b =>
                 {
                     b.HasOne("PamelloV6.DAL.Entity.PlaylistEntity", null)
                         .WithMany()
-                        .HasForeignKey("PlaylistId")
+                        .HasForeignKey("PlaylistsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PamelloV6.DAL.Entity.SongEntity", null)
                         .WithMany()
-                        .HasForeignKey("SongId")
+                        .HasForeignKey("SongsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

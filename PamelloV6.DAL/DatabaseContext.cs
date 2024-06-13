@@ -10,10 +10,10 @@ namespace PamelloV6.DAL
 {
     public class DatabaseContext : DbContext
     {
-        DbSet<UserEntity> Users { get; set; }
-        DbSet<SongEntity> Songs { get; set; }
-        DbSet<EpisodeEntity> Episodes { get; set; }
-        DbSet<PlaylistEntity> Playlists { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
+		public DbSet<SongEntity> Songs { get; set; }
+		public DbSet<EpisodeEntity> Episodes { get; set; }
+		public DbSet<PlaylistEntity> Playlists { get; set; }
 
         public DatabaseContext()
         {

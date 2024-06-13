@@ -11,7 +11,7 @@ using PamelloV6.DAL;
 namespace PamelloV6.DAL.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240613103139_Initial-Create")]
+    [Migration("20240613200516_Initial-Create")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -106,6 +106,9 @@ namespace PamelloV6.DAL.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong>("DiscordId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsAdministrator")
                         .HasColumnType("INTEGER");
 
                     b.Property<Guid>("Token")

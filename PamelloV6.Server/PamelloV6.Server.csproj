@@ -13,4 +13,9 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PamelloV6.Core\PamelloV6.Core.csproj" />
+    <ProjectReference Include="..\PamelloV6.DAL\PamelloV6.DAL.csproj" />
+  </ItemGroup>
+
 </Project>

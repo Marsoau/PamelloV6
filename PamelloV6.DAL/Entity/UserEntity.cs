@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public ulong DiscordId { get; set; }
         public Guid Token { get; set; }
+        public bool IsAdministrator { get; set; }
 
         public List<PlaylistEntity> OwnedPlaylists { get; set; }
     }

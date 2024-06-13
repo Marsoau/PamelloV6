@@ -1,7 +1,12 @@
 ﻿using Discord;
+using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PamelloV6.DAL;
+using PamelloV6.Server.Handlers;
+using PamelloV6.Server.Services;
+using System;
 
 namespace PamelloV6.Server
 {
@@ -13,12 +18,23 @@ namespace PamelloV6.Server
 			var hostBuilder = Host.CreateDefaultBuilder();
 
 			hostBuilder.ConfigureServices(services => {
-				services.AddSingleton(x => new DiscordSocketClient(
+				services.AddSingleton(services => new DiscordSocketClient(
 					new DiscordSocketConfig() {
 						GatewayIntents = GatewayIntents.All,
 						AlwaysDownloadUsers = true
 					}
 				));
+
+				services.AddSingleton(services => new InteractionService(
+					services.GetRequiredService<DiscordSocketClient>()
+				));
+				services.AddSingleton<InteractionHandler>();
+
+				services.AddSingleton<DiscordClientService>();
+				services.AddSingleton<UserAuthorizationService>();
+				services.AddSingleton<PamelloUserService>();
+
+				services.AddSingleton<DatabaseContext>();
 			});
 
 			await RunPamelloAsync(hostBuilder.Build());
@@ -33,11 +49,17 @@ namespace PamelloV6.Server
 			await Task.Delay(-1);
 		}
 
-		public async Task RunBotsAsync(IServiceProvider provider) {
-			var MainDiscordClient = provider.GetRequiredService<DiscordSocketClient>();
+		public async Task RunBotsAsync(IServiceProvider services) {
+			var MainDiscordClient = services.GetRequiredService<DiscordSocketClient>();
+			var interactionService = services.GetRequiredService<InteractionService>();
+
+			await services.GetRequiredService<InteractionHandler>().InitializeAsync();
 
 			MainDiscordClient.Log += async (message) => {
 				Console.WriteLine(message);
+			};
+			MainDiscordClient.Ready += async () => {
+				await interactionService.RegisterCommandsToGuildAsync(1250768227542241450);
 			};
 
 			await MainDiscordClient.LoginAsync(TokenType.Bot, "MTI1MDc2MzM0NjcxNDY5MzYzMg.GqF3b4.OVu84ru-0_-RtKUwcrQchAppjZgxaHUgnu_5yw");

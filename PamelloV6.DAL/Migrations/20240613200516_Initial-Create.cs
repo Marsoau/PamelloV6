@@ -36,7 +36,8 @@ namespace PamelloV6.DAL.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     DiscordId = table.Column<ulong>(type: "INTEGER", nullable: false),
-                    Token = table.Column<Guid>(type: "TEXT", nullable: false)
+                    Token = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IsAdministrator = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -86,24 +87,24 @@ namespace PamelloV6.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PlaylistSong",
+                name: "PlaylistEntitySongEntity",
                 columns: table => new
                 {
-                    PlaylistId = table.Column<int>(type: "INTEGER", nullable: false),
-                    SongId = table.Column<int>(type: "INTEGER", nullable: false)
+                    PlaylistsId = table.Column<int>(type: "INTEGER", nullable: false),
+                    SongsId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PlaylistSong", x => new { x.PlaylistId, x.SongId });
+                    table.PrimaryKey("PK_PlaylistEntitySongEntity", x => new { x.PlaylistsId, x.SongsId });
                     table.ForeignKey(
-                        name: "FK_PlaylistSong_Playlists_PlaylistId",
-                        column: x => x.PlaylistId,
+                        name: "FK_PlaylistEntitySongEntity_Playlists_PlaylistsId",
+                        column: x => x.PlaylistsId,
                         principalTable: "Playlists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PlaylistSong_Songs_SongId",
-                        column: x => x.SongId,
+                        name: "FK_PlaylistEntitySongEntity_Songs_SongsId",
+                        column: x => x.SongsId,
                         principalTable: "Songs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -115,9 +116,9 @@ namespace PamelloV6.DAL.Migrations
                 column: "SongId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PlaylistSong_SongId",
-                table: "PlaylistSong",
-                column: "SongId");
+                name: "IX_PlaylistEntitySongEntity_SongsId",
+                table: "PlaylistEntitySongEntity",
+                column: "SongsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Playlists_OwnerId",
@@ -132,7 +133,7 @@ namespace PamelloV6.DAL.Migrations
                 name: "Episodes");
 
             migrationBuilder.DropTable(
-                name: "PlaylistSong");
+                name: "PlaylistEntitySongEntity");
 
             migrationBuilder.DropTable(
                 name: "Playlists");
