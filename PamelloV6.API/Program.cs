@@ -5,6 +5,7 @@ using Discord.Interactions;
 using PamelloV6.Server.Handlers;
 using PamelloV6.Server.Services;
 using PamelloV6.DAL;
+using PamelloV6.API.Modules;
 
 namespace PamelloV6.API
 {
@@ -67,6 +68,8 @@ namespace PamelloV6.API
 			services.AddSingleton<DiscordClientService>();
 			services.AddSingleton<UserAuthorizationService>();
 			services.AddSingleton<PamelloUserService>();
+
+			services.AddTransient<PamelloCommandsModule>();
 		}
 
 		public void ConfigureDatabaseServices(IServiceCollection services) {

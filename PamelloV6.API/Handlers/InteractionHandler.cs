@@ -1,5 +1,7 @@
 ﻿using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
+using PamelloV6.API.Modules;
 using PamelloV6.Server.Model;
 using PamelloV6.Server.Services;
 using System.Reflection;
@@ -8,7 +10,8 @@ namespace PamelloV6.Server.Handlers
 {
 	public class SocketPamelloInteractionContext : SocketInteractionContext
 	{
-		public readonly PamelloUser PamelloUser;
+		public readonly PamelloUser User;
+		public readonly PamelloCommandsModule Commands;
 
 		public readonly IServiceProvider Services;
 
@@ -19,9 +22,12 @@ namespace PamelloV6.Server.Handlers
 			
 			IServiceProvider services
 		) : base(client, interaction) {
-			PamelloUser = pamelloUser;
+			User = pamelloUser;
 
 			Services = services;
+
+			Commands = services.GetRequiredService<PamelloCommandsModule>();
+			Commands.SetUser(User);
 		}
 	}
 
@@ -34,13 +40,13 @@ namespace PamelloV6.Server.Handlers
 
 		public InteractionHandler(
 			DiscordSocketClient client,
-			InteractionService commands,
+			InteractionService discordCommands,
 			PamelloUserService users,
 
 			IServiceProvider services
 		) {
 			_client = client;
-			_commands = commands;
+			_commands = discordCommands;
 			_users = users;
 
 			_services = services;
@@ -67,7 +73,7 @@ namespace PamelloV6.Server.Handlers
 		private async Task HandleInteraction(SocketInteraction interaction) {
 			var pamelloUser = _users.GetUser(interaction.User.Id);
 			if (pamelloUser is null) {
-				throw new Exception($"Cant execute command with null PamelloUser, discord user id: {interaction.User.Id}");
+				throw new Exception($"Cant execute discord command with null PamelloUser, discord user id: {interaction.User.Id}");
 			}
 
 			var context = new SocketPamelloInteractionContext(

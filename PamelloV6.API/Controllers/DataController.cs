@@ -6,8 +6,8 @@ using PamelloV6.DAL.Entity;
 
 namespace PamelloV6.API.Controllers
 {
-	[ApiController]
 	[Route("[controller]")]
+	[ApiController]
 	public class DataController : ControllerBase
 	{
 		private readonly DatabaseContext _database;

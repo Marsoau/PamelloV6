@@ -1,5 +1,6 @@
 ﻿using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
+using PamelloV6.API.Modules;
 using PamelloV6.Server.Handlers;
 using PamelloV6.Server.Services;
 using System;
@@ -14,7 +15,9 @@ namespace PamelloV6.Server.Modules
 	{
 		private readonly UserAuthorizationService _authtorization;
 
-		public InteractionModule(UserAuthorizationService authtorization) {
+		public InteractionModule(
+			UserAuthorizationService authtorization
+		) {
 			_authtorization = authtorization;
 		}
 
@@ -26,6 +29,12 @@ namespace PamelloV6.Server.Modules
 		[SlashCommand("get-code", "Get authorisation code")]
 		public async Task GetCode() {
 			await RespondAsync($"Authrozation Code: {_authtorization.GetCode(Context.Interaction.User.Id)}", ephemeral: true);
+		}
+
+		[SlashCommand("player-select", "Select player")]
+		public async Task PlayerSelect(int playerId) {
+			Context.Commands.PlayerSelect(playerId);
+			await RespondAsync($"Selected player {Context.User.SelectedPlayerId}", ephemeral: true);
 		}
 	}
 }
