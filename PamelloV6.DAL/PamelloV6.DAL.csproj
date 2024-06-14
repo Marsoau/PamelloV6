@@ -15,4 +15,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PamelloV6.Core\PamelloV6.Core.csproj" />
+  </ItemGroup>
+
 </Project>
