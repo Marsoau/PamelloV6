@@ -1,5 +1,4 @@
-﻿using PamelloV6.Server.Abstract;
-using PamelloV6.Server.Model;
+﻿using PamelloV6.Server.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PamelloV6.Server.Services
 {
-	public class UserAuthorizationService : IUserAuthorizationService
+	public class UserAuthorizationService
 	{
 		private readonly PamelloUserService _pamelloUserService;
 

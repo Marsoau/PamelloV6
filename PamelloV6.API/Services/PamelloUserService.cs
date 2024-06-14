@@ -2,13 +2,12 @@
 using Newtonsoft.Json.Linq;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
-using PamelloV6.Server.Abstract;
 using PamelloV6.Server.Model;
 using PamelloV6.Server.Modules;
 
 namespace PamelloV6.Server.Services
 {
-	public class PamelloUserService : IPamelloUserService
+	public class PamelloUserService
 	{
 		private readonly DiscordClientService _discordClientService;
 		private readonly DatabaseContext _databaseContext;
