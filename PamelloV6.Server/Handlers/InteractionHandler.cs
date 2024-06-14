@@ -49,15 +49,25 @@ namespace PamelloV6.Server.Handlers
 		public async Task InitializeAsync() {
 			await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
 
-			_client.InteractionCreated += HandleInteraction;
+			_client.InteractionCreated += _client_InteractionCreated;
+		}
+
+		private async Task _client_InteractionCreated(SocketInteraction interaction) {
+			try {
+				await HandleInteraction(interaction);
+			}
+			catch (Exception x) {
+				Console.WriteLine("ERROR with interaction");
+                Console.WriteLine($"Message: {x.Message}");
+                Console.WriteLine($"More: {x}");
+                await interaction.RespondAsync("An error occured, check the console for more info", ephemeral: true);
+			}
 		}
 
 		private async Task HandleInteraction(SocketInteraction interaction) {
 			var pamelloUser = _users.GetUser(interaction.User.Id);
 			if (pamelloUser is null) {
-                Console.WriteLine($"Cant execute command with null PamelloUser, discord user id: {interaction.User.Id}");
-
-                return;
+				throw new Exception($"Cant execute command with null PamelloUser, discord user id: {interaction.User.Id}");
 			}
 
 			var context = new SocketPamelloInteractionContext(
@@ -67,7 +77,7 @@ namespace PamelloV6.Server.Handlers
 				_services
 			);
 
-			await _commands.ExecuteCommandAsync(context, _services);
+            await _commands.ExecuteCommandAsync(context, _services);
 		}
 	}
 }
