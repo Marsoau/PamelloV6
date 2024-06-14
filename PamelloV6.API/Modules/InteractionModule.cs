@@ -28,7 +28,7 @@ namespace PamelloV6.Server.Modules
 
 		[SlashCommand("get-code", "Get authorisation code")]
 		public async Task GetCode() {
-			await RespondAsync($"Authrozation Code: {_authtorization.GetCode(Context.Interaction.User.Id)}", ephemeral: true);
+			await RespondAsync($"Authrozation Code: {_authtorization.GetCode(Context.User.DiscordUser.Id)}", ephemeral: true);
 		}
 
 		[SlashCommand("player-select", "Select player")]
