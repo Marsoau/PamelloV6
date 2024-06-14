@@ -6,6 +6,8 @@ using PamelloV6.Server.Handlers;
 using PamelloV6.Server.Services;
 using PamelloV6.DAL;
 using PamelloV6.API.Modules;
+using Microsoft.EntityFrameworkCore;
+using PamelloV6.DAL.Entity;
 
 namespace PamelloV6.API
 {
@@ -95,6 +97,21 @@ namespace PamelloV6.API
 
 		public async Task StartupPamelloServicesAsync(IServiceProvider services) {
 
+		}
+
+		public void StartupDatabaseServices(IServiceProvider services) {
+			var database = services.GetRequiredService<DatabaseContext>();
+
+			database.Users
+				.Include(user => user.OwnedPlaylists);
+			database.Playlists
+				.Include(playlist => playlist.Songs)
+				.Include(playlist => playlist.Owner);
+			database.Songs
+				.Include(song => song.Playlists)
+				.Include(song => song.Episodes);
+			database.Episodes
+				.Include(episode => episode.Song);
 		}
 	}
 }

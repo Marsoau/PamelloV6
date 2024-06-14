@@ -10,14 +10,14 @@ namespace PamelloV6.Server.Services
 	public class PamelloUserService
 	{
 		private readonly DiscordClientService _discordClientService;
-		private readonly DatabaseContext _databaseContext;
+		private readonly DatabaseContext _database;
 
 		private readonly Dictionary<int, ulong> _userCodes;
 		private readonly List<PamelloUser> _users;
 
 		public PamelloUserService(DiscordClientService discordClientService, DatabaseContext databaseContext) {
 			_discordClientService = discordClientService;
-			_databaseContext = databaseContext;
+			_database = databaseContext;
 
 			_userCodes = new Dictionary<int, ulong>();
 			_users = new List<PamelloUser>();
@@ -27,7 +27,7 @@ namespace PamelloV6.Server.Services
 			var user = _users.Find(user => user.UserEntity.Id == id);
 			if (user is not null) return user;
 
-			var userEntity = _databaseContext.Users.Find(id);
+			var userEntity = _database.Users.Find(id);
 			if (userEntity is null) return null;
 
 			return AddUser(userEntity);
@@ -37,16 +37,17 @@ namespace PamelloV6.Server.Services
 			var user = _users.Find(user => user.UserEntity.Token == token);
 			if (user is not null) return user;
 
-			var userEntity = _databaseContext.Users.FirstOrDefault(user => user.Token == token);
+			var userEntity = _database.Users.FirstOrDefault(user => user.Token == token);
 			if (userEntity is null) return null;
 
 			return AddUser(userEntity);
 		}
+
 		public PamelloUser? GetUser(ulong discordId) {
 			var user = _users.Find(user => user.UserEntity.DiscordId == discordId);
 			if (user is not null) return user;
 
-			var userEntity = _databaseContext.Users.FirstOrDefault(user => user.DiscordId == discordId);
+			var userEntity = _database.Users.FirstOrDefault(user => user.DiscordId == discordId);
 			if (userEntity is not null) return AddUser(userEntity);
 
 			userEntity = new UserEntity() {
@@ -55,14 +56,14 @@ namespace PamelloV6.Server.Services
 				OwnedPlaylists = [],
 				IsAdministrator = false,
 			};
-			_databaseContext.Users.Add(userEntity);
-			_databaseContext.SaveChanges();
+			_database.Users.Add(userEntity);
+			_database.SaveChanges();
 
 			return AddUser(userEntity);
 		}
 
 		private void LoadUsers() {
-			foreach (var userEntity in _databaseContext.Users) {
+			foreach (var userEntity in _database.Users) {
 				AddUser(userEntity);
 			}
 		}
@@ -71,7 +72,7 @@ namespace PamelloV6.Server.Services
 			var discordUser = _discordClientService.MainDiscordClient.GetUser(userEntity.DiscordId);
 			if (discordUser is null) return null;
 
-			var user = new PamelloUser(userEntity, discordUser);
+			var user = new PamelloUser(userEntity, discordUser, _database);
 			_users.Add(user);
 
 			return user;

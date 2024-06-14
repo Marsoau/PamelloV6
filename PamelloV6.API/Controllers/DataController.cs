@@ -43,10 +43,7 @@ namespace PamelloV6.API.Controllers
 				return BadRequest("Id must me an integer number");
 			}
 
-			var set = _database.Set<T>();
-			set.Build();
-
-			var entity = await set.FindAsync(id);
+			var entity = await _database.Set<T>().FindAsync(id);
 			if (entity is null) {
 				return NotFound();
 			}
