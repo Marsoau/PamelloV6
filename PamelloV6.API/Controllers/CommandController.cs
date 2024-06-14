@@ -70,7 +70,12 @@ namespace PamelloV6.API.Controllers
 				args[i] = argValue;
 			}
 
-			command.Invoke(_commands, args);
+			try {
+				command.Invoke(_commands, args);
+			}
+			catch (Exception x) {
+				return BadRequest($"Execution of command interrupted by exception, message: {x.Message}");
+			}
 
 			return Ok();
         }
