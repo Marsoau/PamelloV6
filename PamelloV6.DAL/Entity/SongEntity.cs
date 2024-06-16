@@ -17,6 +17,10 @@ namespace PamelloV6.DAL.Entity
         public List<PlaylistEntity> Playlists { get; set; }
 
 		public object ToDTO() {
+
+            var episodeIds = Episodes.Select(episodes => episodes.Id).ToList();
+            var playlistIds = Playlists.Select(playlist => playlist.Id).ToList();
+
 			return new SongDTO() {
                 Id = Id,
                 Title = Title,
@@ -26,8 +30,8 @@ namespace PamelloV6.DAL.Entity
                 PlayCount = PlayCount,
                 IsDownloaded = IsDownloaded,
 
-                EpisodeIds = Episodes.Select(episodes => episodes.Id),
-                PlaylistIds = Playlists.Select(playlist => playlist.Id),
+                EpisodeIds = episodeIds,
+                PlaylistIds = playlistIds
 			};
 		}
 	}

@@ -58,7 +58,7 @@ namespace PamelloV6.API.Modules
 			if (User is null) {
 				throw new Exception("This command/action requires user");
 			}
-			if (mustBeAdmin && !User.UserEntity.IsAdministrator) {
+			if (mustBeAdmin && !User.Entity.IsAdministrator) {
 				throw new Exception("This command/action requires administrator user");
 			}
 		}

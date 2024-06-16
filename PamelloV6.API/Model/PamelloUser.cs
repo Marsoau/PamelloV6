@@ -8,7 +8,7 @@ namespace PamelloV6.Server.Model
 	{
 		private readonly DatabaseContext _database;
 
-		public readonly UserEntity UserEntity;
+		public readonly UserEntity Entity;
 		public readonly SocketUser DiscordUser;
 
 		private int _selectedPlayerId;
@@ -25,14 +25,14 @@ namespace PamelloV6.Server.Model
 		) {
 			_database = database;
 
-			UserEntity = userEntity;
+			Entity = userEntity;
 			DiscordUser = discordUser;
 		}
 
 		public void Save() => _database.SaveChanges();
 
 		public override string ToString() {
-			return $"{UserEntity.Id}: {DiscordUser.Username}";
+			return $"{Entity.Id}: {DiscordUser.Username}";
 		}
 	}
 }

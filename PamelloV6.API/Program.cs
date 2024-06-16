@@ -8,6 +8,8 @@ using PamelloV6.DAL;
 using PamelloV6.API.Modules;
 using Microsoft.EntityFrameworkCore;
 using PamelloV6.DAL.Entity;
+using PamelloV6.API.Repositories;
+using PamelloV6.API.Services;
 
 namespace PamelloV6.API
 {
@@ -25,6 +27,7 @@ namespace PamelloV6.API
 
 			var app = builder.Build();
 
+			StartupDatabaseServices(app.Services);
 			await StartupDiscordServicesAsync(app.Services);
 			await StartupPamelloServicesAsync(app.Services);
 
@@ -47,6 +50,7 @@ namespace PamelloV6.API
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 			services.AddEndpointsApiExplorer();
 			services.AddSwaggerGen();
+			services.AddHttpClient();
 		}
 
 		public void ConfigureDiscordServices(IServiceCollection services) {
@@ -69,9 +73,13 @@ namespace PamelloV6.API
 
 			services.AddSingleton<DiscordClientService>();
 			services.AddSingleton<UserAuthorizationService>();
-			services.AddSingleton<PamelloUserService>();
+
+			services.AddSingleton<PamelloUserRepository>();
+			services.AddSingleton<PamelloSongRepository>();
 
 			services.AddTransient<PamelloCommandsModule>();
+
+			services.AddTransient<YoutubeInfoService>();
 		}
 
 		public void ConfigureDatabaseServices(IServiceCollection services) {
@@ -96,8 +104,9 @@ namespace PamelloV6.API
 		}
 
 		public async Task StartupPamelloServicesAsync(IServiceProvider services) {
-
-		}
+			var users = services.GetRequiredService<PamelloUserRepository>();
+			var songs = services.GetRequiredService<PamelloSongRepository>();
+        }
 
 		public void StartupDatabaseServices(IServiceProvider services) {
 			var database = services.GetRequiredService<DatabaseContext>();

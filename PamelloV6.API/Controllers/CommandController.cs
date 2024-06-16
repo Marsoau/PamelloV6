@@ -2,22 +2,22 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PamelloV6.API.Modules;
+using PamelloV6.API.Repositories;
 using PamelloV6.DAL.Entity;
 using PamelloV6.Server.Model;
-using PamelloV6.Server.Services;
 using System.ComponentModel;
 
 namespace PamelloV6.API.Controllers
 {
-	[Route("[controller]")]
+    [Route("[controller]")]
 	[ApiController]
 	public class CommandController : ControllerBase
 	{
-		private readonly PamelloUserService _users;
+		private readonly PamelloUserRepository _users;
 		private readonly PamelloCommandsModule _commands;
 
 		public CommandController(
-			PamelloUserService users,
+			PamelloUserRepository users,
 			PamelloCommandsModule commands
 		) {
 			_users = users;

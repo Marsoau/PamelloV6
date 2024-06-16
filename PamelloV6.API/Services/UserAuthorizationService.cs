@@ -1,4 +1,5 @@
-﻿using PamelloV6.Server.Model;
+﻿using PamelloV6.API.Repositories;
+using PamelloV6.Server.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace PamelloV6.Server.Services
 {
-	public class UserAuthorizationService
+    public class UserAuthorizationService
 	{
-		private readonly PamelloUserService _pamelloUserService;
+		private readonly PamelloUserRepository _pamelloUserService;
 
 		private readonly Dictionary<int, ulong> _userCodes;
 
-		public UserAuthorizationService(PamelloUserService pamelloUserService) {
+		public UserAuthorizationService(PamelloUserRepository pamelloUserService) {
 			_pamelloUserService = pamelloUserService;
 
 			_userCodes = new Dictionary<int, ulong>();
