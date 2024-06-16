@@ -110,17 +110,6 @@ namespace PamelloV6.API
 
 		public void StartupDatabaseServices(IServiceProvider services) {
 			var database = services.GetRequiredService<DatabaseContext>();
-
-			database.Users
-				.Include(user => user.OwnedPlaylists);
-			database.Playlists
-				.Include(playlist => playlist.Songs)
-				.Include(playlist => playlist.Owner);
-			database.Songs
-				.Include(song => song.Playlists)
-				.Include(song => song.Episodes);
-			database.Episodes
-				.Include(episode => episode.Song);
 		}
 	}
 }
