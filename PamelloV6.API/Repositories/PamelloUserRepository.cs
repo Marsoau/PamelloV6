@@ -1,4 +1,6 @@
 ﻿using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Newtonsoft.Json.Linq;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
@@ -16,6 +18,10 @@ namespace PamelloV6.API.Repositories
         private readonly Dictionary<int, ulong> _userCodes;
         private readonly List<PamelloUser> _users;
 
+        private List<UserEntity> _databaseUsers {
+            get => _database.Users.Include(user => user.OwnedPlaylists).ToList();
+		}
+
         public PamelloUserRepository(DiscordClientService discordClientService, DatabaseContext databaseContext)
         {
             _discordClientService = discordClientService;
@@ -32,7 +38,7 @@ namespace PamelloV6.API.Repositories
             var user = _users.Find(user => user.Entity.Id == id);
             if (user is not null) return user;
 
-            var userEntity = _database.Users.Find(id);
+            var userEntity = _databaseUsers.FirstOrDefault(user => user.Id == id);
             if (userEntity is null) return null;
 
             return AddUser(userEntity);
@@ -43,7 +49,7 @@ namespace PamelloV6.API.Repositories
             var user = _users.Find(user => user.Entity.Token == token);
             if (user is not null) return user;
 
-            var userEntity = _database.Users.FirstOrDefault(user => user.Token == token);
+            var userEntity = _databaseUsers.FirstOrDefault(user => user.Token == token);
             if (userEntity is null) return null;
 
             return AddUser(userEntity);
@@ -54,7 +60,7 @@ namespace PamelloV6.API.Repositories
             var user = _users.Find(user => user.Entity.DiscordId == discordId);
             if (user is not null) return user;
 
-            var userEntity = _database.Users.FirstOrDefault(user => user.DiscordId == discordId);
+            var userEntity = _databaseUsers.FirstOrDefault(user => user.DiscordId == discordId);
             if (userEntity is not null) return AddUser(userEntity);
 
             userEntity = new UserEntity()
@@ -72,7 +78,7 @@ namespace PamelloV6.API.Repositories
 
         private void LoadUsers()
         {
-            foreach (var userEntity in _database.Users)
+            foreach (var userEntity in _databaseUsers)
             {
                 AddUser(userEntity);
             }

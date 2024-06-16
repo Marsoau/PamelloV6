@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Microsoft.EntityFrameworkCore;
 using PamelloV6.API.Model;
 using PamelloV6.API.Services;
 using PamelloV6.Core.DTO;
@@ -16,7 +17,14 @@ namespace PamelloV6.API.Repositories
 
         private readonly List<PamelloSong> _songs;
 
-        public PamelloSongRepository(DatabaseContext database, YoutubeInfoService youtube)
+		private List<SongEntity> _databaseSongs {
+			get => _database.Songs
+				.Include(song => song.Playlists)
+				.Include(song => song.Episodes)
+                .ToList();
+		}
+
+		public PamelloSongRepository(DatabaseContext database, YoutubeInfoService youtube)
         {
             _database = database;
             _youtube = youtube;
@@ -80,7 +88,7 @@ namespace PamelloV6.API.Repositories
             var song = _songs.FirstOrDefault(song => song.Entity.Id == songId);
             if (song is not null) return song;
 
-            var entity = _database.Songs.Find(songId);
+            var entity = _databaseSongs.FirstOrDefault(song => song.Id == songId);
             if (entity is null) return null;
 
             return AddSong(entity);
@@ -97,7 +105,7 @@ namespace PamelloV6.API.Repositories
 
         private void LoadSongs()
         {
-            foreach (var songEntity in _database.Songs)
+            foreach (var songEntity in _databaseSongs)
             {
                 AddSong(songEntity);
             }
