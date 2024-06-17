@@ -10,58 +10,51 @@ using PamelloV6.Server.Services;
 
 namespace PamelloV6.API.Repositories
 {
-    public class PamelloUserRepository
+    public class PamelloUserRepository : PamelloRepository<PamelloUser>
     {
         private readonly DiscordClientService _discordClientService;
-        private readonly DatabaseContext _database;
-
-        private readonly Dictionary<int, ulong> _userCodes;
-        private readonly List<PamelloUser> _users;
 
         private List<UserEntity> _databaseUsers {
             get => _database.Users.Include(user => user.OwnedPlaylists).ToList();
 		}
 
-        public PamelloUserRepository(DiscordClientService discordClientService, DatabaseContext databaseContext)
-        {
+        public PamelloUserRepository(DiscordClientService discordClientService,
+            IServiceProvider services
+        ) : base(services) {
             _discordClientService = discordClientService;
-            _database = databaseContext;
 
-            _userCodes = new Dictionary<int, ulong>();
-            _users = new List<PamelloUser>();
-
-            LoadUsers();
+            //LoadAll();
         }
 
-        public PamelloUser? GetUser(int id)
+        public override PamelloUser? Get(int id)
         {
-            var user = _users.Find(user => user.Entity.Id == id);
+            var user = _list.Find(user => user.Entity.Id == id);
             if (user is not null) return user;
 
             var userEntity = _databaseUsers.FirstOrDefault(user => user.Id == id);
             if (userEntity is null) return null;
 
-            return AddUser(userEntity);
+            return Load(userEntity);
         }
 
-        public PamelloUser? GetUser(Guid token)
+        public PamelloUser? Get(Guid token)
         {
-            var user = _users.Find(user => user.Entity.Token == token);
+            var user = _list.Find(user => user.Entity.Token == token);
             if (user is not null) return user;
 
             var userEntity = _databaseUsers.FirstOrDefault(user => user.Token == token);
             if (userEntity is null) return null;
 
-            return AddUser(userEntity);
+            return Load(userEntity);
         }
 
-        public PamelloUser? GetUser(ulong discordId)
+        public PamelloUser? Get(ulong discordId)
         {
-            var user = _users.Find(user => user.Entity.DiscordId == discordId);
+            var user = _list.Find(user => user.Entity.DiscordId == discordId);
             if (user is not null) return user;
 
             var userEntity = _databaseUsers.FirstOrDefault(user => user.DiscordId == discordId);
-            if (userEntity is not null) return AddUser(userEntity);
+            if (userEntity is not null) return Load(userEntity);
 
             userEntity = new UserEntity()
             {
@@ -73,26 +66,30 @@ namespace PamelloV6.API.Repositories
             _database.Users.Add(userEntity);
             _database.SaveChanges();
 
-            return AddUser(userEntity);
+            return Load(userEntity);
         }
 
-        private void LoadUsers()
+		public override void Delete(int id) => throw new NotImplementedException();
+
+		private void LoadAll()
         {
             foreach (var userEntity in _databaseUsers)
             {
-                AddUser(userEntity);
+                Load(userEntity);
             }
         }
 
-        private PamelloUser? AddUser(UserEntity userEntity)
+        private PamelloUser? Load(UserEntity userEntity)
         {
             var discordUser = _discordClientService.MainDiscordClient.GetUser(userEntity.DiscordId);
             if (discordUser is null) return null;
 
-            var user = new PamelloUser(userEntity, discordUser, _database);
-            _users.Add(user);
+            var user = new PamelloUser(userEntity, discordUser, _services);
+            _list.Add(user);
 
-            return user;
+			Console.WriteLine($"Loaded user: {user}");
+
+			return user;
         }
     }
 }

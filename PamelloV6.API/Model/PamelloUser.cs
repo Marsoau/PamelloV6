@@ -1,15 +1,35 @@
 ﻿using Discord.WebSocket;
+using PamelloV6.API.Model;
+using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
 
 namespace PamelloV6.Server.Model
 {
-	public class PamelloUser
-	{
-		private readonly DatabaseContext _database;
-
-		public readonly UserEntity Entity;
+	public class PamelloUser : PamelloEntity {
+		internal readonly UserEntity Entity;
 		public readonly SocketUser DiscordUser;
+
+		public override int Id {
+			get => Entity.Id;
+		}
+
+		public Guid Token {
+			get => Entity.Token;
+		}
+
+		public bool IsAdministrator {
+			get => Entity.IsAdministrator;
+			set {
+				Entity.IsAdministrator = value;
+				Save();
+			}
+		}
+
+		public List<PamelloPlaylist> OwnedPlaylists {
+			get => Entity.OwnedPlaylists.Select(playlistEntity => _playlists.Get(playlistEntity.Id)
+				?? throw new Exception("Attempted to get song that doesnt exist")).ToList();
+		}
 
 		private int _selectedPlayerId;
 		public int SelectedPlayerId {
@@ -21,18 +41,28 @@ namespace PamelloV6.Server.Model
 		}
 
 		public PamelloUser(UserEntity userEntity, SocketUser discordUser,
-			DatabaseContext database
-		) {
-			_database = database;
-
+			IServiceProvider services
+		) : base(services) {
 			Entity = userEntity;
 			DiscordUser = discordUser;
 		}
 
-		public void Save() => _database.SaveChanges();
+		public PamelloPlaylist CreatePlaylist(string name, bool isProtected = true) {
+			return _playlists.Add(name, isProtected, this);
+		}
 
 		public override string ToString() {
-			return $"{Entity.Id}: {DiscordUser.Username}";
+			return $"{DiscordUser.Username} ({Entity.Id})";
+		}
+
+		public override object GetDTO() {
+			return new UserDTO() {
+				Id = Id,
+				DiscordId = DiscordUser.Id,
+				IsAdministrator = IsAdministrator,
+
+				OwnedPlaylistIds = (OwnedPlaylists ?? []).Select(playlist => playlist.Id),
+			};
 		}
 	}
 }

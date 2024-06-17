@@ -71,7 +71,7 @@ namespace PamelloV6.Server.Handlers
 		}
 
 		private async Task HandleInteraction(SocketInteraction interaction) {
-			var pamelloUser = _users.GetUser(interaction.User.Id);
+			var pamelloUser = _users.Get(interaction.User.Id);
 			if (pamelloUser is null) {
 				throw new Exception($"Cant execute discord command with null PamelloUser, discord user id: {interaction.User.Id}");
 			}

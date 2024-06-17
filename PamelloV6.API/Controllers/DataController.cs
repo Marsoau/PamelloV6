@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PamelloV6.API.Model;
 using PamelloV6.API.Repositories;
 using PamelloV6.Core.Abstract;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
+using PamelloV6.Server.Model;
 
 namespace PamelloV6.API.Controllers
 {
@@ -11,71 +13,54 @@ namespace PamelloV6.API.Controllers
 	[ApiController]
 	public class DataController : ControllerBase
 	{
-		private readonly PamelloUserRepository _userRepository;
-		private readonly PamelloSongRepository _songRepository;
+		protected readonly PamelloUserRepository _users;
+		protected readonly PamelloSongRepository _songs;
+		protected readonly PamelloEpisodeRepository _episodes;
+		protected readonly PamelloPlaylistRepository _playlists;
 
 		public DataController(
-			PamelloUserRepository userRepository,
-			PamelloSongRepository songRepository
+			PamelloUserRepository users,
+			PamelloSongRepository songs,
+			PamelloEpisodeRepository episodes,
+			PamelloPlaylistRepository playlists
 		) {
-			_userRepository = userRepository;
-			_songRepository = songRepository;
+			_users = users;
+			_songs = songs;
+			_episodes = episodes;
+			_playlists = playlists;
 		}
 
 		[HttpGet("User")]
-		public async Task<IActionResult> GetUser() {
-			int requestedId;
-			try {
-				requestedId = GetRequestedId();
-			}
-			catch (Exception x) {
-				return BadRequest(x);
-			}
-
-			var user = _userRepository.GetUser(requestedId);
-			if (user is null) {
-				return NotFound();
-			}
-
-			return Ok(user.Entity.ToDTO());
+		public IActionResult GetUser() {
+			return HandleGetRequest(_users);
 		}
 		[HttpGet("Song")]
-		public async Task<IActionResult> GetSong() {
-			int requestedId;
-			try {
-				requestedId = GetRequestedId();
-			}
-			catch (Exception x) {
-				return BadRequest(x);
-			}
-
-			var song = _songRepository.GetSong(requestedId);
-			if (song is null) {
-				return NotFound();
-			}
-
-			return Ok(song.Entity.ToDTO());
-		}
-		[HttpGet("Playlist")]
-		public async Task<IActionResult> GetPlaylist() {
-			throw new NotImplementedException();
+		public IActionResult GetSong() {
+			return HandleGetRequest(_songs);
 		}
 		[HttpGet("Episode")]
-		public async Task<IActionResult> GetEpisode() {
-			throw new NotImplementedException();
+		public IActionResult GetEpisode() {
+			return HandleGetRequest(_episodes);
+		}
+		[HttpGet("Playlist")]
+		public IActionResult GetPlaylist() {
+			return HandleGetRequest(_playlists);
 		}
 
-		private int GetRequestedId() {
+		private IActionResult HandleGetRequest<T>(PamelloRepository<T> _repository) where T : PamelloEntity {
 			var qId = Request.Query["id"].FirstOrDefault();
 			if (qId is null) {
-				throw new Exception("Id required");
+				return BadRequest("Id required");
 			}
 
 			if (!int.TryParse(qId, out int id)) {
-				throw new Exception("Id must me an integer number");
+				return BadRequest("Id must me an integer number");
 			}
 
-			return id;
+			var pamelloEntity = _repository.Get(id);
+			if (pamelloEntity is null) return NotFound();
+
+			return Ok(pamelloEntity.GetDTO());
 		}
 	}
 }

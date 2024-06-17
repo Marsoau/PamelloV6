@@ -1,18 +1,67 @@
 ﻿using AngleSharp.Dom;
 using PamelloV6.API.Downloads;
+using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
 using System.Web;
 
 namespace PamelloV6.API.Model
 {
-	public class PamelloSong
+	public class PamelloSong : PamelloEntity
 	{
-		private readonly DatabaseContext _database;
 		private readonly SongDownloader _downloader;
 		private Task<DownloadResult>? _downloadTask;
 
-		public readonly SongEntity Entity;
+		internal readonly SongEntity Entity;
+
+		public override int Id {
+			get => Entity.Id;
+		}
+		public string Title {
+			get => Entity.Title;
+			set {
+				Entity.Title = value;
+				Save();
+			}
+		}
+		public string Author {
+			get => Entity.Author;
+			set {
+				Entity.Author = value;
+				Save();
+			}
+		}
+		public string CoverUrl {
+			get => Entity.CoverUrl;
+			set {
+				Entity.CoverUrl = value;
+				Save();
+			}
+		}
+		public string SourceUrl {
+			get => Entity.SourceUrl;
+			set {
+				Entity.SourceUrl = value;
+				Save();
+			}
+		}
+		public int PlayCount {
+			get => Entity.PlayCount;
+			set {
+				Entity.PlayCount = value;
+				Save();
+			}
+		}
+
+		public List<PamelloEpisode> Episodes {
+			get => Entity.Episodes.Select(episodesEntity => _episodes.Get(episodesEntity.Id)
+				?? throw new Exception("Attempted to get song that doesnt exist")).ToList();
+		}
+		public List<PamelloPlaylist> Playlists {
+			get => Entity.Playlists.Select(playlistEntity => _playlists.Get(playlistEntity.Id)
+				?? throw new Exception("Attempted to get song that doesnt exist")).ToList();
+		}
+
 		public bool IsDownloaded {
 			get => Entity.IsDownloaded && File.Exists(@$"C:\.PamelloV6Data\Music\{Entity.Id}.mp4") && !IsDownloading;
 		}
@@ -21,10 +70,8 @@ namespace PamelloV6.API.Model
 		}
 
 		public PamelloSong(SongEntity songEntity,
-			DatabaseContext database
-		) {
-			_database = database;
-
+			IServiceProvider services
+		) : base(services) {
 			Entity = songEntity;
 
 			_downloader = new SongDownloader(this);
@@ -47,14 +94,12 @@ namespace PamelloV6.API.Model
 			Console.WriteLine($"Download of song {this} ended with {downloadResult}");
         }
 
-		public void Save() => _database.SaveChanges();
-
 		public Task<DownloadResult> StartDownload() {
 			if (_downloadTask is not null) {
 				return _downloadTask;
 			}
 
-			var souceUri = new Uri(Entity.SourceUrl);
+			var souceUri = new Uri(SourceUrl);
 			if (!(souceUri.Host is "www.youtube.com" or "youtu.be")) {
 				throw new Exception("Only youtube source are suported for auto downloading");
 			}
@@ -66,8 +111,27 @@ namespace PamelloV6.API.Model
 			return _downloadTask;
 		}
 
+		public PamelloEpisode CreateEpisode(string name, int start) {
+			return _episodes.Add(name, start, this);
+		}
+
 		public override string ToString() {
-			return $"{Entity.Title} ({Entity.Id})";
+			return $"{Title} ({Id})";
+		}
+
+		public override object GetDTO() {
+			return new SongDTO() {
+				Id = Id,
+				Title = Title,
+				Author = Author,
+				CoverUrl = CoverUrl,
+				SourceUrl = SourceUrl,
+				PlayCount = PlayCount,
+				IsDownloaded = IsDownloaded,
+
+				EpisodeIds = Episodes.Select(episodes => episodes.Id).ToList(),
+				PlaylistIds = Playlists.Select(playlist => playlist.Id).ToList()
+			};
 		}
 	}
 }
