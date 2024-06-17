@@ -33,7 +33,7 @@ namespace PamelloV6.API.Repositories
 			=> Get(id) ?? throw new Exception($"Cant find required song with id {id}");
 		public override PamelloSong? Get(int songId)
         {
-            var song = _list.FirstOrDefault(song => song.Entity.Id == songId);
+            var song = _list.FirstOrDefault(song => song.Id == songId);
             if (song is not null) return song;
 
             var entity = _databaseSongs.FirstOrDefault(song => song.Id == songId);
@@ -42,7 +42,29 @@ namespace PamelloV6.API.Repositories
             return Load(entity);
 		}
 
-		public async Task<PamelloSong?> Add(string youtubeId) {
+		public PamelloSong? GetByName(string name) {
+			var song = _list.FirstOrDefault(song => song.Title == name);
+			if (song is not null) return song;
+
+			var entity = _databaseSongs.FirstOrDefault(song => song.Title == name);
+			if (entity is null) return null;
+
+			return Load(entity);
+		}
+		public PamelloSong? GetBySource(string sourceUrl) {
+			var song = _list.FirstOrDefault(song => song.SourceUrl == sourceUrl);
+			if (song is not null) return song;
+
+			var entity = _databaseSongs.FirstOrDefault(song => song.SourceUrl == sourceUrl);
+			if (entity is null) return null;
+
+			return Load(entity);
+		}
+
+		public async Task<PamelloSong> Add(string youtubeId) {
+			var song = _list.FirstOrDefault(song => song.SourceUrl == $"https://www.youtube.com/watch?v={youtubeId}");
+			if (song is not null) return song;
+
 			YoutubeVideoInfo youtubeInfo;
 			try {
 				youtubeInfo = await _youtube.GetVideoInfo(youtubeId);

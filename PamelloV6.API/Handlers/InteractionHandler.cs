@@ -83,7 +83,13 @@ namespace PamelloV6.Server.Handlers
 				_services
 			);
 
-            await _commands.ExecuteCommandAsync(context, _services);
+			try {
+				await _commands.ExecuteCommandAsync(context, _services);
+			}
+			catch (Exception x) {
+				await interaction.RespondAsync($"Error\n{x.Message}");
+                Console.WriteLine(x);
+            }
 		}
 	}
 }
