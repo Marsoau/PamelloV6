@@ -40,7 +40,7 @@ namespace PamelloV6.API.Controllers
 				return BadRequest("Wrong user token format");
 			}
 
-			var user = _users.GetUser(userToken);
+			var user = _users.Get(userToken);
 			if (user is null) {
 				return NotFound($"Cant get user by {userToken} token");
 			}

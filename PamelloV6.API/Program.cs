@@ -28,7 +28,9 @@ namespace PamelloV6.API
 			var app = builder.Build();
 
 			StartupDatabaseServices(app.Services);
+
 			await StartupDiscordServicesAsync(app.Services);
+
 			await StartupPamelloServicesAsync(app.Services);
 
 			// Configure the HTTP request pipeline.
@@ -76,6 +78,8 @@ namespace PamelloV6.API
 
 			services.AddSingleton<PamelloUserRepository>();
 			services.AddSingleton<PamelloSongRepository>();
+			services.AddSingleton<PamelloEpisodeRepository>();
+			services.AddSingleton<PamelloPlaylistRepository>();
 
 			services.AddTransient<PamelloCommandsModule>();
 
@@ -95,18 +99,26 @@ namespace PamelloV6.API
 			MainDiscordClient.Log += async (message) => {
 				Console.WriteLine(message);
 			};
+
+			var discordReady = new TaskCompletionSource();
 			MainDiscordClient.Ready += async () => {
 				await interactionService.RegisterCommandsToGuildAsync(1250768227542241450);
+
+				discordReady.SetResult();
 			};
 
 			await MainDiscordClient.LoginAsync(TokenType.Bot, "MTI1MDc2MzM0NjcxNDY5MzYzMg.GqF3b4.OVu84ru-0_-RtKUwcrQchAppjZgxaHUgnu_5yw");
 			await MainDiscordClient.StartAsync();
+
+			await discordReady.Task;
 		}
 
 		public async Task StartupPamelloServicesAsync(IServiceProvider services) {
 			var users = services.GetRequiredService<PamelloUserRepository>();
 			var songs = services.GetRequiredService<PamelloSongRepository>();
-        }
+			var episodes = services.GetRequiredService<PamelloEpisodeRepository>();
+			var playlists = services.GetRequiredService<PamelloPlaylistRepository>();
+		}
 
 		public void StartupDatabaseServices(IServiceProvider services) {
 			var database = services.GetRequiredService<DatabaseContext>();
