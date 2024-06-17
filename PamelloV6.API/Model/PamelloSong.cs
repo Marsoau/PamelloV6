@@ -47,10 +47,6 @@ namespace PamelloV6.API.Model
 		}
 		public int PlayCount {
 			get => Entity.PlayCount;
-			set {
-				Entity.PlayCount = value;
-				Save();
-			}
 		}
 
 		public List<PamelloEpisode> Episodes {

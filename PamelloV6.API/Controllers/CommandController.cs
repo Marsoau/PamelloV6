@@ -45,7 +45,7 @@ namespace PamelloV6.API.Controllers
 				return NotFound($"Cant get user by {userToken} token");
 			}
 
-			_commands.SetUser(user);
+			_commands.User = user;
 
 			var command = typeof(PamelloCommandsModule).GetMethod(queriedCommand);
 			if (command is null) {

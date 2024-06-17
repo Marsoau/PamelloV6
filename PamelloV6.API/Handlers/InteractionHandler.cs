@@ -27,7 +27,7 @@ namespace PamelloV6.Server.Handlers
 			Services = services;
 
 			Commands = services.GetRequiredService<PamelloCommandsModule>();
-			Commands.SetUser(User);
+			Commands.User = User;
 		}
 	}
 
