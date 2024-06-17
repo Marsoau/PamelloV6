@@ -138,7 +138,7 @@ namespace PamelloV6.API.Modules
 
 			var episode = _episodes.GetRequired(episodeId);
 
-			episode.Start = newStart;
+			episode.Start = new AudioTime(newStart);
 		}
 		public async Task EpisodeDelete(int episodeId) => throw new NotImplementedException();
 

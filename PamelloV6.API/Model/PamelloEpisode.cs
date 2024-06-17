@@ -20,10 +20,10 @@ namespace PamelloV6.API.Model
 			}
 		}
 
-		public int Start {
-			get => Entity.Start;
+		public AudioTime Start {
+			get => new AudioTime(Entity.Start);
 			set {
-				Entity.Start = value;
+				Entity.Start = value.TotalSeconds;
 				Save();
 			}
 		}
@@ -55,7 +55,7 @@ namespace PamelloV6.API.Model
 				Id = Id,
 				SongId = Song.Id,
 				Name = Name,
-				Start = Start,
+				Start = Start.TotalSeconds,
 				Skip = Skip,
 			};
 		}
