@@ -36,6 +36,14 @@ namespace PamelloV6.API.Model
 			}
 		}
 
+		public bool Skip {
+			get => Entity.Skip;
+			set {
+				Entity.Skip = value;
+				Save();
+			}
+		}
+
 		public PamelloEpisode(EpisodeEntity entity,
 			IServiceProvider services
 		) : base(services) {
@@ -48,6 +56,7 @@ namespace PamelloV6.API.Model
 				SongId = Song.Id,
 				Name = Name,
 				Start = Start,
+				Skip = Skip,
 			};
 		}
 

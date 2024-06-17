@@ -107,8 +107,8 @@ namespace PamelloV6.API.Model
 			return _downloadTask;
 		}
 
-		public PamelloEpisode CreateEpisode(string name, int start) {
-			return _episodes.Add(name, start, this);
+		public PamelloEpisode CreateEpisode(string name, int start, bool skip = false) {
+			return _episodes.Add(name, start, skip, this);
 		}
 
 		public override string ToString() {

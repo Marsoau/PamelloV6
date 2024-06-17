@@ -12,5 +12,6 @@ namespace PamelloV6.Core.DTO
 		public int SongId { get; set; }
 		public string Name { get; set; }
 		public int Start { get; set; }
+		public bool Skip { get; set; }
 	}
 }

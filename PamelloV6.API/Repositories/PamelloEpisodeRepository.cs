@@ -30,11 +30,12 @@ namespace PamelloV6.API.Repositories
 			return Load(entity);
 		}
 
-		public PamelloEpisode Add(string name, int start, PamelloSong song) {
+		public PamelloEpisode Add(string name, int start, bool skip, PamelloSong song) {
 			var episode = new EpisodeEntity() {
 				Name = name,
 				Start = start,
-				Song = song.Entity
+				Song = song.Entity,
+				Skip = skip
 			};
 
 			_database.Episodes.Add(episode);

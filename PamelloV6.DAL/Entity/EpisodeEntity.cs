@@ -8,7 +8,8 @@ namespace PamelloV6.DAL.Entity
         public int Id { get; set; }
         public SongEntity Song { get; set; }
         public string Name { get; set; }
-        public int Start { get; set; }
+		public int Start { get; set; }
+		public bool Skip { get; set; }
 
 		public object ToDTO() {
             return new EpisodeDTO() {

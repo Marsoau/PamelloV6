@@ -119,12 +119,12 @@ namespace PamelloV6.API.Modules
 			playlist.RemoveSong(position);
 		}
 
-		public async Task EpisodeAdd(int songId, string episodeName, int startSeconds) {
+		public async Task EpisodeAdd(int songId, string episodeName, int startSeconds, bool skip) {
 			RequireUser();
 
 			var song = _songs.GetRequired(songId);
 
-			song.CreateEpisode(episodeName, startSeconds);
+			song.CreateEpisode(episodeName, startSeconds, skip);
 		}
 		public async Task EpisodeRename(int episodeId, string newName) {
 			RequireUser();
