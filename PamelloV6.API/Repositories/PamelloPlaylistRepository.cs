@@ -20,6 +20,8 @@ namespace PamelloV6.API.Repositories
 			//LoadAll();
 		}
 
+		public PamelloPlaylist GetRequired(int id)
+			=> Get(id) ?? throw new Exception($"Cant find required playlist with id {id}");
 		public override PamelloPlaylist? Get(int id) {
 			var playlist = _list.FirstOrDefault(playlist => playlist.Id == id);
 			if (playlist is not null) return playlist;

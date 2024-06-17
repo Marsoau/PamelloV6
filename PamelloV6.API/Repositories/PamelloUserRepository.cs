@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Newtonsoft.Json.Linq;
+using PamelloV6.API.Model;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
 using PamelloV6.Server.Model;
@@ -26,7 +27,9 @@ namespace PamelloV6.API.Repositories
             //LoadAll();
         }
 
-        public override PamelloUser? Get(int id)
+		public PamelloUser GetRequired(int id)
+			=> Get(id) ?? throw new Exception($"Cant find required user with id {id}");
+		public override PamelloUser? Get(int id)
         {
             var user = _list.Find(user => user.Entity.Id == id);
             if (user is not null) return user;

@@ -18,6 +18,8 @@ namespace PamelloV6.API.Repositories
 			//LoadAll();
 		}
 
+		public PamelloEpisode GetRequired(int id)
+			=> Get(id) ?? throw new Exception($"Cant find required episode with id {id}");
 		public override PamelloEpisode? Get(int id) {
 			var episode = _list.FirstOrDefault(episode => episode.Id == id);
 			if (episode is not null) return episode;
