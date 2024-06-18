@@ -1,8 +1,10 @@
-﻿using Discord.Interactions;
+﻿using Discord.Audio;
+using Discord.Interactions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Expressions;
 using PamelloV6.API.Model;
+using PamelloV6.API.Model.Audio;
 using PamelloV6.API.Modules;
 using PamelloV6.API.Repositories;
 using PamelloV6.Server.Handlers;
@@ -58,43 +60,32 @@ namespace PamelloV6.Server.Modules
 
 		}
 
-		[SlashCommand("add", "Add (new) song to bot and queue if any player selected")]
+		[SlashCommand("add", "Add (new) song to bot and queue if any player selected", runMode: RunMode.Async)]
 		public async Task Add(
 			[Summary("song", "(Name)/Id/Youtube Url of song to add to a selected player queue")] string songValue
 		) {
-			PamelloSong? song;
+			await RespondAsync("gugugaga", ephemeral: true);
 
-			if (int.TryParse(songValue, out int songId)) {
-				song = _songs.Get(songId);
-				if (song is null) {
-					throw new Exception($"Cant find song by id {songId}");
-				}
-			}
-			else {
-				Uri songUri;
-				try {
-					songUri = new Uri(songValue);
-				}
-				catch {
-					throw new Exception("Only Id and Youtube urls are supported for now");
-				}
-				if (!(songUri.Host is "www.youtube.com" or "youtu.be")) {
-					throw new Exception("Only urls from Youtube are supported for now");
-				}
-
-				var querry = HttpUtility.ParseQueryString(songUri.Query);
-				var youtubeId = querry["v"];
-				if (youtubeId is null) {
-					throw new Exception("This youtube url doesnt have video id");
-				}
-
-				song = _songs.GetBySource($"https://www.youtube.com/watch?v={youtubeId}");
-				if (song is null) {
-					song = await Context.Commands.SongAddYoutube(youtubeId);
-				}
+			if (!int.TryParse(songValue, out var songId)) {
+				throw new Exception("Cant parse value to int");
 			}
 
-			await RespondAsync($"Maybe added song {song}", ephemeral: true);
+			var song = _songs.GetRequired(songId);
+			var songAudio = new PamelloAudio(song);
+
+			var guild = Context.Guild;
+			var voice = guild.GetUser(Context.User.DiscordUser.Id).VoiceChannel;
+
+			var ac = await voice.ConnectAsync();
+
+			var outputStream = ac.CreatePCMStream(AudioApplication.Mixed);
+
+			byte[]? audioBytes;
+			if (await songAudio.TryInitialize()) {
+				while ((audioBytes = songAudio.NextBytes()) is not null) {
+					outputStream.Write(audioBytes);
+				}
+			}
 		}
 
 		private async Task AddByUrl(Uri url) {

@@ -59,7 +59,7 @@ namespace PamelloV6.API.Model
 		}
 
 		public bool IsDownloaded {
-			get => Entity.IsDownloaded && File.Exists(@$"C:\.PamelloV6Data\Music\{Entity.Id}.mp4") && !IsDownloading;
+			get => Entity.IsDownloaded && File.Exists(@$"C:\.PamelloV6Data\Music\{Id}.mp4") && !IsDownloading;
 		}
 		public bool IsDownloading {
 			get => _downloadTask is not null;
@@ -90,7 +90,11 @@ namespace PamelloV6.API.Model
 			Console.WriteLine($"Download of song {this} ended with {downloadResult}");
         }
 
-		public Task<DownloadResult> StartDownload() {
+		public Task<DownloadResult> StartDownload(bool forceDownload = false) {
+			if (Entity.IsDownloaded && !forceDownload) {
+				return Task.FromResult(DownloadResult.Success);
+			}
+
 			if (_downloadTask is not null) {
 				return _downloadTask;
 			}

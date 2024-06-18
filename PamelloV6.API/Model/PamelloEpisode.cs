@@ -1,10 +1,11 @@
-﻿using PamelloV6.Core.DTO;
+﻿using PamelloV6.API.Model.Audio;
+using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
 
 namespace PamelloV6.API.Model
 {
-	public class PamelloEpisode : PamelloEntity
+    public class PamelloEpisode : PamelloEntity
 	{
 		internal readonly EpisodeEntity Entity;
 
@@ -61,7 +62,7 @@ namespace PamelloV6.API.Model
 		}
 
 		public override string ToString() {
-			return $"[E: {Id}] {Start} - {Name}";
+			return $"[E: {Id}{(Skip ? " (S)" : "")}] {Start} - {Name}";
 		}
 	}
 }
