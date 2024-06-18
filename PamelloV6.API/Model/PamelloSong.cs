@@ -112,7 +112,7 @@ namespace PamelloV6.API.Model
 		}
 
 		public override string ToString() {
-			return $"{Title} ({Id})";
+			return $"[S: {Id}] {Title}";
 		}
 
 		public override object GetDTO() {

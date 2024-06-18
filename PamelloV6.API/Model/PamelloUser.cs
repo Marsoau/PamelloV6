@@ -52,7 +52,7 @@ namespace PamelloV6.Server.Model
 		}
 
 		public override string ToString() {
-			return $"{DiscordUser.Username} ({Entity.Id})";
+			return $"[U: {Id} | {DiscordUser.Id}] {DiscordUser.GlobalName}";
 		}
 
 		public override object GetDTO() {

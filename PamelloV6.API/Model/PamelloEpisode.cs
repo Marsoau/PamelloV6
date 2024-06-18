@@ -61,7 +61,7 @@ namespace PamelloV6.API.Model
 		}
 
 		public override string ToString() {
-			return $"{Name} ({Id})";
+			return $"[E: {Id}] {Start} - {Name}";
 		}
 	}
 }

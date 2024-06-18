@@ -75,7 +75,7 @@ namespace PamelloV6.API.Model
 		}
 
 		public override string ToString() {
-			return $"{Name} ({Id})";
+			return $"[P: {Id} ({Entity.Songs.Count} Songs)] {Name}";
 		}
 	}
 }
