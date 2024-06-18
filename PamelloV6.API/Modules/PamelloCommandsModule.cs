@@ -1,5 +1,6 @@
 ﻿using Discord;
 using PamelloV6.API.Model;
+using PamelloV6.API.Model.Audio;
 using PamelloV6.API.Repositories;
 using PamelloV6.Core.DTO;
 using PamelloV6.Server.Model;
