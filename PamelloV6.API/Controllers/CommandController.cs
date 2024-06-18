@@ -55,10 +55,16 @@ namespace PamelloV6.API.Controllers
 			var argsInfo = command.GetParameters();
 			var args = new object[argsInfo.Length];
 
-			string argStringValue;
+			string? argKey;
+			string? argStringValue;
 			object? argValue;
             for (int i = 0; i < argsInfo.Length; i++) {
-				argStringValue = Request.Query[argsInfo[i].Name ?? ""].FirstOrDefault() ?? "";
+				argKey = argsInfo[i].Name;
+				if (argKey is null) {
+					continue;
+				}
+
+				argStringValue = Request.Query[argKey].FirstOrDefault();
 				if (argStringValue is null) {
 					return BadRequest($"Cant find argument {argsInfo[i].Name} in query");
 				}
