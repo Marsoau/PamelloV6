@@ -74,6 +74,7 @@ namespace PamelloV6.API.Model.Audio
 			
 			SongAudios.RemoveAt(songPosition);
 			if (_position == songPosition) GoToNextSong();
+			else if (songPosition < _position) _position--;
 
 			return song;
 		}
@@ -96,7 +97,7 @@ namespace PamelloV6.API.Model.Audio
 
 			return true;
 		}
-		public bool SwapSong(int fromPosition, int withPosition) {
+		public bool SwapSongs(int fromPosition, int withPosition) {
 			if (SongAudios.Count <= 1) return false;
 
 			fromPosition = NormalizeQueuePosition(fromPosition);

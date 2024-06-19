@@ -69,6 +69,16 @@ namespace PamelloV6.API.Modules
 
 			SelectedPlayer.Queue.GoToSong(SelectedPlayer.Queue.Position - 1);
 		}
+		public async Task PlayerSkip() {
+			RequireUser();
+
+			SelectedPlayer.Queue.GoToNextSong();
+		}
+		public async Task PlayerGoToSong(int songPosition, bool returnBack) {
+			RequireUser();
+
+			SelectedPlayer.Queue.GoToSong(songPosition, returnBack);
+		}
 
 		public async Task PlayerPause() {
 			RequireUser();
@@ -113,15 +123,25 @@ namespace PamelloV6.API.Modules
 
 			SelectedPlayer.Queue.InsertSong(queuePosition, songId);
 		}
-		public async Task PlayerQueueRemoveSong(int queuePosition) {
+		public async Task PlayerQueueRemoveSong(int songPosition) {
 			RequireUser();
 
-			SelectedPlayer.Queue.RemoveSong(queuePosition);
+			SelectedPlayer.Queue.RemoveSong(songPosition);
 		}
 		public async Task PlayerQueueRequestNext(int? position) {
 			RequireUser();
 
 			SelectedPlayer.Queue.NextPositionRequest = position;
+		}
+		public async Task PlayerQueueSwap(int fromPosition, int withPosition) {
+			RequireUser();
+
+			SelectedPlayer.Queue.SwapSongs(fromPosition, withPosition);
+		}
+		public async Task PlayerQueueMove(int fromPosition, int toPosition) {
+			RequireUser();
+
+			SelectedPlayer.Queue.MoveSong(fromPosition, toPosition);
 		}
 
 		public async Task<PamelloSong?> SongAddYoutube(string youtubeId) {

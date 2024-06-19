@@ -53,7 +53,7 @@ namespace PamelloV6.API.Controllers
 			}
 
 			var argsInfo = command.GetParameters();
-			var args = new object[argsInfo.Length];
+			var args = new object?[argsInfo.Length];
 
 			string? argKey;
 			string? argStringValue;
@@ -68,9 +68,11 @@ namespace PamelloV6.API.Controllers
 				if (argStringValue is null) {
 					return BadRequest($"Cant find argument {argsInfo[i].Name} in query");
 				}
-				argValue = TypeDescriptor.GetConverter(argsInfo[i].ParameterType).ConvertFromInvariantString(argStringValue);
-				if (argValue is null) {
-					return BadRequest($"Cant convert argument {argsInfo[i].Name} value");
+				try {
+					argValue = TypeDescriptor.GetConverter(argsInfo[i].ParameterType).ConvertFromInvariantString(argStringValue);
+				}
+				catch {
+					return BadRequest($"Cant convert \"{argsInfo[i].Name}\" argument \"{argStringValue}\" value to \"{argsInfo[i].ParameterType}\" type");
 				}
 
 				args[i] = argValue;
