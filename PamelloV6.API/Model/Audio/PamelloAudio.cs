@@ -15,6 +15,9 @@ namespace PamelloV6.API.Model.Audio
 		public PamelloEpisode? CurrentEpisode { get; private set; }
 		public PamelloEpisode? NextEpisode { get; private set; }
 
+		public bool IsInitialized {
+			get => _audioStream is not null;
+		}
 
 		public PamelloAudio(PamelloSong song) {
             Song = song;
@@ -59,6 +62,17 @@ namespace PamelloV6.API.Model.Audio
 
             return true;
         }
+
+		public void Clean() {
+			_audioStream?.Dispose();
+			_audioStream = null;
+
+			CurrentEpisode = null;
+			NextEpisode = null;
+
+			Position.TimeValue = 0;
+			Duration.TimeValue = 0;
+		}
 
 		public PamelloEpisode? GetNextEpisode() {
 			if (CurrentEpisode is null) return null;

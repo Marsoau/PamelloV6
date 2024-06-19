@@ -1,5 +1,6 @@
 ﻿using Discord.WebSocket;
 using PamelloV6.API.Model;
+using PamelloV6.API.Model.Audio;
 using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
@@ -31,12 +32,12 @@ namespace PamelloV6.Server.Model
 				?? throw new Exception("Attempted to get song that doesnt exist")).ToList();
 		}
 
-		private int _selectedPlayerId;
-		public int SelectedPlayerId {
-			get => _selectedPlayerId;
+		private PamelloPlayer? _selectedPlayer;
+		public PamelloPlayer? SelectedPlayer {
+			get => _selectedPlayer;
 			set {
-				_selectedPlayerId = value;
-                Console.WriteLine($"[{this}] selected player {SelectedPlayerId}");
+				_selectedPlayer = value;
+                Console.WriteLine($"[{this}] selected player {SelectedPlayer}");
             }
 		}
 
