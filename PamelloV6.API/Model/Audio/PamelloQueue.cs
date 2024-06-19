@@ -23,10 +23,17 @@ namespace PamelloV6.API.Model.Audio
 
 		public int? NextPositionRequest;
 
-		public PamelloAudio? Current { get; private set; }
+		private PamelloAudio? _current;
+		public PamelloAudio? Current {
+			get => _current;
+			set {
+				_current?.Clean();
+				_current = value;
+			}
+		}
 
-        public PamelloQueue(PamelloSongRepository songs) {
-            _songs = songs;
+        public PamelloQueue(IServiceProvider services) {
+            _songs = services.GetRequiredService<PamelloSongRepository>();
 
 			SongAudios = new List<PamelloAudio>();
 		}
@@ -47,7 +54,25 @@ namespace PamelloV6.API.Model.Audio
 			return song;
 		}
 
-		public PamelloSong? RemoveSong(int songPosition) => throw new NotImplementedException();
+		public PamelloSong? RemoveSong(int songPosition) {
+			if (SongAudios.Count == 0) return null;
+
+			PamelloSong? song;
+			if (SongAudios.Count == 1) {
+				song = SongAudios.FirstOrDefault()?.Song;
+				Clear();
+				return song;
+			}
+
+			songPosition = NormalizeQueuePosition(songPosition);
+
+			song = SongAudios[songPosition].Song;
+			
+			SongAudios.RemoveAt(songPosition);
+			if (_position == songPosition) GoToNextSong();
+
+			return song;
+		}
 		public bool MoveSong(int fromPosition, int toPosition) {
 			if (SongAudios.Count <= 1) return false;
 

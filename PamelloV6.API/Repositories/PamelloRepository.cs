@@ -20,6 +20,8 @@ namespace PamelloV6.API.Repositories
 			_list = new List<T>();
 		}
 
+		public T GetRequired(int id)
+			=> Get(id) ?? throw new Exception($"Cant find required {typeof(T)} with id {id}");
 		public abstract T? Get(int id);
 		public abstract void Delete(int id);
 	}

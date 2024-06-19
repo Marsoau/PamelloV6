@@ -29,8 +29,6 @@ namespace PamelloV6.API.Repositories
 			//LoadAll();
 		}
 
-		public PamelloSong GetRequired(int id)
-			=> Get(id) ?? throw new Exception($"Cant find required song with id {id}");
 		public override PamelloSong? Get(int songId)
         {
             var song = _list.FirstOrDefault(song => song.Id == songId);

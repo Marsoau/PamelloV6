@@ -27,8 +27,6 @@ namespace PamelloV6.API.Repositories
             //LoadAll();
         }
 
-		public PamelloUser GetRequired(int id)
-			=> Get(id) ?? throw new Exception($"Cant find required user with id {id}");
 		public override PamelloUser? Get(int id)
         {
             var user = _list.Find(user => user.Entity.Id == id);

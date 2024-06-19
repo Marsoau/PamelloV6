@@ -14,6 +14,7 @@ namespace PamelloV6.API.Modules
 		protected readonly PamelloSongRepository _songs;
 		protected readonly PamelloEpisodeRepository _episodes;
 		protected readonly PamelloPlaylistRepository _playlists;
+		protected readonly PamelloPlayerRepository _players;
 
 		private PamelloUser? _user;
 		public PamelloUser User {
@@ -21,42 +22,102 @@ namespace PamelloV6.API.Modules
 			set => _user = value;
 		}
 
+		public PamelloPlayer SelectedPlayer {
+			get => (_user ?? throw new Exception("User required"))
+				.SelectedPlayer ?? throw new Exception("Selected player required");
+		}
+
 		public PamelloCommandsModule(
 			PamelloUserRepository users,
 			PamelloSongRepository songs,
 			PamelloEpisodeRepository episodes,
-			PamelloPlaylistRepository playlists
+			PamelloPlaylistRepository playlists,
+			PamelloPlayerRepository players
 		) {
 			_users = users;
 			_songs = songs;
 			_episodes = episodes;
 			_playlists = playlists;
+			_players = players;
 		}
 
-		public async Task PlayerCreate(string name) => throw new NotImplementedException();
-		public async Task PlayerSelect(int playerId) {
+		public async Task<PamelloPlayer> PlayerCreate(string name) {
 			RequireUser();
 
-			User.SelectedPlayerId = playerId;
+			return _players.Create(name);
 		}
-		public async Task PlayerRename(int playerId, string newName) => throw new NotImplementedException();
+		public async Task PlayerSelect(int playerId) {
+			RequireUser();
+			var player = _players.GetRequired(playerId);
+
+			User.SelectedPlayer = player;
+		}
+		public async Task PlayerRename(string newName) {
+			RequireUser();
+
+			SelectedPlayer.Name = newName;
+		}
 		public async Task PlayerDelete(int playerId) => throw new NotImplementedException();
 
-		public async Task PlayerNext() => throw new NotImplementedException();
-		public async Task PlayerPrev() => throw new NotImplementedException();
-		public async Task PlayerRandom() => throw new NotImplementedException();
+		public async Task PlayerNext() {
+			RequireUser();
 
-		public async Task PlayerPause() => throw new NotImplementedException();
-		public async Task PlayerResume() => throw new NotImplementedException();
+			SelectedPlayer.Queue.GoToSong(SelectedPlayer.Queue.Position + 1);
+		}
+		public async Task PlayerPrev() {
+			RequireUser();
+
+			SelectedPlayer.Queue.GoToSong(SelectedPlayer.Queue.Position - 1);
+		}
+
+		public async Task PlayerPause() {
+			RequireUser();
+
+			SelectedPlayer.IsPaused = true;
+		}
+		public async Task PlayerResume() {
+			RequireUser();
+
+			SelectedPlayer.IsPaused = false;
+		}
 		
 		public async Task PlayerQueueShuffle() => throw new NotImplementedException();
-		public async Task PlayerQueueRandom() => throw new NotImplementedException();
-		public async Task PlayerQueueRepeat() => throw new NotImplementedException();
-		public async Task PlayerQueueClear() => throw new NotImplementedException();
+		public async Task PlayerQueueRandom(bool value) {
+			RequireUser();
 
-		public async Task PlayerQueueAddSong(int songId) => throw new NotImplementedException();
-		public async Task PlayerQueueInsertSong(int songId, int queuePosition) => throw new NotImplementedException();
-		public async Task PlayerQueueRemoveSong(int queuePosition) => throw new NotImplementedException();
+			SelectedPlayer.Queue.IsRandom = value;
+		}
+		public async Task PlayerQueueReversed(bool value) {
+			RequireUser();
+
+			SelectedPlayer.Queue.IsRandom = value;
+		}
+		public async Task PlayerQueueNoLeftovers(bool value) {
+			RequireUser();
+
+			SelectedPlayer.Queue.IsRandom = value;
+		}
+		public async Task PlayerQueueClear() {
+			RequireUser();
+
+			SelectedPlayer.Queue.Clear();
+		}
+
+		public async Task PlayerQueueAddSong(int songId) {
+			RequireUser();
+
+			SelectedPlayer.Queue.AddSong(songId);
+		}
+		public async Task PlayerQueueInsertSong(int queuePosition, int songId) {
+			RequireUser();
+
+			SelectedPlayer.Queue.InsertSong(queuePosition, songId);
+		}
+		public async Task PlayerQueueRemoveSong(int queuePosition) {
+			RequireUser();
+
+			SelectedPlayer.Queue.RemoveSong(queuePosition);
+		}
 
 		public async Task<PamelloSong?> SongAddYoutube(string youtubeId) {
 			var song = await _songs.Add(youtubeId);
