@@ -82,6 +82,7 @@ namespace PamelloV6.API
 			services.AddSingleton<PamelloSongRepository>();
 			services.AddSingleton<PamelloEpisodeRepository>();
 			services.AddSingleton<PamelloPlaylistRepository>();
+			services.AddSingleton<PamelloPlayerRepository>();
 
 			services.AddTransient<PamelloCommandsModule>();
 

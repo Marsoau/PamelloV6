@@ -49,7 +49,11 @@ namespace PamelloV6.API.Model.Audio
 			var songAudio = new PamelloAudio(song);
 			SongAudios.Insert(position, songAudio);
 
-            if (position <= _position) _position++;
+			if (SongAudios.Count == 1) {
+				Current = SongAudios.FirstOrDefault();
+			}
+			else if (position <= _position) _position++;
+
 
 			return song;
 		}

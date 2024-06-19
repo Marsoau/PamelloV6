@@ -41,10 +41,10 @@ namespace PamelloV6.API.Modules
 			_players = players;
 		}
 
-		public async Task<PamelloPlayer> PlayerCreate(string name) {
+		public async Task<PamelloPlayer> PlayerCreate(string playerName) {
 			RequireUser();
 
-			return _players.Create(name);
+			return _players.Create(playerName);
 		}
 		public async Task PlayerSelect(int playerId) {
 			RequireUser();
@@ -90,12 +90,12 @@ namespace PamelloV6.API.Modules
 		public async Task PlayerQueueReversed(bool value) {
 			RequireUser();
 
-			SelectedPlayer.Queue.IsRandom = value;
+			SelectedPlayer.Queue.IsReversed = value;
 		}
 		public async Task PlayerQueueNoLeftovers(bool value) {
 			RequireUser();
 
-			SelectedPlayer.Queue.IsRandom = value;
+			SelectedPlayer.Queue.IsNoLeftovers = value;
 		}
 		public async Task PlayerQueueClear() {
 			RequireUser();
@@ -117,6 +117,11 @@ namespace PamelloV6.API.Modules
 			RequireUser();
 
 			SelectedPlayer.Queue.RemoveSong(queuePosition);
+		}
+		public async Task PlayerQueueRequestNext(int? position) {
+			RequireUser();
+
+			SelectedPlayer.Queue.NextPositionRequest = position;
 		}
 
 		public async Task<PamelloSong?> SongAddYoutube(string youtubeId) {

@@ -17,17 +17,20 @@ namespace PamelloV6.API.Controllers
 		protected readonly PamelloSongRepository _songs;
 		protected readonly PamelloEpisodeRepository _episodes;
 		protected readonly PamelloPlaylistRepository _playlists;
+		protected readonly PamelloPlayerRepository _players;
 
 		public DataController(
 			PamelloUserRepository users,
 			PamelloSongRepository songs,
 			PamelloEpisodeRepository episodes,
-			PamelloPlaylistRepository playlists
+			PamelloPlaylistRepository playlists,
+			PamelloPlayerRepository player
 		) {
 			_users = users;
 			_songs = songs;
 			_episodes = episodes;
 			_playlists = playlists;
+			_players = player;
 		}
 
 		[HttpGet("User")]
@@ -45,6 +48,10 @@ namespace PamelloV6.API.Controllers
 		[HttpGet("Playlist")]
 		public IActionResult GetPlaylist() {
 			return HandleGetRequest(_playlists);
+		}
+		[HttpGet("Player")]
+		public IActionResult GetPlayer() {
+			return HandleGetRequest(_players);
 		}
 
 		private IActionResult HandleGetRequest<T>(PamelloRepository<T> _repository) where T : PamelloEntity {
