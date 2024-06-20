@@ -42,9 +42,11 @@ namespace PamelloV6.API
 			}
 
 			app.UseHttpsRedirection();
-			app.UseAuthorization();
+            //app.UseAuthorization();
 
-			app.MapControllers();
+            app.UseCors("AllowSpecificOrigin");
+
+            app.MapControllers();
 			app.Run();
 		}
 
@@ -55,9 +57,19 @@ namespace PamelloV6.API
 			services.AddEndpointsApiExplorer();
 			services.AddSwaggerGen();
 			services.AddHttpClient();
-		}
 
-		public void ConfigureDiscordServices(IServiceCollection services) {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder => {
+                        builder.WithOrigins("https://localhost:7138")
+                               .AllowAnyHeader()
+                               .AllowAnyMethod();
+                    });
+            });
+        }
+
+        public void ConfigureDiscordServices(IServiceCollection services) {
             var discordConfig = new DiscordSocketConfig() {
                 GatewayIntents = GatewayIntents.All,
                 AlwaysDownloadUsers = true

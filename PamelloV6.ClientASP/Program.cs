@@ -10,12 +10,9 @@ namespace PamelloV6.ClientASP
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddCors(options => {
-                options.AddDefaultPolicy(
+                options.AddPolicy("basePolicy",
                     builder => {
-                        builder.WithOrigins(
-                            "localhost:7270",
-                            "localhost:7138"
-                            )
+                        builder.AllowAnyOrigin()
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });
@@ -36,9 +33,9 @@ namespace PamelloV6.ClientASP
             app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseCors();
+            app.UseCors("basePolicy");
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",

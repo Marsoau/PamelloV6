@@ -10,10 +10,26 @@
             $("#hehe").append(user.discordId);
         })
     }
+
+    es = new EventSource(`https://localhost:7270/Events/User`);
+    es.onopen = (ev) => {
+        console.log("onopen");
+    };
+    es.onmessage = (ev) => {
+        const newText = document.createElement("div");
+        newText.textContent = ev.data;
+        $("#message-list").append(`<div>${newText}</div>`);
+    };
+    es.onerror = (ev) => {
+        console.log("onerror");
+    };
 </script>
 
 <div class="text-center">
     <h1 class="display-4" id="hehe">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
     <button onclick="Try()">try</button>
+    <div id="message-list">
+        <div>list of gugugaga</div>
+    </div>
 </div>
