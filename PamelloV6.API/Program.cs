@@ -89,6 +89,7 @@ namespace PamelloV6.API
 
 			services.AddSingleton<DiscordClientService>();
 			services.AddSingleton<UserAuthorizationService>();
+			services.AddSingleton<PamelloEventsService>();
 
 			services.AddSingleton<PamelloUserRepository>();
 			services.AddSingleton<PamelloSongRepository>();
