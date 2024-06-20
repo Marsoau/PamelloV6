@@ -35,26 +35,31 @@ namespace PamelloV6.API.Controllers
 
 		[HttpGet("User")]
 		public IActionResult GetUser() {
-			return HandleGetRequest(_users);
+            if (Request.Query.TryGetValue("token", out var tokenValues)) {
+                return HandleGetUserByTokenRequest(tokenValues.FirstOrDefault() ?? "");
+            }
+            else {
+                return HandleGetByIdRequest(_users);
+            }
 		}
 		[HttpGet("Song")]
 		public IActionResult GetSong() {
-			return HandleGetRequest(_songs);
+			return HandleGetByIdRequest(_songs);
 		}
 		[HttpGet("Episode")]
 		public IActionResult GetEpisode() {
-			return HandleGetRequest(_episodes);
+			return HandleGetByIdRequest(_episodes);
 		}
 		[HttpGet("Playlist")]
 		public IActionResult GetPlaylist() {
-			return HandleGetRequest(_playlists);
+			return HandleGetByIdRequest(_playlists);
 		}
 		[HttpGet("Player")]
 		public IActionResult GetPlayer() {
-			return HandleGetRequest(_players);
-		}
+            return HandleGetByIdRequest(_players);
+        }
 
-		private IActionResult HandleGetRequest<T>(PamelloRepository<T> _repository) where T : PamelloEntity {
+		private IActionResult HandleGetByIdRequest<T>(PamelloRepository<T> _repository) where T : PamelloEntity {
 			var qId = Request.Query["id"].FirstOrDefault();
 			if (qId is null) {
 				return BadRequest("Id required");
@@ -69,5 +74,16 @@ namespace PamelloV6.API.Controllers
 
 			return Ok(pamelloEntity.GetDTO());
 		}
-	}
+
+        private IActionResult HandleGetUserByTokenRequest(string qToken) {
+            if (!Guid.TryParse(qToken, out var token)) {
+                return BadRequest("Invalid token format");
+            }
+
+            var user = _users.Get(token);
+            if (user is null) return NotFound();
+
+            return Ok(user.GetDTO());
+        }
+    }
 }

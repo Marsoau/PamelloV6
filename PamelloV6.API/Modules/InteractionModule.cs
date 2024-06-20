@@ -133,22 +133,34 @@ namespace PamelloV6.Server.Modules
 		) => throw new NotImplementedException();
 
 		[SlashCommand("edit", "Edit song field values")]
-		public async Task SongEdit() => throw new NotImplementedException();
+		public async Task SongEdit(
+            [Summary("song", "Song id or Youtube url")] string songValue
+        ) => throw new NotImplementedException();
 
 		[SlashCommand("delete", "Delete song from the database")]
-		public async Task SongDelete() => throw new NotImplementedException();
+		public async Task SongDelete(
+            [Summary("song", "Song id or Youtube url")] string songValue
+        ) => throw new NotImplementedException();
 
-		[SlashCommand("search", "Search for song in the database")]
-		public async Task SongSearch() => throw new NotImplementedException();
+        [SlashCommand("search", "Search for song in the database")]
+		public async Task SongSearch(
+            [Summary("request", "Song name")] string request
+        ) => throw new NotImplementedException();
 
-		[SlashCommand("info", "Get info about song")]
-		public async Task SongInfo() => throw new NotImplementedException();
+        [SlashCommand("info", "Get info about song")]
+		public async Task SongInfo(
+            [Summary("song", "Song id or Youtube url")] string songValue
+        ) => throw new NotImplementedException();
 
-		[Group("episode", "Commands to manage song episodes")]
+        [Group("episode", "Commands to manage song episodes")]
 		public class EpisodeInteractionsModuleGroup : InteractionModuleBase<SocketPamelloInteractionContext>
 		{
 			[SlashCommand("add", "Add episode to the song")]
-			public async Task EpisodeAdd() => throw new NotImplementedException();
+			public async Task EpisodeAdd(
+				[Summary("song", "Song id or Youtube url")] string songValue,
+				[Summary("name", "New episode name")] string episodeName,
+				[Summary("start", "Episode starting position (in seconds)")] int start
+			) => throw new NotImplementedException();
 
 			[SlashCommand("edit", "Edit episode of the song")]
 			public async Task EpisodeEdit() => throw new NotImplementedException();

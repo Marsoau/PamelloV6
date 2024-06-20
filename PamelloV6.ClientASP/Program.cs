@@ -9,7 +9,20 @@ namespace PamelloV6.ClientASP
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddCors(options => {
+                options.AddDefaultPolicy(
+                    builder => {
+                        builder.WithOrigins(
+                            "localhost:7270",
+                            "localhost:7138"
+                            )
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
+
             var app = builder.Build();
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -23,6 +36,7 @@ namespace PamelloV6.ClientASP
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthorization();
 

@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using PamelloV6.ClientASP.Models;
 using System.Diagnostics;
 
 namespace PamelloV6.ClientASP.Controllers
 {
+    [EnableCors]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
