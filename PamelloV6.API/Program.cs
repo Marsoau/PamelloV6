@@ -105,7 +105,13 @@ namespace PamelloV6.API
 
 			var discordReady = new TaskCompletionSource();
 			MainDiscordClient.Ready += async () => {
-				await interactionService.RegisterCommandsToGuildAsync(1250768227542241450);
+				var guild = MainDiscordClient.GetGuild(1250768227542241450);
+
+				foreach (var command in await guild.GetApplicationCommandsAsync()) {
+					await command.DeleteAsync();
+				}
+
+				await interactionService.RegisterCommandsGloballyAsync(true);
 
 				discordReady.SetResult();
 			};

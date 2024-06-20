@@ -71,8 +71,11 @@ namespace PamelloV6.Server.Handlers
 		}
 
 		private async Task HandleInteraction(SocketInteraction interaction) {
+			await interaction.DeferAsync(true);
+
 			var pamelloUser = _users.Get(interaction.User.Id);
 			if (pamelloUser is null) {
+				await interaction.ModifyOriginalResponseAsync(message => message.Content = $"Unexpected error");
 				throw new Exception($"Cant execute discord command with null PamelloUser, discord user id: {interaction.User.Id}");
 			}
 
@@ -85,9 +88,10 @@ namespace PamelloV6.Server.Handlers
 
 			try {
 				await _commands.ExecuteCommandAsync(context, _services);
+				await interaction.ModifyOriginalResponseAsync(message => message.Content = $"Command executed");
 			}
 			catch (Exception x) {
-				await interaction.RespondAsync($"Error\n{x.Message}");
+				await interaction.ModifyOriginalResponseAsync(message => message.Content = $"Error\n{x.Message}");
                 Console.WriteLine(x);
             }
 		}
