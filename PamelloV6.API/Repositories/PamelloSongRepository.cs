@@ -90,7 +90,11 @@ namespace PamelloV6.API.Repositories
 			_database.Songs.Add(entity);
 			_database.SaveChanges();
 
-			return Load(entity);
+            song = Load(entity);
+
+            _events.SendToAll("songCreated", song.Id);
+
+            return Load(entity);
 		}
 
 		public override void Delete(int songId) => throw new NotImplementedException();

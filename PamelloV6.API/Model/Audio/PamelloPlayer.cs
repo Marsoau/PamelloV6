@@ -7,12 +7,35 @@ namespace PamelloV6.API.Model.Audio
     {
         private static int nextId = 1;
         public override int Id { get; }
-        public string Name { get; set; }
+
+        private string _name;
+        public string Name {
+            get => _name;
+            set {
+                _name = value;
+
+                _events.SendToAll("updatedPlayerName", new {
+                    playerId = Id,
+                    newValue = Name
+                });
+            }
+        }
 
 		public readonly PamelloSpeaker Speaker;
 		public readonly PamelloQueue Queue;
 
-        public bool IsPaused { get; set; }
+        private bool _isPaused;
+        public bool IsPaused {
+            get => _isPaused;
+            set {
+                _isPaused = value;
+
+                _events.SendToAllWithupdatedPlayer(Id, "updatedPlayerIsPaused", new {
+                    updatedField = "IsPaused",
+                    newValue = IsPaused
+                });
+            }
+        }
 
         public PamelloPlayer(string name, IServiceProvider services) : base(services) {
             Id = nextId++;
@@ -24,7 +47,7 @@ namespace PamelloV6.API.Model.Audio
             var ac = guild.GetVoiceChannel(1250768228137959512).ConnectAsync().Result;
 
             Speaker = new PamelloSpeaker(ac);
-            Queue = new PamelloQueue(services);
+            Queue = new PamelloQueue(this, services);
 
             Task.Run(MusicLoop);
         }

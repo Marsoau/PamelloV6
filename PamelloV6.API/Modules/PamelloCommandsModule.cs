@@ -22,9 +22,9 @@ namespace PamelloV6.API.Modules
 			set => _user = value;
 		}
 
-		public PamelloPlayer SelectedPlayer {
+		public PamelloPlayer updatedPlayer {
 			get => (_user ?? throw new Exception("User required"))
-				.SelectedPlayer ?? throw new Exception("Selected player required");
+				.selectedPlayer ?? throw new Exception("Selected player required");
 		}
 
 		public PamelloCommandsModule(
@@ -50,98 +50,98 @@ namespace PamelloV6.API.Modules
 			RequireUser();
 			var player = _players.GetRequired(playerId);
 
-			User.SelectedPlayer = player;
+			User.selectedPlayer = player;
 		}
 		public async Task PlayerRename(string newName) {
 			RequireUser();
 
-			SelectedPlayer.Name = newName;
+			updatedPlayer.Name = newName;
 		}
 		public async Task PlayerDelete(int playerId) => throw new NotImplementedException();
 
 		public async Task PlayerNext() {
 			RequireUser();
 
-			SelectedPlayer.Queue.GoToSong(SelectedPlayer.Queue.Position + 1);
+			updatedPlayer.Queue.GoToSong(updatedPlayer.Queue.Position + 1);
 		}
 		public async Task PlayerPrev() {
 			RequireUser();
 
-			SelectedPlayer.Queue.GoToSong(SelectedPlayer.Queue.Position - 1);
+			updatedPlayer.Queue.GoToSong(updatedPlayer.Queue.Position - 1);
 		}
 		public async Task PlayerSkip() {
 			RequireUser();
 
-			SelectedPlayer.Queue.GoToNextSong();
+			updatedPlayer.Queue.GoToNextSong();
 		}
 		public async Task PlayerGoToSong(int songPosition, bool returnBack) {
 			RequireUser();
 
-			SelectedPlayer.Queue.GoToSong(songPosition, returnBack);
+			updatedPlayer.Queue.GoToSong(songPosition, returnBack);
 		}
 
 		public async Task PlayerPause() {
 			RequireUser();
 
-			SelectedPlayer.IsPaused = true;
+			updatedPlayer.IsPaused = true;
 		}
 		public async Task PlayerResume() {
 			RequireUser();
 
-			SelectedPlayer.IsPaused = false;
+			updatedPlayer.IsPaused = false;
 		}
 		
 		public async Task PlayerQueueShuffle() => throw new NotImplementedException();
 		public async Task PlayerQueueRandom(bool value) {
 			RequireUser();
 
-			SelectedPlayer.Queue.IsRandom = value;
+			updatedPlayer.Queue.IsRandom = value;
 		}
 		public async Task PlayerQueueReversed(bool value) {
 			RequireUser();
 
-			SelectedPlayer.Queue.IsReversed = value;
+			updatedPlayer.Queue.IsReversed = value;
 		}
 		public async Task PlayerQueueNoLeftovers(bool value) {
 			RequireUser();
 
-			SelectedPlayer.Queue.IsNoLeftovers = value;
+			updatedPlayer.Queue.IsNoLeftovers = value;
 		}
 		public async Task PlayerQueueClear() {
 			RequireUser();
 
-			SelectedPlayer.Queue.Clear();
+			updatedPlayer.Queue.Clear();
 		}
 
 		public async Task PlayerQueueAddSong(int songId) {
 			RequireUser();
 
-			SelectedPlayer.Queue.AddSong(songId);
+			updatedPlayer.Queue.AddSong(songId);
 		}
 		public async Task PlayerQueueInsertSong(int queuePosition, int songId) {
 			RequireUser();
 
-			SelectedPlayer.Queue.InsertSong(queuePosition, songId);
+			updatedPlayer.Queue.InsertSong(queuePosition, songId);
 		}
 		public async Task PlayerQueueRemoveSong(int songPosition) {
 			RequireUser();
 
-			SelectedPlayer.Queue.RemoveSong(songPosition);
+			updatedPlayer.Queue.RemoveSong(songPosition);
 		}
 		public async Task PlayerQueueRequestNext(int? position) {
 			RequireUser();
 
-			SelectedPlayer.Queue.NextPositionRequest = position;
+			updatedPlayer.Queue.NextPositionRequest = position;
 		}
 		public async Task PlayerQueueSwap(int fromPosition, int withPosition) {
 			RequireUser();
 
-			SelectedPlayer.Queue.SwapSongs(fromPosition, withPosition);
+			updatedPlayer.Queue.SwapSongs(fromPosition, withPosition);
 		}
 		public async Task PlayerQueueMove(int fromPosition, int toPosition) {
 			RequireUser();
 
-			SelectedPlayer.Queue.MoveSong(fromPosition, toPosition);
+			updatedPlayer.Queue.MoveSong(fromPosition, toPosition);
 		}
 
 		public async Task<PamelloSong?> SongAddYoutube(string youtubeId) {

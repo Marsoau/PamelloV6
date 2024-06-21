@@ -17,32 +17,46 @@ namespace PamelloV6.API.Model
 			get => Entity.Name;
 			set {
 				Entity.Name = value;
+
 				Save();
-			}
+				SendUpdate("updatedEpisode");
+                _events.SendToAll("updatedEpisodeName", new {
+                    songId = Id,
+                    newValue = Name
+                });
+            }
 		}
 
 		public AudioTime Start {
 			get => new AudioTime(Entity.Start);
 			set {
 				Entity.Start = value.TotalSeconds;
-				Save();
-			}
+
+                Save();
+                SendUpdate("updatedEpisode");
+                _events.SendToAll("updatedEpisodeStart", new {
+                    songId = Id,
+                    newValue = Start.TotalSeconds
+                });
+            }
 		}
 
 		public PamelloSong Song {
 			get => _songs.Get(Entity.Song.Id) ?? throw new Exception("Attempted to get song that doesnt exist");
-			set {
-				Entity.Song = value.Entity;
-				Save();
-			}
 		}
 
 		public bool Skip {
 			get => Entity.Skip;
 			set {
 				Entity.Skip = value;
-				Save();
-			}
+
+                Save();
+                SendUpdate("updatedEpisode");
+                _events.SendToAll("updatedEpisodeSkip", new {
+                    songId = Id,
+                    newValue = Skip
+                });
+            }
 		}
 
 		public PamelloEpisode(EpisodeEntity entity,

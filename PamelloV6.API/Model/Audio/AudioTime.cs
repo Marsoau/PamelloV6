@@ -1,10 +1,23 @@
 ﻿namespace PamelloV6.API.Model.Audio
 {
+    public delegate void OnAudioTimeSecondTickDelegate();
+
     public class AudioTime
     {
         public static long FrequencyMultiplier = 192000;
 
-        public long TimeValue;
+        private long _timeValue;
+        public long TimeValue {
+            get => _timeValue;
+            set {
+                var oldSeconds = TotalSeconds;
+                _timeValue = value;
+
+                if (oldSeconds != TotalSeconds) {
+                    OnSecondTick?.Invoke();
+                }
+            }
+        }
 
         public int TotalSeconds
         {
@@ -33,6 +46,8 @@
             get => TotalMinutes / 60;
             set => TimeValue = value * 3600 * FrequencyMultiplier;
         }
+
+        public event OnAudioTimeSecondTickDelegate? OnSecondTick;
 
         public AudioTime(long timeValue)
         {

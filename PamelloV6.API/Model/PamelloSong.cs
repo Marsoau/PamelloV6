@@ -21,24 +21,36 @@ namespace PamelloV6.API.Model
 			get => Entity.Title;
 			set {
 				Entity.Title = value;
-				Save();
-			}
+                Save();
+
+                SendUpdate("updatedSong");
+                _events.SendToAll("updatedSongTitle", new {
+                    songId = Id,
+                    newValue = Title
+                });
+            }
 		}
 		public string Author {
 			get => Entity.Author;
 			set {
 				Entity.Author = value;
 				Save();
-			}
+
+                SendUpdate("updatedSong");
+                _events.SendToAll("updatedSongAuthor", new {
+                    songId = Id,
+                    newValue = Author
+                });
+            }
 		}
-		public string CoverUrl {
+		public string CoverUrl { //remove
 			get => Entity.CoverUrl;
 			set {
 				Entity.CoverUrl = value;
 				Save();
-			}
+            }
 		}
-		public string SourceUrl {
+		public string SourceUrl { //change
 			get => Entity.SourceUrl;
 			set {
 				Entity.SourceUrl = value;
@@ -47,6 +59,16 @@ namespace PamelloV6.API.Model
 		}
 		public int PlayCount {
 			get => Entity.PlayCount;
+			set {
+                Entity.PlayCount = value;
+				Save();
+
+                SendUpdate("updatedSong");
+                _events.SendToAll("updatedSongPlayCount", new {
+					songId = Id,
+					newValue = PlayCount
+				});
+            }
 		}
 
 		public List<PamelloEpisode> Episodes {
@@ -80,6 +102,9 @@ namespace PamelloV6.API.Model
 			Save();
 
 			Console.WriteLine($"Starting download of song {this}");
+
+            SendUpdate("updatedSong");
+            _events.SendToAll("songDownloadingStarted", Id);
         }
 
 		private void Downloader_OnEnd(DownloadResult downloadResult) {
@@ -87,7 +112,11 @@ namespace PamelloV6.API.Model
 			_downloadTask = null;
 			Save();
 
-			Console.WriteLine($"Download of song {this} ended with {downloadResult}");
+            SendUpdate("updatedSong");
+            _events.SendToAll("songDownloadingEnded", new {
+				songId = Id,
+                downloadResult = downloadResult
+            });
         }
 
 		public Task<DownloadResult> StartDownload(bool forceDownload = false) {

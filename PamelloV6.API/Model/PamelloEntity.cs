@@ -1,13 +1,16 @@
 ﻿using PamelloV6.API.Repositories;
+using PamelloV6.API.Services;
 using PamelloV6.DAL;
 
 namespace PamelloV6.API.Model
 {
 	public abstract class PamelloEntity
-	{
-		private readonly DatabaseContext _database;
+    {
+        private readonly DatabaseContext _database;
 
-		protected readonly PamelloUserRepository _users;
+        protected readonly PamelloEventsService _events;
+
+        protected readonly PamelloUserRepository _users;
 		protected readonly PamelloSongRepository _songs;
 		protected readonly PamelloEpisodeRepository _episodes;
 		protected readonly PamelloPlaylistRepository _playlists;
@@ -17,6 +20,8 @@ namespace PamelloV6.API.Model
 		public PamelloEntity(IServiceProvider services) {
 			_database = services.GetRequiredService<DatabaseContext>();
 
+			_events = services.GetRequiredService<PamelloEventsService>();
+
 			_users = services.GetRequiredService<PamelloUserRepository>();
 			_songs = services.GetRequiredService<PamelloSongRepository>();
 			_episodes = services.GetRequiredService<PamelloEpisodeRepository>();
@@ -24,7 +29,7 @@ namespace PamelloV6.API.Model
 		}
 
 		protected void Save() => _database.SaveChanges();
-		//send network data in future
+		protected void SendUpdate(string header) => _events.SendToAll(header, Id);
 
 		public abstract object GetDTO();
 	}
