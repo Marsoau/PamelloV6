@@ -22,14 +22,30 @@ namespace PamelloV6.API.Controllers
             _users = users;
         }
 
-        [Route("User")]
         public async Task Get() {
-            Response.Headers.Add("Content-Type", "text/event-stream");
-            Response.Headers.Add("Cache-Control", "no-cache");
-            Response.Headers.Add("Connection", "keep-alive");
+            var queriedToken = Request.Headers["user-token"].FirstOrDefault();
+            if (queriedToken is null) {
+                BadRequest("User token required");
+                return;
+            }
+
+            if (!Guid.TryParse(queriedToken, out Guid userToken)) {
+                BadRequest("Wrong user token format");
+                return;
+            }
+
+            var user = _users.Get(userToken);
+            if (user is null) {
+                NotFound($"Cant get user by {userToken} token");
+                return;
+            }
+
+            Response.Headers.ContentType = "text/event-stream";
+            Response.Headers.CacheControl = "no-cache";
+            Response.Headers.Connection = "keep-alive";
             await Response.Body.FlushAsync();
 
-            _events.AddListener(Response, _users.GetRequired(1));
+            _events.AddListener(Response, user);
 
             await Task.Delay(-1);
         }
