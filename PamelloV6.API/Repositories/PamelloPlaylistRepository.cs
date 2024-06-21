@@ -31,20 +31,24 @@ namespace PamelloV6.API.Repositories
 		}
 
 		public PamelloPlaylist Add(string name, bool isProtected, PamelloUser owner) {
-			var playlist = new PlaylistEntity() {
+			var playlistEntity = new PlaylistEntity() {
 				Name = name,
 				Owner = owner.Entity,
 				IsProtected = isProtected,
 				Songs = [],
 			};
 
-			_database.Playlists.Add(playlist);
+			_database.Playlists.Add(playlistEntity);
 			_database.SaveChanges();
 
-			return Load(playlist);
+            var playlist = Load(playlistEntity);
+
+            _events.SendToAll("playlistCreated", playlist.Id);
+
+            return playlist;
 		}
 
-		public override void Delete(int id) => throw new NotImplementedException();
+        public override void Delete(int id) => throw new NotImplementedException();
 
 		private void LoadAll() {
 			foreach (var playlist in _databasePlaylists) {

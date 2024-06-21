@@ -29,17 +29,21 @@ namespace PamelloV6.API.Repositories
 		}
 
 		public PamelloEpisode Add(string name, int start, bool skip, PamelloSong song) {
-			var episode = new EpisodeEntity() {
+			var episodeEntity = new EpisodeEntity() {
 				Name = name,
 				Start = start,
 				Song = song.Entity,
 				Skip = skip
 			};
 
-			_database.Episodes.Add(episode);
+			_database.Episodes.Add(episodeEntity);
 			_database.SaveChanges();
 
-			return Load(episode);
+			var episode = Load(episodeEntity);
+
+            _events.SendToAll("episodeCreated", episode.Id);
+
+            return episode;
 		}
 
 		public override void Delete(int id) => throw new NotImplementedException();

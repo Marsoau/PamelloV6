@@ -29,7 +29,9 @@ namespace PamelloV6.API.Controllers
             Response.Headers.Add("Connection", "keep-alive");
             await Response.Body.FlushAsync();
 
-            var listener = _events.AddListener(Response, _users.GetRequired(1));
+            _events.AddListener(Response, _users.GetRequired(1));
+
+            await Task.Delay(-1);
         }
     }
 }

@@ -18,21 +18,29 @@ namespace PamelloV6.API.Model
 			set {
 				Entity.Name = value;
 				Save();
-			}
+
+                SendUpdate("updatedPlaylist");
+                _events.SendToAll("updatedPlaylistName", new {
+                    playlistId = Id,
+                    newValue = Name
+                });
+            }
 		}
 		public PamelloUser Owner {
 			get => _users.Get(Entity.Id) ?? throw new Exception("Attempted to get song that doesnt exist");
-			set {
-				Entity.Owner = value.Entity;
-				Save();
-			}
 		}
 		public bool IsProtected {
 			get => Entity.IsProtected;
 			set {
 				Entity.IsProtected = value;
 				Save();
-			}
+
+                SendUpdate("updatedPlaylist");
+                _events.SendToAll("updatedPlaylistIsProtected", new {
+                    playlistId = Id,
+                    newValue = IsProtected
+                });
+            }
 		}
 
 		public List<PamelloSong> Songs {
@@ -48,20 +56,32 @@ namespace PamelloV6.API.Model
 
 		public void AddSong(PamelloSong song) {
 			Entity.Songs.Add(song.Entity);
-			Save();
-		}
+            Save();
+
+            SendUpdate("updatedPlaylist");
+            _events.SendToAll("updatedPlaylistSongs", Songs);
+        }
 		public void AddSongs(IEnumerable<PamelloSong> songs) {
 			Entity.Songs.AddRange(songs.Select(song => song.Entity));
 			Save();
-		}
+
+            SendUpdate("updatedPlaylist");
+            _events.SendToAll("updatedPlaylistSongs", Songs);
+        }
 		public void InsertSong(int position, PamelloSong song) {
 			Entity.Songs.Insert(position, song.Entity);
 			Save();
-		}
+
+            SendUpdate("updatedPlaylist");
+            _events.SendToAll("updatedPlaylistSongs", Songs);
+        }
 		public void RemoveSong(int position) {
 			Entity.Songs.RemoveAt(position);
 			Save();
-		}
+
+            SendUpdate("updatedPlaylist");
+            _events.SendToAll("updatedPlaylistSongs", Songs);
+        }
 
 		public override object GetDTO() {
 			return new PlaylistDTO() {

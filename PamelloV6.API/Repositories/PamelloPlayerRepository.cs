@@ -17,6 +17,8 @@ namespace PamelloV6.API.Repositories
 			var player = new PamelloPlayer(name, _services);
 			_list.Add(player);
 
+			_events.SendToAll("playerCreated", player.Id);
+
 			return player;
 		}
 		public override PamelloPlayer? Get(int id) {

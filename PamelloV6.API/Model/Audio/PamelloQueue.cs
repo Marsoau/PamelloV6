@@ -1,10 +1,15 @@
-﻿using AngleSharp.Text;
+﻿using AngleSharp.Dom.Events;
+using AngleSharp.Text;
 using PamelloV6.API.Repositories;
+using PamelloV6.API.Services;
 
 namespace PamelloV6.API.Model.Audio
 {
     public class PamelloQueue
     {
+		private readonly PamelloPlayer _parentPlayer;
+
+        public readonly PamelloEventsService _events;
         public readonly PamelloSongRepository _songs;
 
         public readonly List<PamelloAudio> SongAudios;
@@ -13,26 +18,98 @@ namespace PamelloV6.API.Model.Audio
         public int Position {
             get => _position;
             set {
-				GoToSong(value);
+                _position = value;
+
+                _events.SendToAllWithupdatedPlayer(
+					_parentPlayer.Id,
+                    "updatedPlayerQueuePosition",
+                    Position
+                );
             }
         }
 
-		public bool IsRandom;
-		public bool IsReversed;
-		public bool IsNoLeftovers;
 
-		public int? NextPositionRequest;
+		private bool _isRandom;
+		private bool _isReversed;
+		private bool _isNoLeftovers;
+		
+		public bool IsRandom {
+			get => _isRandom;
+			set {
+				_isRandom = value;
 
-		private PamelloAudio? _current;
+                _events.SendToAllWithupdatedPlayer(
+                    _parentPlayer.Id,
+                    "updatedPlayerIsRandom",
+                    IsRandom
+                );
+            }
+        }
+		public bool IsReversed {
+			get => _isReversed;
+			set {
+				_isReversed = value;
+
+                _events.SendToAllWithupdatedPlayer(
+                    _parentPlayer.Id,
+                    "updatedPlayerQueueIsReversed",
+                    IsReversed
+                );
+            }
+		}
+		public bool IsNoLeftovers {
+			get => _isNoLeftovers;
+			set {
+				_isNoLeftovers = value;
+
+                _events.SendToAllWithupdatedPlayer(
+                    _parentPlayer.Id,
+                    "updatedPlayerQueueIsNoLeftovers",
+                    IsNoLeftovers
+                );
+            }
+		}
+
+        private int? _nextPositionRequest;
+        public int? NextPositionRequest {
+			get => _nextPositionRequest;
+			set {
+				_nextPositionRequest = value;
+
+                _events.SendToAllWithupdatedPlayer(
+                    _parentPlayer.Id,
+                    "updatedPlayerNextPositionRequest",
+                    NextPositionRequest
+                );
+            }
+		}
+
+        private PamelloAudio? _current;
 		public PamelloAudio? Current {
 			get => _current;
 			set {
 				_current?.Clean();
 				_current = value;
-			}
+				if (_current is not null) _current.Position.OnSecondTick += () => {
+                    _events.SendToAllWithupdatedPlayer(
+                        _parentPlayer.Id,
+                        "updatedPlayerCurrentSongTimePassed",
+                        _current.Position.TotalSeconds
+                    );
+                };
+
+                _events.SendToAllWithupdatedPlayer(
+                    _parentPlayer.Id,
+                    "updatedPlayerCurrentSongTimeTotal",
+                    _current?.Duration.TotalSeconds ?? 0
+                );
+            }
 		}
 
-        public PamelloQueue(IServiceProvider services) {
+        public PamelloQueue(PamelloPlayer parentPlayer, IServiceProvider services) {
+            _parentPlayer = parentPlayer;
+
+			_events = services.GetRequiredService<PamelloEventsService>();
             _songs = services.GetRequiredService<PamelloSongRepository>();
 
 			SongAudios = new List<PamelloAudio>();
@@ -52,13 +129,22 @@ namespace PamelloV6.API.Model.Audio
 			if (SongAudios.Count == 1) {
 				Current = SongAudios.FirstOrDefault();
 			}
-			else if (position <= _position) _position++;
+			else if (position <= Position) Position++;
 
+			SendQueueUpdatedEvent();
 
 			return song;
 		}
 
-		public PamelloSong? RemoveSong(int songPosition) {
+        private void SendQueueUpdatedEvent() {
+			_events.SendToAllWithupdatedPlayer(
+				_parentPlayer.Id,
+                "updatedPlayerQueueSongIds",
+                SongAudios.Select(audio => audio.Song.Id)
+			);
+        }
+
+        public PamelloSong? RemoveSong(int songPosition) {
 			if (SongAudios.Count == 0) return null;
 
 			PamelloSong? song;
@@ -73,10 +159,12 @@ namespace PamelloV6.API.Model.Audio
 			song = SongAudios[songPosition].Song;
 			
 			SongAudios.RemoveAt(songPosition);
-			if (_position == songPosition) GoToNextSong();
-			else if (songPosition < _position) _position--;
+			if (Position == songPosition) GoToNextSong();
+			else if (songPosition < Position) Position--;
 
-			return song;
+            SendQueueUpdatedEvent();
+
+            return song;
 		}
 		public bool MoveSong(int fromPosition, int toPosition) {
 			if (SongAudios.Count <= 1) return false;
@@ -92,10 +180,12 @@ namespace PamelloV6.API.Model.Audio
 			//if (fromPosition < toPosition) toPosition--;
 			SongAudios.Insert(toPosition, buffer);
 			
-			if (fromPosition == _position) _position = toPosition;
-			else if (toPosition == _position) _position++;
+			if (fromPosition == Position) Position = toPosition;
+			else if (toPosition == Position) Position++;
 
-			return true;
+            SendQueueUpdatedEvent();
+
+            return true;
 		}
 		public bool SwapSongs(int fromPosition, int withPosition) {
 			if (SongAudios.Count <= 1) return false;
@@ -109,19 +199,21 @@ namespace PamelloV6.API.Model.Audio
 			SongAudios[fromPosition] = SongAudios[withPosition];
 			SongAudios[withPosition] = buffer;
 
-			return true;
+            SendQueueUpdatedEvent();
+
+            return true;
 		}
 		public PamelloSong? GoToSong(int songPosition, bool returnBack = false) {
 			if (SongAudios.Count == 0) return null;
 
 			var nextPosition = NormalizeQueuePosition(songPosition);
 
-			if (_position == nextPosition) return Current?.Song;
+			if (Position == nextPosition) return Current?.Song;
 
-			if (returnBack) NextPositionRequest = _position;
+			if (returnBack) NextPositionRequest = Position;
 
-			_position = nextPosition;
-			Current = SongAudios[_position];
+            Position = nextPosition;
+			Current = SongAudios[Position];
 
 			return Current.Song;
 		}
@@ -135,23 +227,25 @@ namespace PamelloV6.API.Model.Audio
 				NextPositionRequest = null;
 			}
 			else if (IsRandom) nextPosition = Random.Shared.Next(0, SongAudios.Count - 1);
-			else if (IsReversed) nextPosition = _position - 1;
-			else nextPosition = _position + 1;
+			else if (IsReversed) nextPosition = Position - 1;
+			else nextPosition = Position + 1;
 
 			nextPosition = NormalizeQueuePosition(nextPosition);
 
 			if (IsNoLeftovers) {
-				SongAudios.RemoveAt(_position);
-				if (nextPosition > _position) nextPosition--;
-			}
+				SongAudios.RemoveAt(Position);
+				if (nextPosition > Position) nextPosition--;
+
+                SendQueueUpdatedEvent();
+            }
 
 			if (SongAudios.Count == 0) {
 				Current = null;
 				return null;
 			}
 
-			_position = nextPosition;
-			Current = SongAudios[_position];
+			Position = nextPosition;
+			Current = SongAudios[Position];
 
 			return Current.Song;
 		}
@@ -166,7 +260,7 @@ namespace PamelloV6.API.Model.Audio
 		public void Clear() {
 			SongAudios.Clear();
 			Current = null;
-			_position = 0;
+            Position = 0;
 		}
 		public void Shuffle() => throw new NotImplementedException();
 	}

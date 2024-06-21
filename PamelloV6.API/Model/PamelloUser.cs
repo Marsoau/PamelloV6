@@ -24,7 +24,9 @@ namespace PamelloV6.Server.Model
 			set {
 				Entity.IsAdministrator = value;
 				Save();
-			}
+
+                _events.SendToOne(Id, "updatedIsAdministrator", selectedPlayer?.Id);
+            }
 		}
 
 		public List<PamelloPlaylist> OwnedPlaylists {
@@ -33,11 +35,11 @@ namespace PamelloV6.Server.Model
 		}
 
 		private PamelloPlayer? _selectedPlayer;
-		public PamelloPlayer? SelectedPlayer {
+		public PamelloPlayer? selectedPlayer {
 			get => _selectedPlayer;
 			set {
 				_selectedPlayer = value;
-                Console.WriteLine($"[{this}] selected player {SelectedPlayer}");
+				_events.SendToOne(Id, "updatedSelectedPlayer", selectedPlayer?.Id);
             }
 		}
 

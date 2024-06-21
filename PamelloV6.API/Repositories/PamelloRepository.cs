@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Html;
 using PamelloV6.API.Model;
+using PamelloV6.API.Services;
 using PamelloV6.DAL;
 
 namespace PamelloV6.API.Repositories
@@ -8,16 +9,18 @@ namespace PamelloV6.API.Repositories
 	{
 		protected readonly IServiceProvider _services;
 
-		protected readonly DatabaseContext _database;
+        protected readonly DatabaseContext _database;
+        protected readonly PamelloEventsService _events;
 
-		protected readonly List<T> _list;
+        protected readonly List<T> _list;
 
 		public PamelloRepository(IServiceProvider services) {
 			_services = services;
 
-			_database = services.GetRequiredService<DatabaseContext>();
+            _database = services.GetRequiredService<DatabaseContext>();
+            _events = services.GetRequiredService<PamelloEventsService>();
 
-			_list = new List<T>();
+            _list = new List<T>();
 		}
 
 		public T GetRequired(int id)
