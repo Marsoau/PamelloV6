@@ -21,9 +21,9 @@ namespace PamelloV6.API
 			var builder = WebApplication.CreateBuilder(args);
 
 			ConfigureAPIServices(builder.Services);
-			ConfigureDiscordServices(builder.Services);
+            ConfigureDatabaseServices(builder.Services);
+            ConfigureDiscordServices(builder.Services);
 			ConfigurePamelloServices(builder.Services);
-			ConfigureDatabaseServices(builder.Services);
 
 			var app = builder.Build();
 

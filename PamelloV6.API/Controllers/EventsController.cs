@@ -23,20 +23,26 @@ namespace PamelloV6.API.Controllers
         }
 
         public async Task Get() {
-            var queriedToken = Request.Headers["user-token"].FirstOrDefault();
+            var queriedToken = Request.Query["as"].FirstOrDefault();
             if (queriedToken is null) {
-                BadRequest("User token required");
+                Console.WriteLine("User token required");
+                Response.StatusCode = 403;
+                await Response.Body.FlushAsync();
                 return;
             }
 
             if (!Guid.TryParse(queriedToken, out Guid userToken)) {
-                BadRequest("Wrong user token format");
+                Console.WriteLine("Wrong user token format");
+                Response.StatusCode = 403;
+                await Response.Body.FlushAsync();
                 return;
             }
 
             var user = _users.Get(userToken);
             if (user is null) {
-                NotFound($"Cant get user by {userToken} token");
+                Console.WriteLine($"Cant get user by {userToken} token");
+                Response.StatusCode = 404;
+                await Response.Body.FlushAsync();
                 return;
             }
 
