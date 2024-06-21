@@ -39,7 +39,7 @@ namespace PamelloV6.ClientASP
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Authorization}/{action=Index}/{id?}");
 
             app.Run();
         }

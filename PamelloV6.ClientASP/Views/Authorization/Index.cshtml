@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Authorization";
+}
+
+<link rel="stylesheet" href="~/css/Authorization/index.css" asp-append-version="true" />
+
+<div class="auth-container">
+    <div class="auth-header">Authorization</div>
+    <div class="auth-body-container">
+        <div class="auth-input-container">
+            <input id="code-input" type="number"/>
+        </div>
+        <div class="auth-button-container">
+            <button id="auth-button" onclick="AuthWithCode()">Authorize</button>
+        </div>
+    </div>
+    <div class="auth-tip">use discord /get-code command</div>
+</div>
+<div style="display: none;" class="error-container" id="error-message">
+    
+</div>

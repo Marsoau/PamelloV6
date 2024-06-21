@@ -1,0 +1,45 @@
+﻿body {
+
+}
+
+.auth-container {
+    background-color: #F4F4F4;
+    color: #606060;
+}
+
+.auth-header {
+    background-color: #D0D0D0;
+    color: #404040;
+
+    padding: 8px;
+
+    font-size: 20px;
+}
+
+.auth-body-container {
+    display: flex;
+    justify-content: stretch;
+    margin: 8px;
+}
+
+.auth-input-container {
+    flex-grow: 1;
+    margin-right: 8px;
+}
+
+.auth-input-container input {
+    width: 100%;
+}
+
+.auth-tip {
+    padding: 8px;
+    padding-top: 0;
+}
+
+.error-container {
+    margin-top: 8px;
+    padding: 8px;
+
+    background-color: #FAB0B0;
+    color: #AA4040;
+}
