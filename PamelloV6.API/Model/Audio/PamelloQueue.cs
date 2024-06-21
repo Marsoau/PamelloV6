@@ -20,7 +20,7 @@ namespace PamelloV6.API.Model.Audio
             set {
                 _position = value;
 
-                _events.SendToAllWithupdatedPlayer(
+                _events.SendToAllWithSelectedPlayer(
 					_parentPlayer.Id,
                     "updatedPlayerQueuePosition",
                     Position
@@ -37,7 +37,7 @@ namespace PamelloV6.API.Model.Audio
 			set {
 				_isRandom = value;
 
-                _events.SendToAllWithupdatedPlayer(
+                _events.SendToAllWithSelectedPlayer(
                     _parentPlayer.Id,
                     "updatedPlayerIsRandom",
                     IsRandom
@@ -49,7 +49,7 @@ namespace PamelloV6.API.Model.Audio
 			set {
 				_isReversed = value;
 
-                _events.SendToAllWithupdatedPlayer(
+                _events.SendToAllWithSelectedPlayer(
                     _parentPlayer.Id,
                     "updatedPlayerQueueIsReversed",
                     IsReversed
@@ -61,7 +61,7 @@ namespace PamelloV6.API.Model.Audio
 			set {
 				_isNoLeftovers = value;
 
-                _events.SendToAllWithupdatedPlayer(
+                _events.SendToAllWithSelectedPlayer(
                     _parentPlayer.Id,
                     "updatedPlayerQueueIsNoLeftovers",
                     IsNoLeftovers
@@ -75,7 +75,7 @@ namespace PamelloV6.API.Model.Audio
 			set {
 				_nextPositionRequest = value;
 
-                _events.SendToAllWithupdatedPlayer(
+                _events.SendToAllWithSelectedPlayer(
                     _parentPlayer.Id,
                     "updatedPlayerNextPositionRequest",
                     NextPositionRequest
@@ -87,23 +87,34 @@ namespace PamelloV6.API.Model.Audio
 		public PamelloAudio? Current {
 			get => _current;
 			set {
-				_current?.Clean();
-				_current = value;
-				if (_current is not null) _current.Position.OnSecondTick += () => {
-                    _events.SendToAllWithupdatedPlayer(
-                        _parentPlayer.Id,
-                        "updatedPlayerCurrentSongTimePassed",
-                        _current.Position.TotalSeconds
-                    );
-                };
+                if (_current is not null) {
+                    _current.Position.OnSecondTick -= OnCurrentPositionSecondTick;
+                    _current.Duration.OnSecondTick -= OnCurrentDurationSecondTick;
+                }
+                _current?.Clean();
 
-                _events.SendToAllWithupdatedPlayer(
-                    _parentPlayer.Id,
-                    "updatedPlayerCurrentSongTimeTotal",
-                    _current?.Duration.TotalSeconds ?? 0
-                );
+				_current = value;
+				if (_current is not null) {
+					_current.Position.OnSecondTick += OnCurrentPositionSecondTick;
+                    _current.Duration.OnSecondTick += OnCurrentDurationSecondTick;
+                }
             }
 		}
+
+        public void OnCurrentDurationSecondTick() {
+            _events.SendToAllWithSelectedPlayer(
+                _parentPlayer.Id,
+                "updatedPlayerCurrentSongTimePassed",
+                _current.Position.TotalSeconds
+            );
+        }
+        public void OnCurrentPositionSecondTick() {
+            _events.SendToAllWithSelectedPlayer(
+                _parentPlayer.Id,
+                "updatedPlayerCurrentSongTimePassed",
+                _current.Position.TotalSeconds
+            );
+        }
 
         public PamelloQueue(PamelloPlayer parentPlayer, IServiceProvider services) {
             _parentPlayer = parentPlayer;
@@ -136,7 +147,7 @@ namespace PamelloV6.API.Model.Audio
 		}
 
         private void SendQueueUpdatedEvent() {
-			_events.SendToAllWithupdatedPlayer(
+			_events.SendToAllWithSelectedPlayer(
 				_parentPlayer.Id,
                 "updatedPlayerQueueSongIds",
                 SongAudios.Select(audio => audio.Song.Id)

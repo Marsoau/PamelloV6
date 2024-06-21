@@ -30,10 +30,7 @@ namespace PamelloV6.API.Model.Audio
             set {
                 _isPaused = value;
 
-                _events.SendToAllWithupdatedPlayer(Id, "updatedPlayerIsPaused", new {
-                    updatedField = "IsPaused",
-                    newValue = IsPaused
-                });
+                _events.SendToAllWithSelectedPlayer(Id, "updatedPlayerIsPaused", IsPaused);
             }
         }
 
