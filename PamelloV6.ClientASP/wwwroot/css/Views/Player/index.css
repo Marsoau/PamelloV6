@@ -1,0 +1,44 @@
+﻿.player-main-container {
+    height: 100vh;
+
+    background-color: black;
+
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    column-gap: 2px;
+}
+
+.player-any-subcontainer {
+    display: grid;
+    row-gap: 2px;
+}
+
+.player-left-subcontainer {
+    grid-template-rows: 60px 240px 1fr 80px;
+}
+.player-right-subcontainer {
+    grid-template-rows: 1fr 40px;
+}
+
+.player-container {
+    background-color: #FAFAFA;
+}
+
+.player-select-container {
+
+}
+.player-controls-container {
+
+}
+.log-list-container {
+
+}
+.user-container {
+
+}
+.queue-list-container {
+
+}
+.queue-controls-container {
+
+}
