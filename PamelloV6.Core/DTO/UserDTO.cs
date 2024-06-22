@@ -10,6 +10,7 @@ namespace PamelloV6.Core.DTO
 	{
 		public int Id { get; set; }
 		public string Name { get; set; }
+		public string CoverUrl { get; set; }
 		public ulong DiscordId { get; set; }
 		public bool IsAdministrator { get; set; }
 

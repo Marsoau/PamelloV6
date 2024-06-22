@@ -61,8 +61,9 @@ namespace PamelloV6.Server.Model
 		public override object GetDTO() {
 			return new UserDTO() {
 				Id = Id,
-				Name = DiscordUser.GlobalName,
-				DiscordId = DiscordUser.Id,
+                Name = DiscordUser.GlobalName,
+                CoverUrl = DiscordUser.GetAvatarUrl(),
+                DiscordId = DiscordUser.Id,
 				IsAdministrator = IsAdministrator,
 
 				OwnedPlaylistIds = OwnedPlaylists?.Select(playlist => playlist.Id) ?? [],

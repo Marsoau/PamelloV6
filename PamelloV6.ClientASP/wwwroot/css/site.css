@@ -9,3 +9,57 @@ main {
 html {
     height: 100vh;
 }
+
+.multipage-container {
+    display: grid;
+
+    grid-template-rows: auto 1fr;
+}
+
+.tabs-container {
+    display: flex;
+    background: #D0D0D0;
+}
+
+.multipage-tab {
+    background: #F0F0F0;
+    padding: 0px 7px 0px 2px;
+    margin-right: 2px;
+    color: #808080;
+    font-weight: 500;
+}
+
+.multipage-tab-selected {
+    background: #FFFFFF;
+
+    color: #484848;
+}
+
+.multipage-tab:hover {
+    background: #F8F8F8;
+    cursor: pointer;
+}
+.multipage-tab label:hover {
+    cursor: pointer;
+}
+.multipage-tab-selected:hover {
+    background: #FFFFFF;
+    cursor: default;
+}
+.multipage-tab-selected label:hover {
+    cursor: default;
+}
+
+.multipage-tab-radio {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.pages-container {
+    display: grid;
+}
+
+.multipage-page {
+    margin: 2px;
+}

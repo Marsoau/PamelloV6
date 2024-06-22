@@ -2,6 +2,209 @@
 let player = null;
 let song = null;
 
+let userCoverElement = document.getElementById("user-cover");
+let userNameElement = document.getElementById("user-name");
+let userDiscordIdElement = document.getElementById("user-discordid");
+
+let songCoverElement = document.getElementById("song-cover");
+let songTitleElement = document.getElementById("song-title");
+let songAuthorElement = document.getElementById("song-author");
+
+let songTimeElement = document.getElementById("song-time");
+let songDurationElement = document.getElementById("song-duration");
+let songTimeSlider = document.getElementById("player-slider");
+
+let queueListElement = document.getElementById("queue-list");
+
+let randomButton = document.getElementById("is-random-queue-button");
+let reversedButton = document.getElementById("is-reversed-queue-button");
+let noLeftoversButton = document.getElementById("is-no-leftovers-queue-button");
+
+let ppButton = document.getElementById("pp-button");
+
+FirstLoadUser();
+
+function randomButtonClick() {
+    InvokeCommand("PlayerQueueRandom", { value: !player.queueIsRandom })
+}
+function reversedButtonClick() {
+    InvokeCommand("PlayerQueueReversed", { value: !player.queueIsReversed })
+}
+function noLeftoversButtonClick() {
+    InvokeCommand("PlayerQueueNoLeftovers", { value: !player.queueIsNoLeftovers })
+}
+
+function prevButtonClick() {
+    InvokeCommand("PlayerPrev");
+}
+function ppButtonClick() {
+    if (player.isPaused) {
+        InvokeCommand("PlayerResume");
+    }
+    else {
+        InvokeCommand("PlayerPause");
+    }
+}
+function nextButtonClick() {
+    InvokeCommand("PlayerNext");
+}
+
+function removeButtonClick(songQueuePosition) {
+    InvokeCommand("PlayerQueueRemoveSong", { songPosition: songQueuePosition })
+}
+
+PamelloEvents.addEventListener("updatedPlayerCurrentSongTimePassed", message => {
+    player.currentSongTimePassed = JSON.parse(message.data);
+    UpdateSongTime()
+});
+PamelloEvents.addEventListener("updatedPlayerCurrentSongTimeTotal", message => {
+    player.currentSongTimeTotal = JSON.parse(message.data);
+    UpdateSongTime()
+});
+PamelloEvents.addEventListener("updatedPlayerQueuePosition", message => {
+    player.queuePosition = JSON.parse(message.data);
+    UpdateSongInfo()
+    UpdateQueuePosition();
+});
+PamelloEvents.addEventListener("updatedPlayerQueueSongIds", message => {
+    player.queueSongIds = JSON.parse(message.data);
+    UpdateQueueSongs()
+});
+
+PamelloEvents.addEventListener("updatedPlayerIsPaused", message => {
+    player.isPaused = JSON.parse(message.data);
+    UpdatePlayerInfo()
+});
+
+PamelloEvents.addEventListener("updatedPlayerQueueIsRandom", message => {
+    player.queueIsRandom = JSON.parse(message.data);
+    UpdatePlayerModes()
+});
+PamelloEvents.addEventListener("updatedPlayerQueueIsReversed", message => {
+    player.queueIsReversed = JSON.parse(message.data);
+    UpdatePlayerModes()
+});
+PamelloEvents.addEventListener("updatedPlayerQueueIsNoLeftovers", message => {
+    player.queueIsNoLeftovers = JSON.parse(message.data);
+    UpdatePlayerModes()
+});
+
+function FirstLoadUser() {
+    GetUser(1, (newUser) => {
+        user = newUser;
+        user.selectedPlayerId = 1;
+
+        FirstLoadPlayer();
+    });
+}
+function FirstLoadPlayer() {
+    if (user.selectedPlayerId) {
+        GetPlayer(user.selectedPlayerId, (newPlayer) => {
+            player = newPlayer;
+            FirstLoadSong();
+        });
+    }
+    else {
+        LoadFinal();
+    }
+}
+function FirstLoadSong() {
+    let songId = player?.queueSongIds[player?.queuePosition]
+    if (songId != null) {
+        GetSong(songId, (newSong) => {
+            song = newSong;
+            LoadFinal();
+        });
+    }
+}
+function LoadSong() {
+    let songId = player?.queueSongIds[player?.queuePosition]
+    if (songId != null) {
+        GetSong(songId, (newSong) => {
+            song = newSong;
+            UpdateSongInfo();
+        });
+    }
+}
+function LoadFinal() {
+    UpdateUserInfo();
+    UpdateSongInfo();
+    UpdateSongTime();
+    UpdateQueueSongs();
+    UpdateQueuePosition();
+    UpdatePlayerModes();
+}
+
+function UpdateSongInfo() {
+    songCoverElement.style.backgroundImage = `url(${song.coverUrl})`;
+    songTitleElement.innerHTML = song.title;
+    songAuthorElement.innerHTML = song.author;
+}
+function UpdateSongTime() {
+    songTimeElement.innerHTML = player.currentSongTimePassed;
+    songDurationElement.innerHTML = player.currentSongTimeTotal;
+    songTimeSlider.max = player.currentSongTimeTotal;
+    songTimeSlider.value = player.currentSongTimePassed;
+}
+function UpdatePlayerInfo() {
+    ppButton.innerHTML = (player.isPaused) ? "R" : "P";
+}
+function UpdatePlayerModes() {
+    randomButton.className = (player.queueIsRandom) ? "queue-left-controls-button green-button" : "queue-left-controls-button";
+    reversedButton.className = (player.queueIsReversed) ? "queue-left-controls-button green-button" : "queue-left-controls-button";
+    noLeftoversButton.className = (player.queueIsNoLeftovers) ? "queue-left-controls-button green-button" : "queue-left-controls-button";
+}
+function UpdateUserInfo() {
+    userCoverElement.style.backgroundImage = `url(${user.coverUrl})`;
+    userNameElement.innerHTML = user.name;
+    userDiscordIdElement.innerHTML = user.discordId;
+}
+function UpdateQueueSongs() {
+    queueListElement.innerHTML = "";
+    for (let i = 0; i < player.queueSongIds.length; i++) {
+        console.log(player.queueSongIds[i]);
+        AddQueueSongElement(i);
+        GetSong(player.queueSongIds[i], (newSong) => {
+            let songElement = queueListElement.querySelector(`#queue-song-${i}`);
+            songElement.querySelector(".queue-song-title").innerHTML = newSong.title;
+        })
+    }
+    UpdateQueuePosition();
+}
+function UpdateQueuePosition() {
+    LoadSong();
+
+    let songElements = queueListElement.querySelectorAll(`.queue-song-container`);
+    let decoratorElement = null;
+
+    for (let songElement of songElements) {
+        console.log("gugugaga of ", songElement.id);
+        decoratorElement = songElement.querySelector(".queue-song-decorator");
+        decoratorElement.style.display = (songElement.id == `queue-song-${player.queuePosition}`) ? "block" : "none";
+    }
+}
+
+function AddQueueSongElement(songPosition) {
+    queueListElement.innerHTML += `<div class="queue-song-container" id="queue-song-${songPosition}">
+        <div class="queue-song-subcontainer queue-song-left-container">
+            <div class="queue-song-decorator">P</div>
+            <div class="queue-song-title">Song title</div>
+        </div>
+        <div class="queue-song-subcontainer queue-song-hidden-buttons">
+            <button class="queue-song-hidden-button">Next</button>
+            <button class="queue-song-hidden-button" onclick="removeButtonClick(${songPosition})">Remove</button>
+        </div>
+    </div>`
+}
+function GetQueueSongElement(songPosition) {
+    return 
+}
+
+/*
+let user = null;
+let player = null;
+let song = null;
+
 let songCoverElement = document.getElementById("song-cover");
 let songTitileElement = document.getElementById("song-title");
 let songAuthorElement = document.getElementById("song-author");
@@ -84,6 +287,7 @@ function AddQueueSong(songPosition, songId, isCurrent) {
 function ClearQueueSongs() {
     queueListElement.innerHTML = ""
 }
+*/
 
 /*
 let currentUser = null;

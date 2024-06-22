@@ -27,7 +27,7 @@
             @RenderBody()
         </main>
     </div>
+    <script src="~/js/@jsPath" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    <script src="~/js/@jsPath"></script>
 </body>
 </html>

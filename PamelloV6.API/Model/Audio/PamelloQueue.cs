@@ -39,7 +39,7 @@ namespace PamelloV6.API.Model.Audio
 
                 _events.SendToAllWithSelectedPlayer(
                     _parentPlayer.Id,
-                    "updatedPlayerIsRandom",
+                    "updatedPlayerQueueIsRandom",
                     IsRandom
                 );
             }

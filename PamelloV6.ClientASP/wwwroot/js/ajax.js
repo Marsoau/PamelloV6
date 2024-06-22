@@ -64,3 +64,22 @@ function AjaxAuthorizationRequest(code, onSucces, onFailure) {
         success: onSucces,
     }).fail(onFailure);
 }
+
+function InvokeCommand(commandName, args = {}) {
+    let url = `https://localhost:7270/Command?name=${commandName}`;
+
+    for (let key of Object.keys(args)) {
+        url += `&${key}=${args[key]}`;
+    }
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        data: {},
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        beforeSend: function (request) {
+            request.setRequestHeader("user-token", "690D0DDB-57D6-4265-9816-EA5C05FFE8D0");
+        },
+    })
+}
