@@ -1,4 +1,4 @@
-namespace PamelloV6.ClientASP.Models
+namespace PamelloV6.ClientASP.ViewModels
 {
     public class ErrorViewModel
     {

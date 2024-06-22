@@ -23,6 +23,15 @@ namespace PamelloV6.API.Repositories
             _list = new List<T>();
 		}
 
+		public List<T> GetAll(int page, int count) {
+			if (page * count > _list.Count) {
+				return [];
+			}
+			if (page * count + count > _list.Count) {
+				count = _list.Count - page * count;
+			}
+			return _list.GetRange(page * count, count);
+		}
 		public T GetRequired(int id)
 			=> Get(id) ?? throw new Exception($"Cant find required {typeof(T)} with id {id}");
 		public abstract T? Get(int id);

@@ -15,7 +15,7 @@ namespace PamelloV6.API.Repositories
 		}
 
 		public PamelloEpisodeRepository(IServiceProvider services) : base(services) {
-			//LoadAll();
+
 		}
 
 		public override PamelloEpisode? Get(int id) {

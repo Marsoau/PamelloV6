@@ -25,8 +25,6 @@ namespace PamelloV6.API.Repositories
 			IServiceProvider services
 		) : base(services) {
             _youtube = youtube;
-
-			//LoadAll();
 		}
 
 		public override PamelloSong? Get(int songId)
@@ -99,7 +97,7 @@ namespace PamelloV6.API.Repositories
 
 		public override void Delete(int songId) => throw new NotImplementedException();
 
-        private void LoadAll()
+        public void LoadAll()
         {
             foreach (var songEntity in _databaseSongs)
             {

@@ -1,10 +1,10 @@
 ﻿.player-main-container {
     height: 100vh;
 
-    background-color: black;
+    background-color: #E0E0E0;
 
     display: grid;
-    grid-template-columns: 400px 1fr;
+    grid-template-columns: 600px 1fr;
     column-gap: 2px;
 }
 
@@ -14,10 +14,10 @@
 }
 
 .player-left-subcontainer {
-    grid-template-rows: 60px 240px 1fr 80px;
+    grid-template-rows: auto auto 1fr auto;
 }
 .player-right-subcontainer {
-    grid-template-rows: 1fr 40px;
+    grid-template-rows: 1fr auto;
 }
 
 .player-container {
@@ -27,11 +27,48 @@
 .player-select-container {
 
 }
+.player-select-container select {
+    margin: 8px;
+}
 .player-controls-container {
+    display: grid;
+
+    grid-template-columns: auto 1fr;
+}
+#song-cover {
+    margin: 8px;
+    width: 120px;
+    height: 120px;
+    background-size: cover;
+    background-position: center;
+}
+.song-info-container {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    margin: 8px;
+    margin-left: 0px;
+}
+#song-title {
+    font-weight: 600;
+    font-size: 23px;
+}
+#song-author {
 
 }
+.queue-song {
+    background-color: #F0F0F0;
+    color: #404040;
+    margin: 8px;
+    padding: 0px 4px;
+    margin-bottom: 0;
+}
+.queue-current-song {
+    background-color: #E0F0E0;
+    color: #40A040;
+}
 .log-list-container {
-
 }
 .user-container {
 

@@ -104,8 +104,8 @@ namespace PamelloV6.API.Model.Audio
         public void OnCurrentDurationSecondTick() {
             _events.SendToAllWithSelectedPlayer(
                 _parentPlayer.Id,
-                "updatedPlayerCurrentSongTimePassed",
-                _current.Position.TotalSeconds
+                "updatedPlayerCurrentSongTimeTotal",
+                _current.Duration.TotalSeconds
             );
         }
         public void OnCurrentPositionSecondTick() {

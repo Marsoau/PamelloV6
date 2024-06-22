@@ -17,7 +17,7 @@ namespace PamelloV6.API.Repositories
 		}
 
 		public PamelloPlaylistRepository(IServiceProvider services) : base(services) {
-			//LoadAll();
+
 		}
 
 		public override PamelloPlaylist? Get(int id) {
@@ -50,7 +50,7 @@ namespace PamelloV6.API.Repositories
 
         public override void Delete(int id) => throw new NotImplementedException();
 
-		private void LoadAll() {
+        public void LoadAll() {
 			foreach (var playlist in _databasePlaylists) {
 				Load(playlist);
 			}

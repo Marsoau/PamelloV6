@@ -141,6 +141,11 @@ namespace PamelloV6.API
 			var episodes = services.GetRequiredService<PamelloEpisodeRepository>();
 			var playlists = services.GetRequiredService<PamelloPlaylistRepository>();
 
+			users.LoadAll();
+			songs.LoadAll();
+			episodes.LoadAll();
+			playlists.LoadAll();
+
 			var authorisation = services.GetRequiredService<UserAuthorizationService>();
 
 			Console.WriteLine(authorisation.GetCode(544933092503060509));

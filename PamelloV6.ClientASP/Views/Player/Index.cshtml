@@ -1,4 +1,5 @@
-﻿@{
+﻿@model PamelloV6.ClientASP.Models.PlayerViewModel;
+@{
     ViewData["Title"] = "Player";
 }
 
@@ -6,15 +7,32 @@
     <div class="player-left-subcontainer player-any-subcontainer">
         <div class="player-select-container player-container">
             <select name="player" id="player-select">
-                
+                <option>test 1</option>
+                <option>test 2</option>
+                <option>test 3</option>
             </select>
         </div>
-        <div class="player-controls-container player-container"></div>
+        <div class="player-controls-container player-container">
+            <div id="song-cover">
+
+            </div>
+            <div class="song-info-container">
+                <div>
+                    <div id="song-title"></div>
+                    <div id="song-author"></div>
+                </div>
+                <div>
+                    <span id="song-time"></span>
+                    <span> / </span>
+                    <span id="song-duration"></span>
+                </div>
+            </div>
+        </div>
         <div class="log-list-container player-container"></div>
         <div class="user-container player-container"></div>
     </div>
     <div class="player-right-subcontainer player-any-subcontainer">
-        <div class="queue-list-container player-container"></div>
+        <div class="queue-list-container player-container" id="queue-list"></div>
         <div class="queue-controls-container player-container"></div>
     </div>
 </div>

@@ -1,5 +1,4 @@
-﻿
-let input = document.getElementById("code-input");
+﻿let input = document.getElementById("code-input");
 let error = document.getElementById("error-message");
 
 function AuthWithCode() {

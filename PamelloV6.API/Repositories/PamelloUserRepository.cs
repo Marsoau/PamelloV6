@@ -23,8 +23,6 @@ namespace PamelloV6.API.Repositories
             IServiceProvider services
         ) : base(services) {
             _discordClientService = discordClientService;
-
-            //LoadAll();
         }
 
 		public override PamelloUser? Get(int id)
@@ -72,7 +70,7 @@ namespace PamelloV6.API.Repositories
 
 		public override void Delete(int id) => throw new NotImplementedException();
 
-		private void LoadAll()
+        public void LoadAll()
         {
             foreach (var userEntity in _databaseUsers)
             {
