@@ -12,6 +12,7 @@ namespace PamelloV6.Core.DTO
 		public string Name { get; set; }
 		public string CoverUrl { get; set; }
 		public ulong DiscordId { get; set; }
+		public int? SelectedPlayerId { get; set; }
 		public bool IsAdministrator { get; set; }
 
 		public IEnumerable<int> OwnedPlaylistIds { get; set; }

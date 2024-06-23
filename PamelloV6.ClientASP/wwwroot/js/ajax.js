@@ -1,7 +1,7 @@
 ﻿function GetAuthUser(onSucces, onFailure) {
     $.ajax({
         type: "GET",
-        url: `https://localhost:7270/Data/User?token=${token}`,
+        url: `https://marsoau.site:58631/Data/User?token=${token}`,
         data: {},
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -33,7 +33,7 @@ function AuthorizeWithCode(code, onSucces, onFailure) {
 function AjaxDataRequest(datatype, id, onSucces, onFailure) {
     $.ajax({
         type: "GET",
-        url: `https://localhost:7270/Data/${datatype}?id=${id}`,
+        url: `https://marsoau.site:58631/Data/${datatype}?id=${id}`,
         data: {},
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -45,7 +45,7 @@ function AjaxDataRequest(datatype, id, onSucces, onFailure) {
 function AjaxManyDataRequest(datatype, page, count, onSucces, onFailure) {
     $.ajax({
         type: "GET",
-        url: `https://localhost:7270/Data/All${datatype}s?page=${page}&count=${count}`,
+        url: `https://marsoau.site:58631/Data/All${datatype}s?page=${page}&count=${count}`,
         data: {},
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -57,7 +57,7 @@ function AjaxManyDataRequest(datatype, page, count, onSucces, onFailure) {
 function AjaxAuthorizationRequest(code, onSucces, onFailure) {
     $.ajax({
         type: "GET",
-        url: `https://localhost:7270/Authorization/GetToken?code=${code}`,
+        url: `https://marsoau.site:58631/Authorization/GetToken?code=${code}`,
         data: {},
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -66,7 +66,7 @@ function AjaxAuthorizationRequest(code, onSucces, onFailure) {
 }
 
 function InvokeCommand(commandName, args = {}) {
-    let url = `https://localhost:7270/Command?name=${commandName}`;
+    let url = `https://marsoau.site:58631/Command?name=${commandName}`;
 
     for (let key of Object.keys(args)) {
         url += `&${key}=${args[key]}`;

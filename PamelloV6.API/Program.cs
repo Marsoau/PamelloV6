@@ -62,7 +62,7 @@ namespace PamelloV6.API
             {
                 options.AddPolicy("AllowSpecificOrigin",
                     builder => {
-                        builder.WithOrigins("https://localhost:7138")
+                        builder.WithOrigins("https://marsoau.site:58630")
                                .AllowAnyHeader()
                                .AllowAnyMethod();
                     });

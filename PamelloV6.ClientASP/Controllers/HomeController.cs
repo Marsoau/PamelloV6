@@ -5,7 +5,6 @@ using System.Diagnostics;
 
 namespace PamelloV6.ClientASP.Controllers
 {
-    [EnableCors("basePolicy")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

@@ -52,6 +52,14 @@ function nextButtonClick() {
 function removeButtonClick(songQueuePosition) {
     InvokeCommand("PlayerQueueRemoveSong", { songPosition: songQueuePosition })
 }
+function requestNextButtonClick(songQueuePosition) {
+    if (player.nextPositionRequest == null) {
+        InvokeCommand("PlayerQueueRequestNext", { position: songQueuePosition })
+    }
+    else {
+        InvokeCommand("PlayerQueueRequestNext", { position: "" })
+    }
+}
 
 PamelloEvents.addEventListener("updatedPlayerCurrentSongTimePassed", message => {
     player.currentSongTimePassed = JSON.parse(message.data);
@@ -64,6 +72,10 @@ PamelloEvents.addEventListener("updatedPlayerCurrentSongTimeTotal", message => {
 PamelloEvents.addEventListener("updatedPlayerQueuePosition", message => {
     player.queuePosition = JSON.parse(message.data);
     UpdateSongInfo()
+    UpdateQueuePosition();
+});
+PamelloEvents.addEventListener("updatedPlayerNextPositionRequest", message => {
+    player.nextPositionRequest = JSON.parse(message.data);
     UpdateQueuePosition();
 });
 PamelloEvents.addEventListener("updatedPlayerQueueSongIds", message => {
@@ -92,7 +104,6 @@ PamelloEvents.addEventListener("updatedPlayerQueueIsNoLeftovers", message => {
 function FirstLoadUser() {
     GetUser(1, (newUser) => {
         user = newUser;
-        user.selectedPlayerId = 1;
 
         FirstLoadPlayer();
     });
@@ -162,7 +173,6 @@ function UpdateUserInfo() {
 function UpdateQueueSongs() {
     queueListElement.innerHTML = "";
     for (let i = 0; i < player.queueSongIds.length; i++) {
-        console.log(player.queueSongIds[i]);
         AddQueueSongElement(i);
         GetSong(player.queueSongIds[i], (newSong) => {
             let songElement = queueListElement.querySelector(`#queue-song-${i}`);
@@ -178,9 +188,18 @@ function UpdateQueuePosition() {
     let decoratorElement = null;
 
     for (let songElement of songElements) {
-        console.log("gugugaga of ", songElement.id);
         decoratorElement = songElement.querySelector(".queue-song-decorator");
-        decoratorElement.style.display = (songElement.id == `queue-song-${player.queuePosition}`) ? "block" : "none";
+        if (songElement.id == `queue-song-${player.queuePosition}`) {
+            decoratorElement.style.display = "block";
+            decoratorElement.innerHTML = "P"
+        }
+        else if (player.nextPositionRequest != null && songElement.id == `queue-song-${player.nextPositionRequest}`) {
+            decoratorElement.style.display = "block";
+            decoratorElement.innerHTML = "N"
+        }
+        else {
+            decoratorElement.style.display = "none";
+        }
     }
 }
 
@@ -191,7 +210,7 @@ function AddQueueSongElement(songPosition) {
             <div class="queue-song-title">Song title</div>
         </div>
         <div class="queue-song-subcontainer queue-song-hidden-buttons">
-            <button class="queue-song-hidden-button">Next</button>
+            <button class="queue-song-hidden-button" onclick="requestNextButtonClick(${songPosition})">Next</button>
             <button class="queue-song-hidden-button" onclick="removeButtonClick(${songPosition})">Remove</button>
         </div>
     </div>`

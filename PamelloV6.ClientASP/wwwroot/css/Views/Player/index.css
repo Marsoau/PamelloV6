@@ -239,10 +239,10 @@ select::-ms-expand {
 
 .queue-song-decorator {
     display: none;
-
     background-color: #646464;
     color: #E0E0E0;
     padding: 0px 8px;
+    font-weight: 500;
 }
 .queue-song-title {
     margin-left: 4px;

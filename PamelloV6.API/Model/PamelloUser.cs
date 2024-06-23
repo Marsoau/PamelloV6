@@ -64,6 +64,7 @@ namespace PamelloV6.Server.Model
                 Name = DiscordUser.GlobalName,
                 CoverUrl = DiscordUser.GetAvatarUrl(),
                 DiscordId = DiscordUser.Id,
+				SelectedPlayerId = selectedPlayer?.Id,
 				IsAdministrator = IsAdministrator,
 
 				OwnedPlaylistIds = OwnedPlaylists?.Select(playlist => playlist.Id) ?? [],

@@ -46,13 +46,20 @@
                     <input class="multipage-tab-radio" id="episodes-tab-radio" type="radio" name="multipage-le-tab" value="episodes" onchange="MultipageSet('le', 'episodes')" />
                     <label for="episodes-tab-radio">Episodes</label>
                 </div>
+                <div class="multipage-tab" id="multipage-le-tab-speakers">
+                    <input class="multipage-tab-radio" id="speakers-tab-radio" type="radio" name="multipage-le-tab" value="speakers" onchange="MultipageSet('le', 'speakers')" />
+                    <label for="speakers-tab-radio">Speakers</label>
+                </div>
             </div>
             <div class="pages-container" id="multipage-le-page-container">
                 <div class="multipage-page" id="multipage-le-page-log" style="display: none;">
-                    first page
+                    log page
                 </div>
                 <div class="multipage-page" id="multipage-le-page-episodes" style="display: none;">
-                    second page
+                    episodes page
+                </div>
+                <div class="multipage-page" id="multipage-le-page-speakers" style="display: none;">
+                    speakers page
                 </div>
             </div>
         </div>

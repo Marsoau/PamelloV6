@@ -4,7 +4,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:20983",
+      "applicationUrl": "http://marsoau.site:48630",
       "sslPort": 44330
     }
   },
@@ -13,7 +13,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5046",
+      "applicationUrl": "http://marsoau.site:48630",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -22,7 +22,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:7138;http://localhost:5046",
+      "applicationUrl": "https://marsoau.site:58630;http://marsoau.site:48630",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
