@@ -8,6 +8,8 @@ function AuthWithCode() {
 function OnSucces(token) {
     error.style.display = "none";
     window.location.replace("/Player");
+
+    SaveToken(token);
 }
 function OnFailure(jqXHR, textStatus, errorThrown) {
     error.style.display = "block";

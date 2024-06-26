@@ -22,7 +22,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "https://marsoau.site:58630;http://marsoau.site:48630",
+      "applicationUrl": "https://localhost:443;http://marsoau.site:48630",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

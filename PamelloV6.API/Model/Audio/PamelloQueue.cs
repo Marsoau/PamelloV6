@@ -161,7 +161,7 @@ namespace PamelloV6.API.Model.Audio
 			if (SongAudios.Count == 1) {
 				song = SongAudios.FirstOrDefault()?.Song;
 				Clear();
-				return song;
+                return song;
 			}
 
 			songPosition = NormalizeQueuePosition(songPosition);
@@ -272,9 +272,12 @@ namespace PamelloV6.API.Model.Audio
 
 		public void Clear() {
 			SongAudios.Clear();
+
 			Current = null;
             Position = 0;
-		}
+
+            SendQueueUpdatedEvent();
+        }
 		public void Shuffle() => throw new NotImplementedException();
 	}
 }

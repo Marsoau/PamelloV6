@@ -1,23 +1,4 @@
-﻿button {
-    background-color: #E0E0E0;
-    border: 0;
-
-    color: #484848;
-    font-weight: 500;
-}
-button:hover {
-    background-color: #EAEAEA;
-}
-
-.green-button {
-    background-color: #72B072;
-}
-
-.green-button:hover {
-    background-color: #64c064;
-}
-
-select {
+﻿select {
     border: 0;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -28,13 +9,29 @@ select::-ms-expand {
     display: none;
 }
 
+.player-choise-container {
+    display: grid;
+    background: white;
+}
+
+.player-create-container {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-column-gap: 2px;
+    margin: 2px;
+}
+.player-create-container input {
+    border: 2px solid #E0E0E0;
+}
+
 .player-select-container {
     display: grid;
-    background-color: #F0F0F0;
+    margin: 4px;
 }
 
 #player-select {
-    margin: 8px;
+    background-color: #E0E0E0;
+    padding: 0px 4px;
 }
 
 .player-main-container {
@@ -122,7 +119,6 @@ select::-ms-expand {
 #song-cover {
     margin: 4px;
 
-    background-image: url(https://img.youtube.com/vi/P2zRuVjitqQ/maxresdefault.jpg);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -164,7 +160,6 @@ select::-ms-expand {
 
 #user-cover {
     margin: 4px;
-    background-image: url(https://img.youtube.com/vi/P2zRuVjitqQ/maxresdefault.jpg);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -224,17 +219,19 @@ select::-ms-expand {
     margin-left: 4px;
 }
 
-.song-addition-multipage {
-    height: 320px;
-}
-
 .queue-song-container {
-    display: flex;
-    justify-content: space-between;
-
+    display: grid;
+    grid-template-columns: 1fr auto;
     background-color: #F8F8F8;
+    color: #646464;
     margin: 4px;
     margin-bottom: 0;
+}
+
+.queue-current-song-container {
+    background-color: #646464;
+    color: #E0E0E0;
+    cursor: default;
 }
 
 .queue-song-decorator {
@@ -247,7 +244,9 @@ select::-ms-expand {
 .queue-song-title {
     margin-left: 4px;
     font-weight: 500;
-    color: #646464;
+
+    flex-grow: 1;
+    cursor: pointer;
 }
 
 .queue-song-subcontainer {
@@ -269,4 +268,108 @@ select::-ms-expand {
 
 .queue-song-container:hover .queue-song-hidden-buttons {
     display: flex;
+}
+
+.songs-page-container {
+    display: grid;
+
+    grid-template-columns: 500px 2px 1fr;
+}
+
+#selected-song-cover {
+    width: 120px;
+    height: 120px;
+    margin: 4px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.selected-song-info-container {
+    background-color: #F8F8F8;
+}
+
+.songs-list-container {
+    background-color: #F8F8F8;
+}
+
+.selected-song-info-wrapper {
+    display: grid;
+    grid-template-rows: auto 2px 1fr;
+}
+
+.selected-song-info-container {
+    display: grid;
+    grid-template-columns: auto 2px 1fr;
+}
+
+.selected-song-episodes-container {
+    display: grid;
+    grid-template-rows: 1fr 2px auto;
+    background-color: #F8F8F8;
+}
+
+.songs-list-container {
+    display: grid;
+    grid-template-rows: 1fr 2px auto;
+}
+
+#songs-list {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: contain;
+
+    height: 270px;
+}
+
+.list-song-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    margin: 4px;
+    background-color: #E8E8E8;
+    color: #484848;
+    font-weight: 500;
+}
+.list-song-container:hover {
+    background-color: #F0F0F0;
+    cursor: pointer;
+}
+
+.list-song-add-button {
+    display: none;
+}
+.list-song-container:hover .list-song-add-button {
+    display: block;
+}
+
+.list-song-container button {
+    font-size: 12px;
+    font-weight: 700;
+    margin: 2px;
+}
+
+.list-song-title {
+    padding: 0px 4px;
+}
+
+.songs-controls {
+    display: grid;
+    grid-template-columns: auto auto auto 2px 1fr auto;
+    margin: 2px;
+}
+
+.songs-controls {
+    display: grid;
+    grid-template-columns: auto auto auto 2px 1fr auto;
+    margin: 2px;
+
+    column-gap: 2px;
+}
+
+.songs-controls .grey-container {
+    margin: 0px 0px;
+}
+
+.songs-list-page-number {
+    padding: 0px 4px;
 }

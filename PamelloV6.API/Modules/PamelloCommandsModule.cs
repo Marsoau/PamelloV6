@@ -46,10 +46,15 @@ namespace PamelloV6.API.Modules
 
 			return _players.Create(playerName);
 		}
-		public async Task PlayerSelect(int playerId) {
+		public async Task PlayerSelect(int? playerId) {
 			RequireUser();
-			var player = _players.GetRequired(playerId);
 
+			if (playerId is null) {
+                User.selectedPlayer = null;
+                return;
+			}
+
+			var player = _players.GetRequired(playerId.Value);
 			User.selectedPlayer = player;
 		}
 		public async Task PlayerRename(string newName) {

@@ -24,7 +24,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": false,
       "launchUrl": "swagger",
-      "applicationUrl": "https://marsoau.site:58631;http://marsoau.site:48631",
+      "applicationUrl": "https://localhost:58631;http://marsoau.site:48631",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

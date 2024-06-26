@@ -10,6 +10,32 @@ html {
     height: 100vh;
 }
 
+button {
+    background-color: #E0E0E0;
+    border: 0;
+
+    color: #484848;
+    font-weight: 500;
+}
+button:hover {
+    background-color: #EAEAEA;
+}
+
+button:disabled {
+    background-color: #F0F0F0;
+    color: #808080;
+}
+
+.green-button {
+    background-color: #8cc68c;
+    color: #007200;
+}
+
+.green-button:hover {
+    background-color: #64c064;
+    color: #007200;
+}
+
 .multipage-container {
     display: grid;
 
@@ -54,6 +80,7 @@ html {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+    padding: 0px;
 }
 
 .pages-container {
@@ -61,5 +88,58 @@ html {
 }
 
 .multipage-page {
+    display: grid;
+    margin: 0px;
+}
+.multipage-page-wrapper {
+    display: grid;
+    background-color: #E0E0E0;
     margin: 2px;
+}
+.multipage-page-container {
+    background-color: #E0E0E0;
+    margin: 2px;
+}
+
+.grey-container {
+    background-color: #E0E0E0;
+}
+
+
+
+
+
+.protected-edit {
+    margin: 2px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    background: #F0F0F0;
+}
+
+.protected-edit-label {
+    background-color: #E0E0E0;
+    padding: 0px 4px;
+    color: #484848;
+    font-weight: 500;
+}
+
+.protected-edit-value {
+    padding: 0px 4px;
+}
+
+.protected-edit-input {
+    display: grid;
+    grid-template-columns: 1fr auto;
+}
+
+input {
+    border: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 0px 4px;
+}
+
+input:active {
+    border: 0;
 }

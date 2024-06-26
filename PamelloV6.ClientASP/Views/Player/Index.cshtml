@@ -5,12 +5,19 @@
 
 <div class="player-main-container">
     <div class="player-left-subcontainer player-any-subcontainer">
-        <div class="player-select-container player-container">
-            <select name="player" id="player-select">
-                <option>test 1</option>
-                <option>test 2</option>
-                <option>test 3</option>
-            </select>
+        <div class="player-choise-container player-container">
+            <div class="player-select-container">
+                <select name="player" id="player-select" onchange="SelectedPlayerOptionChanged()">
+                    <option value="none">-</option>
+                    <option value="1">Test 1</option>
+                    <option value="new">New...</option>
+                </select>
+            </div>
+            <div class="player-create-container" style="display: none;">
+                <button onclick="CreateCancelPlayerClick()">Cancel</button>
+                <input placeholder="Player name" id="player-create-input" />
+                <button onclick="CreatePlayerClick()">Create</button>
+            </div>
         </div>
         <div class="player-controls-container player-container">
             <div class="song-cover-container player-controls-cell">
@@ -21,7 +28,7 @@
                     <span id="song-title">Title</span>
                     <span id="song-author">Author</span>
                 </div>
-                <div>
+                <div class="song-time-container">
                     <span id="song-time">1:02</span>
                     <span> / </span>
                     <span id="song-duration">2:37</span>
@@ -53,13 +60,22 @@
             </div>
             <div class="pages-container" id="multipage-le-page-container">
                 <div class="multipage-page" id="multipage-le-page-log" style="display: none;">
-                    log page
+                    <div class="multipage-page-wrapper">
+                        <div class="multipage-page-container">
+                        </div>
+                    </div>
                 </div>
                 <div class="multipage-page" id="multipage-le-page-episodes" style="display: none;">
-                    episodes page
+                    <div class="multipage-page-wrapper">
+                        <div class="multipage-page-container">
+                        </div>
+                    </div>
                 </div>
                 <div class="multipage-page" id="multipage-le-page-speakers" style="display: none;">
-                    speakers page
+                    <div class="multipage-page-wrapper">
+                        <div class="multipage-page-container">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,13 +123,85 @@
             </div>
             <div class="pages-container" id="multipage-addition-page-container">
                 <div class="multipage-page" id="multipage-addition-page-songs" style="display: none;">
-                    songs page
+                    <div class="multipage-page-wrapper">
+                        <div class="multipage-page-container songs-page-container">
+                            <div class="selected-song-info-wrapper">
+                                <div class="selected-song-info-container">
+                                    <div class="selected-song-cover-container">
+                                        <div id="selected-song-cover">
+
+                                        </div>
+                                    </div>
+                                    <div class="grey-container"></div>
+                                    <div class="selected-song-info-subcontainer">
+                                        <div class="protected-edit" id="selected-song-title-pe">
+                                            <div class="protected-edit-label">
+                                                Title
+                                            </div>
+                                            <div class="protected-edit-value" onclick="EditPEValue('selected-song-title')">tta</div>
+                                            <div class="protected-edit-input" style="display: none;">
+                                                <input />
+                                                <button onclick="SavePEValue('selected-song-title')">Save</button>
+                                            </div>
+                                        </div>
+                                        <div class="protected-edit" id="selected-song-author-pe">
+                                            <div class="protected-edit-label">
+                                                Author
+                                            </div>
+                                            <div class="protected-edit-value" onclick="EditPEValue('selected-song-author')">asdasd</div>
+                                            <div class="protected-edit-input" style="display: none;">
+                                                <input />
+                                                <button onclick="SavePEValue('selected-song-author')">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grey-container"></div>
+                                <div class="selected-song-episodes-container">
+                                    <div class="selected-song-episodes-list-container">
+                                        listasd
+                                    </div>
+                                    <div class="grey-container"></div>
+                                    <div class="selected-song-episodes-controls-container">
+                                        controls
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grey-container"></div>
+                            <div class="songs-list-container">
+                                <div id="songs-list">
+
+                                </div>
+                                <div class="grey-container"></div>
+                                <div class="songs-controls">
+                                    <button>Prev</button>
+                                    <div class="songs-list-page-number">
+                                        <span>0</span>
+                                        <span> / </span>
+                                        <span>0</span>
+                                    </div>
+                                    <button>Next</button>
+                                    <div class="grey-container"></div>
+                                    <input />
+                                    <button>Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="multipage-page" id="multipage-addition-page-playlists" style="display: none;">
-                    playlists page
+                    <div class="multipage-page-wrapper">
+                        <div class="multipage-page-container">
+                            playlists
+                        </div>
+                    </div>
                 </div>
                 <div class="multipage-page" id="multipage-addition-page-youtube" style="display: none;">
-                    youtube page
+                    <div class="multipage-page-wrapper">
+                        <div class="multipage-page-container">
+                            youtube
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

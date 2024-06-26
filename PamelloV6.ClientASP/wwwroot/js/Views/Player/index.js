@@ -2,6 +2,16 @@
 let player = null;
 let song = null;
 
+let selectedSong = null;
+
+let songListPage = 0;
+
+let playerSelectElement = document.getElementById("player-select");
+let playerSelectContainerElement = document.getElementsByClassName("player-select-container")[0];
+let playerCreateContainerElement = document.getElementsByClassName("player-create-container")[0];
+
+let playerCreateInput = document.getElementById("player-create-input");
+
 let userCoverElement = document.getElementById("user-cover");
 let userNameElement = document.getElementById("user-name");
 let userDiscordIdElement = document.getElementById("user-discordid");
@@ -10,19 +20,30 @@ let songCoverElement = document.getElementById("song-cover");
 let songTitleElement = document.getElementById("song-title");
 let songAuthorElement = document.getElementById("song-author");
 
+let songTimeContainerElement = document.getElementsByClassName("song-time-container")[0];
 let songTimeElement = document.getElementById("song-time");
 let songDurationElement = document.getElementById("song-duration");
 let songTimeSlider = document.getElementById("player-slider");
 
 let queueListElement = document.getElementById("queue-list");
+let songListElement = document.getElementById("songs-list");
 
 let randomButton = document.getElementById("is-random-queue-button");
 let reversedButton = document.getElementById("is-reversed-queue-button");
 let noLeftoversButton = document.getElementById("is-no-leftovers-queue-button");
 
+let prevButton = document.getElementById("prev-button");
 let ppButton = document.getElementById("pp-button");
+let nextButton = document.getElementById("next-button");
 
-FirstLoadUser();
+let selectedSongCoverElement = document.getElementById("selected-song-cover");
+
+MultipageDisable("le");
+MultipageSet("addition", "songs");
+
+LoadUser();
+UpdateSelectedSong();
+UpdateSongsList();
 
 function randomButtonClick() {
     InvokeCommand("PlayerQueueRandom", { value: !player.queueIsRandom })
@@ -53,25 +74,29 @@ function removeButtonClick(songQueuePosition) {
     InvokeCommand("PlayerQueueRemoveSong", { songPosition: songQueuePosition })
 }
 function requestNextButtonClick(songQueuePosition) {
-    if (player.nextPositionRequest == null) {
-        InvokeCommand("PlayerQueueRequestNext", { position: songQueuePosition })
+    if (player.nextPositionRequest == songQueuePosition) {
+        InvokeCommand("PlayerQueueRequestNext", { position: "" })
     }
     else {
-        InvokeCommand("PlayerQueueRequestNext", { position: "" })
+        InvokeCommand("PlayerQueueRequestNext", { position: songQueuePosition })
     }
 }
 
+PamelloEvents.addEventListener("updatedSelectedPlayer", message => {
+    user.selectedPlayerId = JSON.parse(message.data);
+    console.log(`selected new "${user.selectedPlayerId}" player`);
+    LoadPlayer()
+});
 PamelloEvents.addEventListener("updatedPlayerCurrentSongTimePassed", message => {
     player.currentSongTimePassed = JSON.parse(message.data);
-    UpdateSongTime()
+    UpdatePlayerTime()
 });
 PamelloEvents.addEventListener("updatedPlayerCurrentSongTimeTotal", message => {
     player.currentSongTimeTotal = JSON.parse(message.data);
-    UpdateSongTime()
+    UpdatePlayerTime()
 });
 PamelloEvents.addEventListener("updatedPlayerQueuePosition", message => {
     player.queuePosition = JSON.parse(message.data);
-    UpdateSongInfo()
     UpdateQueuePosition();
 });
 PamelloEvents.addEventListener("updatedPlayerNextPositionRequest", message => {
@@ -80,12 +105,14 @@ PamelloEvents.addEventListener("updatedPlayerNextPositionRequest", message => {
 });
 PamelloEvents.addEventListener("updatedPlayerQueueSongIds", message => {
     player.queueSongIds = JSON.parse(message.data);
+    console.log(`new queue:`);
+    console.log(player.queueSongIds);
     UpdateQueueSongs()
 });
 
 PamelloEvents.addEventListener("updatedPlayerIsPaused", message => {
     player.isPaused = JSON.parse(message.data);
-    UpdatePlayerInfo()
+    UpdatePlayerButtons()
 });
 
 PamelloEvents.addEventListener("updatedPlayerQueueIsRandom", message => {
@@ -101,66 +128,113 @@ PamelloEvents.addEventListener("updatedPlayerQueueIsNoLeftovers", message => {
     UpdatePlayerModes()
 });
 
-function FirstLoadUser() {
-    GetUser(1, (newUser) => {
+function LoadUser() {
+    GetAuthUser((newUser) => {
         user = newUser;
+        if (!user) {
+            window.location.replace("/");
+            return;
+        }
 
-        FirstLoadPlayer();
+        UpdateUserInfo();
+
+        LoadPlayer();
+    }, () => {
+        window.location.replace("/");
     });
 }
-function FirstLoadPlayer() {
+function LoadPlayer() {
     if (user.selectedPlayerId) {
         GetPlayer(user.selectedPlayerId, (newPlayer) => {
             player = newPlayer;
-            FirstLoadSong();
+            FullUpdatePlayer();
         });
     }
     else {
-        LoadFinal();
+        player = null;
+        FullUpdatePlayer();
     }
 }
-function FirstLoadSong() {
+function LoadSong(after) {
     let songId = player?.queueSongIds[player?.queuePosition]
     if (songId != null) {
         GetSong(songId, (newSong) => {
             song = newSong;
-            LoadFinal();
+            after();
         });
     }
-}
-function LoadSong() {
-    let songId = player?.queueSongIds[player?.queuePosition]
-    if (songId != null) {
-        GetSong(songId, (newSong) => {
-            song = newSong;
-            UpdateSongInfo();
-        });
+    else {
+        song = null;
+        after();
     }
-}
-function LoadFinal() {
-    UpdateUserInfo();
-    UpdateSongInfo();
-    UpdateSongTime();
-    UpdateQueueSongs();
-    UpdateQueuePosition();
-    UpdatePlayerModes();
 }
 
-function UpdateSongInfo() {
-    songCoverElement.style.backgroundImage = `url(${song.coverUrl})`;
-    songTitleElement.innerHTML = song.title;
-    songAuthorElement.innerHTML = song.author;
+function FullUpdatePlayer() {
+    UpdatePlayerOptions();
+    UpdatePlayerButtons();
+    UpdatePlayerModes();
+    UpdatePlayerTime();
+    UpdatePlayerSongInfo();
+
+    UpdateQueueSongs();
+    UpdateQueuePosition();
 }
-function UpdateSongTime() {
+
+function UpdatePlayerSongInfo() {
+    LoadSong(() => {
+        if (!song) {
+            songCoverElement.style.backgroundImage = "";
+            songTitleElement.innerHTML = "";
+            songAuthorElement.innerHTML = "";
+            return;
+        }
+
+        songCoverElement.style.backgroundImage = `url(${song.coverUrl})`;
+        songTitleElement.innerHTML = song.title;
+        songAuthorElement.innerHTML = song.author;
+
+        UpdatePlayerButtons();
+    });
+}
+function UpdatePlayerTime() {
+    if (!song) {
+        songTimeContainerElement.style.display = "none";
+        return;
+    }
+    else {
+        songTimeContainerElement.style.display = "block";
+    }
     songTimeElement.innerHTML = player.currentSongTimePassed;
     songDurationElement.innerHTML = player.currentSongTimeTotal;
     songTimeSlider.max = player.currentSongTimeTotal;
     songTimeSlider.value = player.currentSongTimePassed;
 }
-function UpdatePlayerInfo() {
-    ppButton.innerHTML = (player.isPaused) ? "R" : "P";
+function UpdatePlayerButtons() {
+    if (!player) {
+        ppButton.disabled = true;
+    }
+    else {
+        ppButton.disabled = false;
+        ppButton.innerHTML = (player.isPaused) ? "R" : "P";
+    }
+    prevButton.disabled = !song;
+    nextButton.disabled = !song;
 }
 function UpdatePlayerModes() {
+    if (!player) {
+        randomButton.className = "queue-left-controls-button";
+        randomButton.disabled = true;
+        reversedButton.className = "queue-left-controls-button";
+        reversedButton.disabled = true;
+        noLeftoversButton.className = "queue-left-controls-button";
+        noLeftoversButton.disabled = true;
+
+        return;
+    }
+
+    randomButton.disabled = false;
+    reversedButton.disabled = false;
+    noLeftoversButton.disabled = false;
     randomButton.className = (player.queueIsRandom) ? "queue-left-controls-button green-button" : "queue-left-controls-button";
     reversedButton.className = (player.queueIsReversed) ? "queue-left-controls-button green-button" : "queue-left-controls-button";
     noLeftoversButton.className = (player.queueIsNoLeftovers) ? "queue-left-controls-button green-button" : "queue-left-controls-button";
@@ -172,7 +246,7 @@ function UpdateUserInfo() {
 }
 function UpdateQueueSongs() {
     queueListElement.innerHTML = "";
-    for (let i = 0; i < player.queueSongIds.length; i++) {
+    if (player) for (let i = 0; i < player.queueSongIds.length; i++) {
         AddQueueSongElement(i);
         GetSong(player.queueSongIds[i], (newSong) => {
             let songElement = queueListElement.querySelector(`#queue-song-${i}`);
@@ -182,32 +256,68 @@ function UpdateQueueSongs() {
     UpdateQueuePosition();
 }
 function UpdateQueuePosition() {
-    LoadSong();
-
+    if (!player) {
+        return;
+    }
+    
     let songElements = queueListElement.querySelectorAll(`.queue-song-container`);
     let decoratorElement = null;
 
     for (let songElement of songElements) {
-        decoratorElement = songElement.querySelector(".queue-song-decorator");
         if (songElement.id == `queue-song-${player.queuePosition}`) {
-            decoratorElement.style.display = "block";
-            decoratorElement.innerHTML = "P"
+            songElement.className = "queue-song-container queue-current-song-container";
         }
-        else if (player.nextPositionRequest != null && songElement.id == `queue-song-${player.nextPositionRequest}`) {
+        else {
+            songElement.className = "queue-song-container";
+        }
+
+        decoratorElement = songElement.querySelector(".queue-song-decorator");
+        if (player.nextPositionRequest != null && songElement.id == `queue-song-${player.nextPositionRequest}`) {
             decoratorElement.style.display = "block";
-            decoratorElement.innerHTML = "N"
         }
         else {
             decoratorElement.style.display = "none";
         }
     }
+
+    UpdatePlayerSongInfo();
 }
 
+function UpdateSelectedSong() {
+    if (!selectedSong) {
+        selectedSongCoverElement.style.backgroundImage = "none";
+        SetPEValue("selected-song-title", "");
+        SetPEValue("selected-song-author", "");
+        return;
+    }
+
+    selectedSongCoverElement.style.backgroundImage = `url(${selectedSong.coverUrl})`;
+    SetPEValue("selected-song-title", selectedSong.title);
+    SetPEValue("selected-song-author", selectedSong.author);
+}
+
+function UpdateSongsList() {
+    GetManySongs(0, 20, (songs) => {
+        songListElement.innerHTML = "";
+        for (let listSong of songs) {
+            AddListSongElement(listSong);
+        }
+    })
+}
+
+function AddListSongElement(song) {
+    songListElement.innerHTML += `
+    <div class="list-song-container" id="list-song-${song.id}" onclick="SelectSong(${song.id})">
+        <div class="list-song-title">${song.title}</div>
+        <button class="list-song-add-button" onclick="InvokeCommand('PlayerQueueAddSong', {songId: ${song.id}})">Add</button>
+    </div>`
+}
 function AddQueueSongElement(songPosition) {
-    queueListElement.innerHTML += `<div class="queue-song-container" id="queue-song-${songPosition}">
+    queueListElement.innerHTML += `
+    <div class="queue-song-container" id="queue-song-${songPosition}">
         <div class="queue-song-subcontainer queue-song-left-container">
-            <div class="queue-song-decorator">P</div>
-            <div class="queue-song-title">Song title</div>
+            <div class="queue-song-decorator" style="display: none;">Next</div>
+            <div class="queue-song-title" onclick="InvokeCommand('PlayerGoToSong', {songPosition: ${songPosition}, returnBack: false})"></div>
         </div>
         <div class="queue-song-subcontainer queue-song-hidden-buttons">
             <button class="queue-song-hidden-button" onclick="requestNextButtonClick(${songPosition})">Next</button>
@@ -217,6 +327,78 @@ function AddQueueSongElement(songPosition) {
 }
 function GetQueueSongElement(songPosition) {
     return 
+}
+
+function SelectSong(songId) {
+    GetSong(songId, (rsong) => {
+        selectedSong = rsong;
+        UpdateSelectedSong();
+    })
+}
+
+
+
+function SelectedPlayerOptionChanged() {
+    let selectedValue = playerSelectElement.value;
+
+    if (selectedValue == "none") {
+        InvokeCommand("PlayerSelect", { playerId: "" }, () => {
+            FullUpdatePlayer();
+        });
+    }
+    else if (selectedValue == "new") {
+        PlayerOptionSetCreate();
+    }
+    else {
+        InvokeCommand("PlayerSelect", { playerId: selectedValue }, () => {
+            FullUpdatePlayer();
+        });
+    }
+}
+
+function PlayerOptionSetSelect() {
+    playerSelectContainerElement.style.display = "grid";
+    playerCreateContainerElement.style.display = "none";
+}
+function PlayerOptionSetCreate() {
+    playerSelectContainerElement.style.display = "none";
+    playerCreateContainerElement.style.display = "grid";
+}
+
+function CreatePlayerClick() {
+    if (playerCreateInput.value) {
+        InvokeCommand("PlayerCreate", { playerName: playerCreateInput.value }, () => {
+            PlayerOptionSetSelect();
+            FullUpdatePlayer();
+        });
+    }
+}
+function CreateCancelPlayerClick() {
+    playerCreateInput.value = player?.id;
+    PlayerOptionSetSelect();
+}
+
+function UpdatePlayerOptions() {
+    let optionNone = document.createElement("option");
+    optionNone.value = "none";
+    optionNone.text = "-";
+    let optionNew = document.createElement("option");
+    optionNew.value = "new";
+    optionNew.text = "New...";
+
+    GetManyPlayers(0, 10, (playersResponse) => {
+        playerSelectElement.innerHTML = "";
+        playerSelectElement.add(optionNone);
+        for (let playerResponse of playersResponse) {
+            let option = document.createElement("option");
+            option.value = playerResponse.id;
+            option.text = playerResponse.name;
+            option.selected = playerResponse.id == player?.id;
+
+            playerSelectElement.add(option);
+        }
+        playerSelectElement.add(optionNew);
+    });
 }
 
 /*
