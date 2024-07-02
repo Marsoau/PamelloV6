@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Player";
 }
+<script src="~/js/sse.js" asp-append-version="true"></script>
 
 <div class="player-main-container">
     <div class="player-left-subcontainer player-any-subcontainer">
@@ -67,7 +68,9 @@
                 </div>
                 <div class="multipage-page" id="multipage-le-page-episodes" style="display: none;">
                     <div class="multipage-page-wrapper">
-                        <div class="multipage-page-container">
+                        <div class="multipage-page-container current-episodes-page-container">
+                            <div id="current-song-episodes-list-container">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -135,9 +138,9 @@
                                     <div class="grey-container"></div>
                                     <div class="selected-song-info-subcontainer">
                                         <div class="protected-edit" id="selected-song-title-pe">
-                                            <div class="protected-edit-label">
+                                            <span class="protected-edit-label">
                                                 Title
-                                            </div>
+                                            </span>
                                             <div class="protected-edit-value" onclick="EditPEValue('selected-song-title')">tta</div>
                                             <div class="protected-edit-input" style="display: none;">
                                                 <input />
@@ -145,9 +148,9 @@
                                             </div>
                                         </div>
                                         <div class="protected-edit" id="selected-song-author-pe">
-                                            <div class="protected-edit-label">
+                                            <span class="protected-edit-label">
                                                 Author
-                                            </div>
+                                            </span>
                                             <div class="protected-edit-value" onclick="EditPEValue('selected-song-author')">asdasd</div>
                                             <div class="protected-edit-input" style="display: none;">
                                                 <input />
@@ -158,19 +161,19 @@
                                 </div>
                                 <div class="grey-container"></div>
                                 <div class="selected-song-episodes-container">
-                                    <div class="selected-song-episodes-list-container">
-                                        listasd
+                                    <div id="selected-song-episodes-list-container">
+
                                     </div>
                                     <div class="grey-container"></div>
                                     <div class="selected-song-episodes-controls-container">
-                                        controls
+                                        <button id="add-selected-song-button" onclick="addSelectedSongButtonClick()">Add</button>
                                     </div>
                                 </div>
                             </div>
                             <div class="grey-container"></div>
                             <div class="songs-list-container">
                                 <div id="songs-list">
-
+                                    
                                 </div>
                                 <div class="grey-container"></div>
                                 <div class="songs-controls">

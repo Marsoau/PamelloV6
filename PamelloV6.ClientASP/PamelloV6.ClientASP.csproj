@@ -6,4 +6,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="wwwroot\js\edf.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\js\edf.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\edf.js" />
+  </ItemGroup>
+
 </Project>

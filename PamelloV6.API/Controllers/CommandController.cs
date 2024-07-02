@@ -79,7 +79,16 @@ namespace PamelloV6.API.Controllers
 			}
 
 			try {
-				command.Invoke(_commands, args);
+                Console.Write($"[{_commands.User}] Executing network command /{command.Name} ");
+				for (int i = 0; i < argsInfo.Length; i++) {
+                    Console.Write($"{argsInfo[i].Name}: {args[i]}");
+					if (i != argsInfo.Length - 1) {
+                        Console.Write(", ");
+                    }
+                }
+                Console.WriteLine();
+
+                command.Invoke(_commands, args);
 			}
 			catch (Exception x) {
 				return BadRequest($"Execution of command interrupted by exception, message: {x.Message}");

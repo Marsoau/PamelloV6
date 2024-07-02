@@ -2,6 +2,11 @@ body {
     margin: 0;
 }
 
+div, span {
+    min-width: 0;
+    min-height: 0;
+}
+
 main {
     height: 100vh;
 }
@@ -38,8 +43,8 @@ button:disabled {
 
 .multipage-container {
     display: grid;
-
-    grid-template-rows: auto 1fr;
+    height: 100%;
+    grid-template-rows: auto minmax(0, 1fr);
 }
 
 .tabs-container {
@@ -85,6 +90,8 @@ button:disabled {
 
 .pages-container {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
 }
 
 .multipage-page {
@@ -121,6 +128,9 @@ button:disabled {
     padding: 0px 4px;
     color: #484848;
     font-weight: 500;
+
+    overflow: clip;
+    overflow-wrap: break-word;
 }
 
 .protected-edit-value {

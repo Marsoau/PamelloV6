@@ -1,6 +1,6 @@
 ﻿let user = null;
 let player = null;
-let song = null;
+let currentSong = null;
 
 let selectedSong = null;
 
@@ -38,12 +38,17 @@ let nextButton = document.getElementById("next-button");
 
 let selectedSongCoverElement = document.getElementById("selected-song-cover");
 
-MultipageDisable("le");
+let selectedSongEpisodesListContainer = document.getElementById("selected-song-episodes-list-container");
+let currentSongEpisodesListContainer = document.getElementById("current-song-episodes-list-container");
+
+MultipageSet("le", "episodes");
 MultipageSet("addition", "songs");
 
 LoadUser();
 UpdateSelectedSong();
 UpdateSongsList();
+
+SelectSong(2);
 
 function randomButtonClick() {
     InvokeCommand("PlayerQueueRandom", { value: !player.queueIsRandom })
@@ -82,6 +87,12 @@ function requestNextButtonClick(songQueuePosition) {
     }
 }
 
+function addSelectedSongButtonClick() {
+    if (selectedSong) {
+        InvokeCommand('PlayerQueueAddSong', { songId: selectedSong.id });
+    }
+}
+
 PamelloEvents.addEventListener("updatedSelectedPlayer", message => {
     user.selectedPlayerId = JSON.parse(message.data);
     console.log(`selected new "${user.selectedPlayerId}" player`);
@@ -105,8 +116,10 @@ PamelloEvents.addEventListener("updatedPlayerNextPositionRequest", message => {
 });
 PamelloEvents.addEventListener("updatedPlayerQueueSongIds", message => {
     player.queueSongIds = JSON.parse(message.data);
-    console.log(`new queue:`);
-    console.log(player.queueSongIds);
+    if (player.queueSongIds.length == 0) {
+        currentSong = null;
+    }
+
     UpdateQueueSongs()
 });
 
@@ -156,15 +169,16 @@ function LoadPlayer() {
     }
 }
 function LoadSong(after) {
-    let songId = player?.queueSongIds[player?.queuePosition]
-    if (songId != null) {
+    let songId;
+    if (player && player.queueSongIds.length != 0) {
+        songId = player.queueSongIds[player.queuePosition]
         GetSong(songId, (newSong) => {
-            song = newSong;
+            currentSong = newSong;
             after();
         });
     }
     else {
-        song = null;
+        currentSong = null;
         after();
     }
 }
@@ -182,30 +196,31 @@ function FullUpdatePlayer() {
 
 function UpdatePlayerSongInfo() {
     LoadSong(() => {
-        if (!song) {
+        if (!currentSong) {
             songCoverElement.style.backgroundImage = "";
             songTitleElement.innerHTML = "";
             songAuthorElement.innerHTML = "";
             return;
         }
 
-        songCoverElement.style.backgroundImage = `url(${song.coverUrl})`;
-        songTitleElement.innerHTML = song.title;
-        songAuthorElement.innerHTML = song.author;
+        songCoverElement.style.backgroundImage = `url(${currentSong.coverUrl})`;
+        songTitleElement.innerHTML = currentSong.title;
+        songAuthorElement.innerHTML = currentSong.author;
 
+        UpdateCurrentSongEpisodes();
         UpdatePlayerButtons();
     });
 }
 function UpdatePlayerTime() {
-    if (!song) {
+    if (!currentSong) {
         songTimeContainerElement.style.display = "none";
         return;
     }
     else {
         songTimeContainerElement.style.display = "block";
     }
-    songTimeElement.innerHTML = player.currentSongTimePassed;
-    songDurationElement.innerHTML = player.currentSongTimeTotal;
+    songTimeElement.innerHTML = ToStringTime(player.currentSongTimePassed);
+    songDurationElement.innerHTML = ToStringTime(player.currentSongTimeTotal);
     songTimeSlider.max = player.currentSongTimeTotal;
     songTimeSlider.value = player.currentSongTimePassed;
 }
@@ -217,8 +232,8 @@ function UpdatePlayerButtons() {
         ppButton.disabled = false;
         ppButton.innerHTML = (player.isPaused) ? "R" : "P";
     }
-    prevButton.disabled = !song;
-    nextButton.disabled = !song;
+    prevButton.disabled = !currentSong;
+    nextButton.disabled = !currentSong;
 }
 function UpdatePlayerModes() {
     if (!player) {
@@ -246,7 +261,14 @@ function UpdateUserInfo() {
 }
 function UpdateQueueSongs() {
     queueListElement.innerHTML = "";
-    if (player) for (let i = 0; i < player.queueSongIds.length; i++) {
+    if (!player) return;
+
+    if (player.queueSongIds.length == 0) {
+        UpdatePlayerSongInfo();
+        UpdatePlayerTime();
+        return;
+    }
+    for (let i = 0; i < player.queueSongIds.length; i++) {
         AddQueueSongElement(i);
         GetSong(player.queueSongIds[i], (newSong) => {
             let songElement = queueListElement.querySelector(`#queue-song-${i}`);
@@ -294,6 +316,8 @@ function UpdateSelectedSong() {
     selectedSongCoverElement.style.backgroundImage = `url(${selectedSong.coverUrl})`;
     SetPEValue("selected-song-title", selectedSong.title);
     SetPEValue("selected-song-author", selectedSong.author);
+
+    UpdateSelectedSongEpisodes();
 }
 
 function UpdateSongsList() {
@@ -305,10 +329,67 @@ function UpdateSongsList() {
     })
 }
 
+function UpdateCurrentSongEpisodes() {
+    currentSongEpisodesListContainer.innerHTML = "";
+    if (!currentSong) return;
+
+    for (let i = 0; i < currentSong.episodeIds.length; i++) {
+        AddCurrentSongEpisodeElement(i);
+        GetEpisode(currentSong.episodeIds[i], (rEpisode) => {
+            let episodeElement = currentSongEpisodesListContainer.querySelector(`#cs-episode-${i}-container`);
+            episodeElement.className = `episode-container container-of-episode-${rEpisode.id}`
+            episodeElement.querySelector(".episode-title").innerHTML = rEpisode.name;
+            episodeElement.querySelector(".episode-time").innerHTML = ToStringTime(rEpisode.start);
+            episodeElement.querySelector(".pamello-checkbox").className = "pamello-checkbox " + (!rEpisode.skip ? "pamello-checkbox-active" : "pamello-checkbox-inactive")
+        })
+    }
+}
+
+function UpdateSelectedSongEpisodes() {
+    selectedSongEpisodesListContainer.innerHTML = "";
+    if (!selectedSong) return;
+
+    for (let i = 0; i < selectedSong.episodeIds.length; i++) {
+        AddSelectedSongEpisodeElement(i);
+        GetEpisode(selectedSong.episodeIds[i], (rEpisode) => {
+            let episodeElement = selectedSongEpisodesListContainer.querySelector(`#ss-episode-${i}-container`);
+            episodeElement.className = `episode-container container-of-episode-${rEpisode.id}`
+            episodeElement.querySelector(".episode-title").innerHTML = rEpisode.name;
+            episodeElement.querySelector(".episode-time").innerHTML = ToStringTime(rEpisode.start);
+            episodeElement.querySelector(".pamello-checkbox").className = "pamello-checkbox " + (!rEpisode.skip ? "pamello-checkbox-active" : "pamello-checkbox-inactive")
+        })
+    }
+}
+
+function AddSelectedSongEpisodeElement(episodePosition) {
+    selectedSongEpisodesListContainer.innerHTML += GetEpisodeHtml("ss", episodePosition);
+}
+function AddCurrentSongEpisodeElement(episodePosition) {
+    currentSongEpisodesListContainer.innerHTML += GetEpisodeHtml("cs", episodePosition);
+}
+
+function GetEpisodeHtml(key, episodePosition) {
+    return `
+    <div class="episode-container" id="${key}-episode-${episodePosition}-container">
+        <div class="episode-title-container">
+            <div class="episode-title"></div>
+            <button class="episode-title-edit-button">Edit</button>
+        </div>
+        <div class="episode-time-container">
+            <button class="episode-time-edit-button">Edit</button>
+            <div class="episode-time"></div>
+        </div>
+        <div class="episode-checkbox-container">
+            <div class="pamello-checkbox pamello-checkbox-active"></div>
+        </div>
+    </div>`;
+}
+
 function AddListSongElement(song) {
     songListElement.innerHTML += `
     <div class="list-song-container" id="list-song-${song.id}" onclick="SelectSong(${song.id})">
-        <div class="list-song-title">${song.title}</div>
+        <div class="list-song-cover" style="background-image: url(${song.coverUrl});"></div>
+        <span class="list-song-title">${song.title}</span>
         <button class="list-song-add-button" onclick="InvokeCommand('PlayerQueueAddSong', {songId: ${song.id}})">Add</button>
     </div>`
 }
@@ -399,6 +480,14 @@ function UpdatePlayerOptions() {
         }
         playerSelectElement.add(optionNew);
     });
+}
+
+function ToStringTime(seconds) {
+    let h = Math.floor(seconds / 3600);
+    let m = Math.floor((seconds - h * 3600) / 60);
+    let s = seconds % 60;
+    return `${(h) ? (h + ":") : ("")}${(m > 9) ? ("") : ("0")}${(m) ? (m) : ("0")}:${(s > 9) ? ("") : ("0")}${(s) ? (s) : ("0")}`
+    return ((h) ? (`${h}:${m}:${s}`) : (`${m}:${s}`))
 }
 
 /*
