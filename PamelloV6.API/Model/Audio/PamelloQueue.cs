@@ -97,6 +97,8 @@ namespace PamelloV6.API.Model.Audio
 				if (_current is not null) {
 					_current.Position.OnSecondTick += OnCurrentPositionSecondTick;
                     _current.Duration.OnSecondTick += OnCurrentDurationSecondTick;
+					OnCurrentDurationSecondTick();
+					OnCurrentPositionSecondTick();
                 }
             }
 		}

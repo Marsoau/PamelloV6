@@ -89,14 +89,29 @@ namespace PamelloV6.API.Modules
 			RequireUser();
 
 			updatedPlayer.IsPaused = true;
-		}
-		public async Task PlayerResume() {
-			RequireUser();
+        }
+        public async Task PlayerResume() {
+            RequireUser();
 
-			updatedPlayer.IsPaused = false;
-		}
-		
-		public async Task PlayerQueueShuffle() => throw new NotImplementedException();
+            updatedPlayer.IsPaused = false;
+        }
+        public async Task PlayerRewind(int seconds) {
+            RequireUser();
+
+            updatedPlayer.Queue.Current?.RewindTo(new AudioTime(seconds));
+        }
+        public async Task PlayerRewindToEpisode(int episodePosition) {
+            RequireUser();
+
+			var episode = updatedPlayer.Queue.Current?.Song.Episodes[episodePosition];
+			if (episode is null) {
+				return;
+			}
+
+            updatedPlayer.Queue.Current?.RewindToEpisode(episode);
+        }
+
+        public async Task PlayerQueueShuffle() => throw new NotImplementedException();
 		public async Task PlayerQueueRandom(bool value) {
 			RequireUser();
 

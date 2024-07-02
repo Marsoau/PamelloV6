@@ -6,6 +6,7 @@ using PamelloV6.API.Repositories;
 using PamelloV6.DAL.Entity;
 using PamelloV6.Server.Model;
 using System.ComponentModel;
+using System.Reflection;
 
 namespace PamelloV6.API.Controllers
 {
@@ -78,20 +79,20 @@ namespace PamelloV6.API.Controllers
 				args[i] = argValue;
 			}
 
-			try {
-                Console.Write($"[{_commands.User}] Executing network command /{command.Name} ");
-				for (int i = 0; i < argsInfo.Length; i++) {
-                    Console.Write($"{argsInfo[i].Name}: {args[i]}");
-					if (i != argsInfo.Length - 1) {
-                        Console.Write(", ");
-                    }
+            Console.Write($"[{_commands.User}] Executing network command /{command.Name} ");
+            for (int i = 0; i < argsInfo.Length; i++) {
+                Console.Write($"{argsInfo[i].Name}: {args[i]}");
+                if (i != argsInfo.Length - 1) {
+                    Console.Write(", ");
                 }
-                Console.WriteLine();
+            }
+            Console.WriteLine();
 
+            try {
                 command.Invoke(_commands, args);
 			}
-			catch (Exception x) {
-				return BadRequest($"Execution of command interrupted by exception, message: {x.Message}");
+			catch (TargetInvocationException tie) {
+				return BadRequest($"Execution of command interrupted by exception, message: {tie.InnerException?.Message}");
 			}
 
 			return Ok();

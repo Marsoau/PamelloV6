@@ -125,6 +125,17 @@ namespace PamelloV6.API.Model.Audio
 
 			Position.TimeValue = _audioStream.Position;
 		}
+		public void RewindTo(AudioTime time) {
+			if (time.TimeValue > Duration.TimeValue) return;
+
+			Position.TimeValue = time.TimeValue;
+			if (_audioStream is not null) {
+                _audioStream.Position = time.TimeValue;
+            }
+        }
+        public void RewindToEpisode(PamelloEpisode episode) {
+			RewindTo(episode.Start);
+		}
 
         public async Task<MemoryStream?> CreateAudioStream() {
             if (!Song.IsDownloaded) {
