@@ -406,6 +406,9 @@ select::-ms-expand {
 	grid-template-columns: 1fr auto auto;
 	background-color: #F0F0F0;
 }
+.episode-title:hover {
+	cursor: pointer;
+}
 .episode-container button {
 	display: none;
 	

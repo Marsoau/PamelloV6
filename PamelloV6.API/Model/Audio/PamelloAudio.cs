@@ -133,7 +133,10 @@ namespace PamelloV6.API.Model.Audio
                 _audioStream.Position = time.TimeValue;
             }
         }
-        public void RewindToEpisode(PamelloEpisode episode) {
+        public void RewindToEpisode(int episodePosition) {
+			var episode = Song.Episodes[episodePosition];
+			if (episode is null) return;
+
 			RewindTo(episode.Start);
 		}
 

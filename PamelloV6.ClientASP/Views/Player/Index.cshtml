@@ -41,7 +41,7 @@
                 <button id="next-button" onclick="nextButtonClick()">F</button>
             </div>
             <div class="player-slider-container player-controls-cell">
-                <input class="slider" id="player-slider" type="range" min="0" max="1" value="0">
+                <input class="slider" id="player-slider" type="range" min="0" max="1" value="0" oninput="SliderTimeChanged()" onchange="SliderTimeSubmited()">
             </div>
         </div>
         <div class="multipage-container player-container">

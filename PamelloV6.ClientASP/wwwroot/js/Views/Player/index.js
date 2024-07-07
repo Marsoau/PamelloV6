@@ -4,6 +4,8 @@ let currentSong = null;
 
 let selectedSong = null;
 
+let isTimeEdit = false;
+
 let songListPage = 0;
 
 let playerSelectElement = document.getElementById("player-select");
@@ -85,6 +87,16 @@ function requestNextButtonClick(songQueuePosition) {
     else {
         InvokeCommand("PlayerQueueRequestNext", { position: songQueuePosition })
     }
+}
+
+function SliderTimeChanged() {
+    isTimeEdit = true;
+    songTimeElement.innerHTML = ToStringTime(songTimeSlider.value);
+}
+function SliderTimeSubmited() {
+    isTimeEdit = false;
+    InvokeCommand("PlayerRewind", { seconds: songTimeSlider.value });
+    UpdatePlayerTime();
 }
 
 function addSelectedSongButtonClick() {
@@ -219,10 +231,13 @@ function UpdatePlayerTime() {
     else {
         songTimeContainerElement.style.display = "block";
     }
-    songTimeElement.innerHTML = ToStringTime(player.currentSongTimePassed);
+
     songDurationElement.innerHTML = ToStringTime(player.currentSongTimeTotal);
     songTimeSlider.max = player.currentSongTimeTotal;
-    songTimeSlider.value = player.currentSongTimePassed;
+    if (!isTimeEdit) {
+        songTimeElement.innerHTML = ToStringTime(player.currentSongTimePassed);
+        songTimeSlider.value = player.currentSongTimePassed;
+    }
 }
 function UpdatePlayerButtons() {
     if (!player) {
@@ -372,7 +387,7 @@ function GetEpisodeHtml(key, episodePosition) {
     return `
     <div class="episode-container" id="${key}-episode-${episodePosition}-container">
         <div class="episode-title-container">
-            <div class="episode-title"></div>
+            <div class="episode-title" onclick="InvokeCommand('PlayerRewindToEpisode', { episodePosition: ${episodePosition} })"></div>
             <button class="episode-title-edit-button">Edit</button>
         </div>
         <div class="episode-time-container">
