@@ -39,7 +39,7 @@ namespace PamelloV6.API.Repositories
 		}
 
 		public PamelloSong? GetByName(string name) {
-			var song = _list.FirstOrDefault(song => song.Title == name);
+			var song = _list.FirstOrDefault(song => song.Name == name);
 			if (song is not null) return song;
 
 			var entity = _databaseSongs.FirstOrDefault(song => song.Title == name);

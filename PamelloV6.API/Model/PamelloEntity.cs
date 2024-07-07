@@ -16,6 +16,7 @@ namespace PamelloV6.API.Model
 		protected readonly PamelloPlaylistRepository _playlists;
 
 		public abstract int Id { get; }
+		public abstract string Name { get; set; }
 
 		public PamelloEntity(IServiceProvider services) {
 			_database = services.GetRequiredService<DatabaseContext>();

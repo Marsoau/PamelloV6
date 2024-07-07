@@ -17,7 +17,7 @@ namespace PamelloV6.API.Model
 		public override int Id {
 			get => Entity.Id;
 		}
-		public string Title {
+		public override string Name {
 			get => Entity.Title;
 			set {
 				Entity.Title = value;
@@ -26,7 +26,7 @@ namespace PamelloV6.API.Model
                 SendUpdate("updatedSong");
                 _events.SendToAll("updatedSongTitle", new {
                     songId = Id,
-                    newValue = Title
+                    newValue = Name
                 });
             }
 		}
@@ -145,13 +145,13 @@ namespace PamelloV6.API.Model
 		}
 
 		public override string ToString() {
-			return $"[S: {Id}] {Title}";
+			return $"[S: {Id}] {Name}";
 		}
 
 		public override object GetDTO() {
 			return new SongDTO() {
 				Id = Id,
-				Title = Title,
+				Title = Name,
 				Author = Author,
 				CoverUrl = CoverUrl,
 				SourceUrl = SourceUrl,

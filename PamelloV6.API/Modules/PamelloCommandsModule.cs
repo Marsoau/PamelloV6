@@ -103,12 +103,7 @@ namespace PamelloV6.API.Modules
         public async Task PlayerRewindToEpisode(int episodePosition) {
             RequireUser();
 
-			var episode = updatedPlayer.Queue.Current?.Song.Episodes[episodePosition];
-			if (episode is null) {
-				return;
-			}
-
-            updatedPlayer.Queue.Current?.RewindToEpisode(episode);
+            updatedPlayer.Queue.Current?.RewindToEpisode(episodePosition);
         }
 
         public async Task PlayerQueueShuffle() => throw new NotImplementedException();
@@ -170,7 +165,6 @@ namespace PamelloV6.API.Modules
 
 			return song;
 		}
-		public async Task SongAdd(string name, string author, string coverUrl, string souceUrl) => throw new NotImplementedException();
 		public async Task SongEdit(int songId, string propertyName, string newValue) {
 			RequireUser();
 

@@ -13,7 +13,7 @@ namespace PamelloV6.API.Model
 			get => Entity.Id;
 		}
 
-		public string Name {
+		public override string Name {
 			get => Entity.Name;
 			set {
 				Entity.Name = value;

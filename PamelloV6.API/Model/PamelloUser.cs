@@ -15,7 +15,12 @@ namespace PamelloV6.Server.Model
 			get => Entity.Id;
 		}
 
-		public Guid Token {
+        public override string Name {
+			get => DiscordUser.GlobalName;
+			set => throw new NotImplementedException();
+		}
+
+        public Guid Token {
 			get => Entity.Token;
 		}
 

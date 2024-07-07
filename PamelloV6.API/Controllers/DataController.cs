@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PamelloV6.API.Model;
+using PamelloV6.API.Model.Responses;
 using PamelloV6.API.Repositories;
 using PamelloV6.Core.Abstract;
 using PamelloV6.DAL;
@@ -33,98 +34,129 @@ namespace PamelloV6.API.Controllers
 			_players = player;
 		}
 
-        [HttpGet("User")]
-        public IActionResult GetUser() {
-            if (Request.Query.TryGetValue("token", out var tokenValues)) {
-                return HandleGetUserByTokenRequest(tokenValues.FirstOrDefault() ?? "");
-            }
-            else {
-                return HandleGetByIdRequest(_users);
-            }
-        }
-        [HttpGet("AllUsers")]
-        public IActionResult GetAllUsers() {
-            return HandleGetAllRequest(_users);
-        }
-        [HttpGet("Song")]
-        public IActionResult GetSong() {
-            return HandleGetByIdRequest(_songs);
-        }
-        [HttpGet("AllSongs")]
-        public IActionResult GetAllSongs() {
-            return HandleGetAllRequest(_songs);
-        }
-        [HttpGet("Episode")]
-        public IActionResult GetEpisode() {
-            return HandleGetByIdRequest(_episodes);
-        }
-        [HttpGet("AllEpisodes")]
-        public IActionResult GetAllEpisodes() {
-            return HandleGetAllRequest(_episodes);
-        }
-        [HttpGet("Playlist")]
-        public IActionResult GetPlaylist() {
-            return HandleGetByIdRequest(_playlists);
-        }
-        [HttpGet("AllPlaylists")]
-        public IActionResult GetAllPlaylists() {
-            return HandleGetAllRequest(_playlists);
-        }
-        [HttpGet("Player")]
-        public IActionResult GetPlayer() {
-            return HandleGetByIdRequest(_players);
-        }
-        [HttpGet("AllPlayers")]
-        public IActionResult GetAllPlayers() {
-            return HandleGetAllRequest(_players);
-        }
+		[HttpGet("User")]
+		public IActionResult GetUser() {
+			if (Request.Query.TryGetValue("token", out var tokenValues)) {
+				return HandleGetUserByTokenRequest(tokenValues.FirstOrDefault() ?? "");
+			}
+			else {
+				return HandleGetByIdRequest(_users);
+			}
+		}
+		[HttpGet("Users/Search")]
+		public IActionResult UsersSeach() {
+			return HandleGetSearchRequest(_users);
+		}
+		[HttpGet("Users/Info")]
+		public IActionResult UsersInfo() {
+			return HandleGetInfoRequest(_users);
+		}
+		//
+		[HttpGet("Song")]
+		public IActionResult GetSong() {
+			return HandleGetByIdRequest(_songs);
+		}
+		[HttpGet("Songs/Search")]
+		public IActionResult SongsSearch() {
+			return HandleGetSearchRequest(_songs);
+		}
+		[HttpGet("Songs/Info")]
+		public IActionResult SongsInfo() {
+			return HandleGetInfoRequest(_songs);
+		}
+		[HttpGet("Episode")]
+		public IActionResult GetEpisode() {
+			return HandleGetByIdRequest(_episodes);
+		}
+		[HttpGet("Episodes/Search")]
+		public IActionResult EpisodesSearch() {
+			return HandleGetSearchRequest(_episodes);
+		}
+		[HttpGet("Episodes/Info")]
+		public IActionResult EpisodesInfo() {
+			return HandleGetInfoRequest(_episodes);
+		}
+		[HttpGet("Playlist")]
+		public IActionResult GetPlaylist() {
+			return HandleGetByIdRequest(_playlists);
+		}
+		[HttpGet("Playlists/Search")]
+		public IActionResult PlaylistsSearch() {
+			return HandleGetSearchRequest(_playlists);
+		}
+		[HttpGet("Playlists/Info")]
+		public IActionResult PlaylistsInfo() {
+			return HandleGetInfoRequest(_playlists);
+		}
+		[HttpGet("Player")]
+		public IActionResult GetPlayer() {
+			return HandleGetByIdRequest(_players);
+		}
+		[HttpGet("Players/Search")]
+		public IActionResult PlayersSearch() {
+			return HandleGetSearchRequest(_players);
+		}
+		[HttpGet("Players/Info")]
+		public IActionResult PlayersInfo() {
+			return HandleGetInfoRequest(_players);
+		}
 
-        private IActionResult HandleGetByIdRequest<T>(PamelloRepository<T> _repository) where T : PamelloEntity {
-            var qId = Request.Query["id"].FirstOrDefault();
-            if (qId is null) {
-                return BadRequest("Id required");
-            }
+		private IActionResult HandleGetByIdRequest<T>(PamelloRepository<T> _repository) where T : PamelloEntity {
+			var qId = Request.Query["id"].FirstOrDefault();
+			if (qId is null) {
+				return BadRequest("Id required");
+			}
 
-            if (!int.TryParse(qId, out int id)) {
-                return BadRequest("Id must be an integer number");
-            }
+			if (!int.TryParse(qId, out int id)) {
+				return BadRequest("Id must be an integer number");
+			}
 
-            var pamelloEntity = _repository.Get(id);
-            if (pamelloEntity is null) return NotFound();
+			var pamelloEntity = _repository.Get(id);
+			if (pamelloEntity is null) return NotFound();
 
-            return Ok(pamelloEntity.GetDTO());
-        }
+			return Ok(pamelloEntity.GetDTO());
+		}
 
-        private IActionResult HandleGetAllRequest<T>(PamelloRepository<T> _repository) where T : PamelloEntity {
-            var qPage = Request.Query["page"].FirstOrDefault();
-            if (qPage is null) {
-                return BadRequest("Page required");
-            }
-            var qCount = Request.Query["count"].FirstOrDefault();
-            if (qCount is null) {
-                return BadRequest("Count required");
-            }
+		private IActionResult HandleGetSearchRequest<T>(PamelloRepository<T> _repository) where T : PamelloEntity {
+			var qSearch = Request.Query["q"].FirstOrDefault();
+			var qPage = Request.Query["page"].FirstOrDefault();
+			if (qPage is null) {
+				return BadRequest("Page required");
+			}
+			var qCount = Request.Query["count"].FirstOrDefault();
+			if (qCount is null) {
+				return BadRequest("Count required");
+			}
 
-            if (!int.TryParse(qPage, out int page)) {
-                return BadRequest("Page must be an integer number");
-            }
-            if (!int.TryParse(qCount, out int count)) {
-                return BadRequest("Count must be an integer number");
-            }
+			if (!int.TryParse(qPage, out int page)) {
+				return BadRequest("Page must be an integer number");
+			}
+			if (!int.TryParse(qCount, out int count)) {
+				return BadRequest("Count must be an integer number");
+			}
 
-            var pamelloEntities = _repository.GetAll(page, count);
-            return Ok(pamelloEntities.Select(pamelloEntity => pamelloEntity.GetDTO()));
-        }
+			var pamelloEntities = _repository.Search(page, count, qSearch);
+			return Ok(new {
+				pagesCount = pamelloEntities.PagesCount,
+				results = pamelloEntities.Results.Select(pamelloEntity => pamelloEntity.GetDTO())
+			});
+		}
 
-        private IActionResult HandleGetUserByTokenRequest(string qToken) {
-            if (!Guid.TryParse(qToken, out var token)) {
-                return BadRequest("Invalid token format");
-            }
+		private IActionResult HandleGetInfoRequest<T>(PamelloRepository<T> _repository) where T : PamelloEntity {
+			return Ok(new {
+				count = _repository.Size
+			});
+		}
 
-            var user = _users.Get(token);
-            if (user is null) return NotFound();
+		private IActionResult HandleGetUserByTokenRequest(string qToken) {
+			if (!Guid.TryParse(qToken, out var token)) {
+				return BadRequest("Invalid token format");
+			}
 
-            return Ok(user.GetDTO());
-        }
-    }
+			var user = _users.Get(token);
+			if (user is null) return NotFound();
+
+			return Ok(user.GetDTO());
+		}
+	}
 }

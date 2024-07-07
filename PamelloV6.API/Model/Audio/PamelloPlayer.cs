@@ -9,7 +9,7 @@ namespace PamelloV6.API.Model.Audio
         public override int Id { get; }
 
         private string _name;
-        public string Name {
+        public override string Name {
             get => _name;
             set {
                 _name = value;
