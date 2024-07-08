@@ -1,6 +1,7 @@
 ﻿using Discord.WebSocket;
 using PamelloV6.API.Model;
 using PamelloV6.API.Model.Audio;
+using PamelloV6.API.Model.Events;
 using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
@@ -17,7 +18,7 @@ namespace PamelloV6.Server.Model
 
         public override string Name {
 			get => DiscordUser.GlobalName;
-			set => throw new NotImplementedException();
+			set { }
 		}
 
         public Guid Token {
@@ -30,7 +31,7 @@ namespace PamelloV6.Server.Model
 				Entity.IsAdministrator = value;
 				Save();
 
-                _events.SendToOne(Id, "updatedIsAdministrator", selectedPlayer?.Id);
+                _events.SendToAll(PamelloEvent.UserAdministratorStateUpdated(Id, IsAdministrator));
             }
 		}
 
@@ -40,11 +41,11 @@ namespace PamelloV6.Server.Model
 		}
 
 		private PamelloPlayer? _selectedPlayer;
-		public PamelloPlayer? selectedPlayer {
+		public PamelloPlayer? SelectedPlayer {
 			get => _selectedPlayer;
 			set {
 				_selectedPlayer = value;
-				_events.SendToOne(Id, "updatedSelectedPlayer", selectedPlayer?.Id);
+				_events.SendToOne(Id, PamelloEvent.UserPlayerSelected(SelectedPlayer?.Id));
             }
 		}
 
@@ -69,7 +70,7 @@ namespace PamelloV6.Server.Model
                 Name = DiscordUser.GlobalName,
                 CoverUrl = DiscordUser.GetAvatarUrl(),
                 DiscordId = DiscordUser.Id,
-				SelectedPlayerId = selectedPlayer?.Id,
+				SelectedPlayerId = SelectedPlayer?.Id,
 				IsAdministrator = IsAdministrator,
 
 				OwnedPlaylistIds = OwnedPlaylists?.Select(playlist => playlist.Id) ?? [],

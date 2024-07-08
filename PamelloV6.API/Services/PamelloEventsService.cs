@@ -1,7 +1,7 @@
-﻿using PamelloV6.API.Events;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Reflection.PortableExecutable;
 using PamelloV6.Server.Model;
+using PamelloV6.API.Model.Events;
 
 namespace PamelloV6.API.Services
 {
@@ -23,19 +23,19 @@ namespace PamelloV6.API.Services
             _listeners.Remove(listener);
         }
 
-        public void SendToAll(string header, object? data) {
+        public void SendToAll(PamelloEvent pamelloEvent) {
             foreach (var listener in _listeners) {
-                listener.SendEvent(header, data);
+                listener.SendEvent(pamelloEvent);
             }
         }
-        public void SendToOne(int userId, string header, object? data) {
+        public void SendToOne(int userId, PamelloEvent pamelloEvent) {
             foreach (var listener in _listeners) {
-                if (listener.User.Id == userId) listener.SendEvent(header, data);
+                if (listener.User.Id == userId) listener.SendEvent(pamelloEvent);
             }
         }
-        public void SendToAllWithSelectedPlayer(int updatedPlayerId, string header, object? data) {
+        public void SendToAllWithSelectedPlayer(int updatedPlayerId, PamelloEvent pamelloEvent) {
             foreach (var listener in _listeners) {
-                if (listener.User.selectedPlayer?.Id == updatedPlayerId) listener.SendEvent(header, data);
+                if (listener.User.SelectedPlayer?.Id == updatedPlayerId) listener.SendEvent(pamelloEvent);
             }
         }
     }

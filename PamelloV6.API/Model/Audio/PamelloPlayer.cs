@@ -1,4 +1,6 @@
-﻿using Discord.WebSocket;
+﻿using AngleSharp.Dom.Events;
+using Discord.WebSocket;
+using PamelloV6.API.Model.Events;
 using PamelloV6.Core.DTO;
 
 namespace PamelloV6.API.Model.Audio
@@ -14,10 +16,7 @@ namespace PamelloV6.API.Model.Audio
             set {
                 _name = value;
 
-                _events.SendToAll("updatedPlayerName", new {
-                    playerId = Id,
-                    newValue = Name
-                });
+                _events.SendToAll(PamelloEvent.PlayerNameUpdated(Id, Name));
             }
         }
 
@@ -30,7 +29,7 @@ namespace PamelloV6.API.Model.Audio
             set {
                 _isPaused = value;
 
-                _events.SendToAllWithSelectedPlayer(Id, "updatedPlayerIsPaused", IsPaused);
+                _events.SendToAllWithSelectedPlayer(Id, PamelloEvent.PlayerPauseUpdated(IsPaused));
             }
         }
 

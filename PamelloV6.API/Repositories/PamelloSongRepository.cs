@@ -48,7 +48,7 @@ namespace PamelloV6.API.Repositories
 			return Load(entity);
 		}
 		public PamelloSong? GetBySource(string sourceUrl) {
-			var song = _list.FirstOrDefault(song => song.SourceUrl == sourceUrl);
+			var song = _list.FirstOrDefault(song => song.YoutubeId == sourceUrl);
 			if (song is not null) return song;
 
 			var entity = _databaseSongs.FirstOrDefault(song => song.SourceUrl == sourceUrl);
@@ -58,7 +58,7 @@ namespace PamelloV6.API.Repositories
 		}
 
 		public async Task<PamelloSong> Add(string youtubeId) {
-			var song = _list.FirstOrDefault(song => song.SourceUrl == $"https://www.youtube.com/watch?v={youtubeId}");
+			var song = _list.FirstOrDefault(song => song.YoutubeId == $"https://www.youtube.com/watch?v={youtubeId}");
 			if (song is not null) return song;
 
 			YoutubeVideoInfo youtubeInfo;

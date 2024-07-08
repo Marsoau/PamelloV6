@@ -1,4 +1,5 @@
-﻿using PamelloV6.Core.DTO;
+﻿using PamelloV6.API.Model.Events;
+using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
 using PamelloV6.Server.Model;
@@ -19,11 +20,9 @@ namespace PamelloV6.API.Model
 				Entity.Name = value;
 				Save();
 
-                SendUpdate("updatedPlaylist");
-                _events.SendToAll("updatedPlaylistName", new {
-                    playlistId = Id,
-                    newValue = Name
-                });
+                _events.SendToAll(
+					PamelloEvent.PlaylistNameUpdated(Id, Name)
+				);
             }
 		}
 		public PamelloUser Owner {
@@ -36,10 +35,9 @@ namespace PamelloV6.API.Model
 				Save();
 
                 SendUpdate("updatedPlaylist");
-                _events.SendToAll("updatedPlaylistIsProtected", new {
-                    playlistId = Id,
-                    newValue = IsProtected
-                });
+                _events.SendToAll(
+                    PamelloEvent.PlaylistProtectionUpdated(Id, IsProtected)
+                );
             }
 		}
 
@@ -58,29 +56,33 @@ namespace PamelloV6.API.Model
 			Entity.Songs.Add(song.Entity);
             Save();
 
-            SendUpdate("updatedPlaylist");
-            _events.SendToAll("updatedPlaylistSongs", Songs);
+            _events.SendToAll(
+                PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
+            );
         }
 		public void AddSongs(IEnumerable<PamelloSong> songs) {
 			Entity.Songs.AddRange(songs.Select(song => song.Entity));
 			Save();
 
-            SendUpdate("updatedPlaylist");
-            _events.SendToAll("updatedPlaylistSongs", Songs);
+            _events.SendToAll(
+                PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
+            );
         }
 		public void InsertSong(int position, PamelloSong song) {
 			Entity.Songs.Insert(position, song.Entity);
 			Save();
 
-            SendUpdate("updatedPlaylist");
-            _events.SendToAll("updatedPlaylistSongs", Songs);
+            _events.SendToAll(
+                PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
+            );
         }
 		public void RemoveSong(int position) {
 			Entity.Songs.RemoveAt(position);
 			Save();
 
-            SendUpdate("updatedPlaylist");
-            _events.SendToAll("updatedPlaylistSongs", Songs);
+            _events.SendToAll(
+                PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
+            );
         }
 
 		public override object GetDTO() {

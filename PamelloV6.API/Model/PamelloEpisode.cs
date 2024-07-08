@@ -1,7 +1,9 @@
 ﻿using PamelloV6.API.Model.Audio;
+using PamelloV6.API.Model.Events;
 using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
+using System.Xml.Linq;
 
 namespace PamelloV6.API.Model
 {
@@ -19,11 +21,9 @@ namespace PamelloV6.API.Model
 				Entity.Name = value;
 
 				Save();
-				SendUpdate("updatedEpisode");
-                _events.SendToAll("updatedEpisodeName", new {
-                    songId = Id,
-                    newValue = Name
-                });
+				_events.SendToAll(
+					PamelloEvent.EpisodeNameUpdated(Id, Name)
+				);
             }
 		}
 
@@ -33,11 +33,9 @@ namespace PamelloV6.API.Model
 				Entity.Start = value.TotalSeconds;
 
                 Save();
-                SendUpdate("updatedEpisode");
-                _events.SendToAll("updatedEpisodeStart", new {
-                    songId = Id,
-                    newValue = Start.TotalSeconds
-                });
+                _events.SendToAll(
+                    PamelloEvent.EpisodeStartUpdated(Id, Start.TotalSeconds)
+                );
             }
 		}
 
@@ -51,11 +49,9 @@ namespace PamelloV6.API.Model
 				Entity.Skip = value;
 
                 Save();
-                SendUpdate("updatedEpisode");
-                _events.SendToAll("updatedEpisodeSkip", new {
-                    songId = Id,
-                    newValue = Skip
-                });
+                _events.SendToAll(
+                    PamelloEvent.EpisodeSkipStateUpdated(Id, Skip)
+                );
             }
 		}
 

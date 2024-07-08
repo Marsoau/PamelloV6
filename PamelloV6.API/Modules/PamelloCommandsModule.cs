@@ -24,7 +24,7 @@ namespace PamelloV6.API.Modules
 
 		public PamelloPlayer updatedPlayer {
 			get => (_user ?? throw new Exception("User required"))
-				.selectedPlayer ?? throw new Exception("Selected player required");
+				.SelectedPlayer ?? throw new Exception("Selected player required");
 		}
 
 		public PamelloCommandsModule(
@@ -50,12 +50,12 @@ namespace PamelloV6.API.Modules
 			RequireUser();
 
 			if (playerId is null) {
-                User.selectedPlayer = null;
+                User.SelectedPlayer = null;
                 return;
 			}
 
 			var player = _players.GetRequired(playerId.Value);
-			User.selectedPlayer = player;
+			User.SelectedPlayer = player;
 		}
 		public async Task PlayerRename(string newName) {
 			RequireUser();

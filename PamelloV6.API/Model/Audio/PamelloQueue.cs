@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Dom.Events;
 using AngleSharp.Text;
+using PamelloV6.API.Model.Events;
 using PamelloV6.API.Repositories;
 using PamelloV6.API.Services;
 
@@ -22,8 +23,7 @@ namespace PamelloV6.API.Model.Audio
 
                 _events.SendToAllWithSelectedPlayer(
 					_parentPlayer.Id,
-                    "updatedPlayerQueuePosition",
-                    Position
+					PamelloEvent.PlauerQueuePositionUpdated(Position)
                 );
             }
         }
@@ -39,8 +39,7 @@ namespace PamelloV6.API.Model.Audio
 
                 _events.SendToAllWithSelectedPlayer(
                     _parentPlayer.Id,
-                    "updatedPlayerQueueIsRandom",
-                    IsRandom
+					PamelloEvent.PlayerQueueIsRandomUpdated(IsRandom)
                 );
             }
         }
@@ -51,8 +50,7 @@ namespace PamelloV6.API.Model.Audio
 
                 _events.SendToAllWithSelectedPlayer(
                     _parentPlayer.Id,
-                    "updatedPlayerQueueIsReversed",
-                    IsReversed
+                    PamelloEvent.PlayerQueueIsReversedUpdated(IsReversed)
                 );
             }
 		}
@@ -63,8 +61,7 @@ namespace PamelloV6.API.Model.Audio
 
                 _events.SendToAllWithSelectedPlayer(
                     _parentPlayer.Id,
-                    "updatedPlayerQueueIsNoLeftovers",
-                    IsNoLeftovers
+                    PamelloEvent.PlayerQueueIsNoLeftoversUpdated(IsNoLeftovers)
                 );
             }
 		}
@@ -77,8 +74,7 @@ namespace PamelloV6.API.Model.Audio
 
                 _events.SendToAllWithSelectedPlayer(
                     _parentPlayer.Id,
-                    "updatedPlayerNextPositionRequest",
-                    NextPositionRequest
+                    PamelloEvent.PlayerQueueNextPositionUpdated(NextPositionRequest)
                 );
             }
 		}
@@ -92,29 +88,33 @@ namespace PamelloV6.API.Model.Audio
                     _current.Duration.OnSecondTick -= OnCurrentDurationSecondTick;
                 }
                 _current?.Clean();
-
 				_current = value;
+
+				_events.SendToAllWithSelectedPlayer(
+                    _parentPlayer.Id,
+                    PamelloEvent.PlauerQueueSongUpdated(Current?.Song.Id)
+                );
+
 				if (_current is not null) {
 					_current.Position.OnSecondTick += OnCurrentPositionSecondTick;
                     _current.Duration.OnSecondTick += OnCurrentDurationSecondTick;
-					OnCurrentDurationSecondTick();
-					OnCurrentPositionSecondTick();
                 }
+
+                OnCurrentDurationSecondTick();
+                OnCurrentPositionSecondTick();
             }
 		}
 
         public void OnCurrentDurationSecondTick() {
             _events.SendToAllWithSelectedPlayer(
                 _parentPlayer.Id,
-                "updatedPlayerCurrentSongTimeTotal",
-                _current.Duration.TotalSeconds
+				PamelloEvent.PlayerCurrentTimeUpdated(Current?.Duration.TotalSeconds ?? 0)
             );
         }
         public void OnCurrentPositionSecondTick() {
             _events.SendToAllWithSelectedPlayer(
                 _parentPlayer.Id,
-                "updatedPlayerCurrentSongTimePassed",
-                _current.Position.TotalSeconds
+                PamelloEvent.PlayerCurrentTimeUpdated(Current?.Position.TotalSeconds ?? 0)
             );
         }
 
@@ -151,8 +151,9 @@ namespace PamelloV6.API.Model.Audio
         private void SendQueueUpdatedEvent() {
 			_events.SendToAllWithSelectedPlayer(
 				_parentPlayer.Id,
-                "updatedPlayerQueueSongIds",
-                SongAudios.Select(audio => audio.Song.Id)
+				PamelloEvent.PlauerQueueListUpdated(
+					SongAudios.Select(audio => audio.Song.Id)
+				)
 			);
         }
 

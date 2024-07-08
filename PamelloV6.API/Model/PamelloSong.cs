@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Dom;
 using PamelloV6.API.Downloads;
+using PamelloV6.API.Model.Events;
 using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
@@ -23,11 +24,9 @@ namespace PamelloV6.API.Model
 				Entity.Title = value;
                 Save();
 
-                SendUpdate("updatedSong");
-                _events.SendToAll("updatedSongTitle", new {
-                    songId = Id,
-                    newValue = Name
-                });
+				_events.SendToAll(
+					PamelloEvent.SongNameUpdated(Id, Name)
+				);
             }
 		}
 		public string Author {
@@ -36,11 +35,9 @@ namespace PamelloV6.API.Model
 				Entity.Author = value;
 				Save();
 
-                SendUpdate("updatedSong");
-                _events.SendToAll("updatedSongAuthor", new {
-                    songId = Id,
-                    newValue = Author
-                });
+                _events.SendToAll(
+                    PamelloEvent.SongAuthorUpdated(Id, Author)
+                );
             }
 		}
 		public string CoverUrl { //remove
@@ -50,7 +47,7 @@ namespace PamelloV6.API.Model
 				Save();
             }
 		}
-		public string SourceUrl { //change
+		public string YoutubeId { //change
 			get => Entity.SourceUrl;
 			set {
 				Entity.SourceUrl = value;
@@ -63,11 +60,9 @@ namespace PamelloV6.API.Model
                 Entity.PlayCount = value;
 				Save();
 
-                SendUpdate("updatedSong");
-                _events.SendToAll("updatedSongPlayCount", new {
-					songId = Id,
-					newValue = PlayCount
-				});
+                _events.SendToAll(
+                    PamelloEvent.SongPlayCountUpdated(Id, PlayCount)
+                );
             }
 		}
 
@@ -103,8 +98,7 @@ namespace PamelloV6.API.Model
 
 			Console.WriteLine($"Starting download of song {this}");
 
-            SendUpdate("updatedSong");
-            _events.SendToAll("songDownloadingStarted", Id);
+            _events.SendToAll(PamelloEvent.SongDownloadStarted(Id));
         }
 
 		private void Downloader_OnEnd(DownloadResult downloadResult) {
@@ -112,11 +106,7 @@ namespace PamelloV6.API.Model
 			_downloadTask = null;
 			Save();
 
-            SendUpdate("updatedSong");
-            _events.SendToAll("songDownloadingEnded", new {
-				songId = Id,
-                downloadResult = downloadResult
-            });
+            _events.SendToAll(PamelloEvent.SongDownloadEnded(Id, downloadResult));
         }
 
 		public Task<DownloadResult> StartDownload(bool forceDownload = false) {
@@ -128,7 +118,7 @@ namespace PamelloV6.API.Model
 				return _downloadTask;
 			}
 
-			var souceUri = new Uri(SourceUrl);
+			var souceUri = new Uri(YoutubeId);
 			if (!(souceUri.Host is "www.youtube.com" or "youtu.be")) {
 				throw new Exception("Only youtube source are suported for auto downloading");
 			}
@@ -154,7 +144,7 @@ namespace PamelloV6.API.Model
 				Title = Name,
 				Author = Author,
 				CoverUrl = CoverUrl,
-				SourceUrl = SourceUrl,
+				SourceUrl = YoutubeId,
 				PlayCount = PlayCount,
 				IsDownloaded = IsDownloaded,
 
