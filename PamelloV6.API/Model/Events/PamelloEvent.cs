@@ -27,7 +27,7 @@ namespace PamelloV6.API.Model.Events
         //Player events
         public static PamelloEvent PlayerNameUpdated(int playerId, string newName)
             => new PamelloEvent() {
-                Header = "TokenUpdated",
+                Header = "PlayerNameUpdated",
                 Data = new {
                     playerId,
                     newName
@@ -35,70 +35,190 @@ namespace PamelloV6.API.Model.Events
             };
 
         public static PamelloEvent PlayerPauseUpdated(bool newState)
-            => new PamelloEvent();
-        public static PamelloEvent PlayerCurrentTimeUpdated(int seconds)
-            => new PamelloEvent();
-        public static PamelloEvent PlayerTotalTimeUpdated(int seconds)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "PlayerPauseUpdated",
+                Data = newState
+            };
+        public static PamelloEvent PlayerCurrentTimeUpdated(int newSeconds)
+            => new PamelloEvent() {
+                Header = "PlayerCurrentTimeUpdated",
+                Data = newSeconds
+            };
+        public static PamelloEvent PlayerTotalTimeUpdated(int newSeconds)
+            => new PamelloEvent() {
+                Header = "PlayerTotalTimeUpdated",
+                Data = newSeconds
+            };
 
         //Player Queue events
         public static PamelloEvent PlauerQueuePositionUpdated(int newPosition)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "PlauerQueuePositionUpdated",
+                Data = newPosition
+            };
         public static PamelloEvent PlauerQueueSongUpdated(int? newSongId)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "PlauerQueueSongUpdated",
+                Data = newSongId
+            };
         public static PamelloEvent PlauerQueueListUpdated(IEnumerable<int> songsIds)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "PlauerQueueListUpdated",
+                Data = songsIds
+            };
         public static PamelloEvent PlayerQueueIsRandomUpdated(bool newState)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "PlayerQueueIsRandomUpdated",
+                Data = newState
+            };
         public static PamelloEvent PlayerQueueIsReversedUpdated(bool newState)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "PlayerQueueIsReversedUpdated",
+                Data = newState
+            };
         public static PamelloEvent PlayerQueueIsNoLeftoversUpdated(bool newState)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "PlayerQueueIsNoLeftoversUpdated",
+                Data = newState
+            };
         public static PamelloEvent PlayerQueueNextPositionUpdated(int? nextPositionRequest)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "PlayerQueueNextPositionUpdated",
+                Data = nextPositionRequest
+            };
 
         //Episode events
         public static PamelloEvent EpisodeUpdated(int episodeId)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "EpisodeUpdated",
+                Data = episodeId
+            };
         public static PamelloEvent EpisodeNameUpdated(int episodeId, string newName)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "EpisodeNameUpdated",
+                Data = new {
+                    episodeId,
+                    newName
+                }
+            };
         public static PamelloEvent EpisodeStartUpdated(int episodeId, int newSeconds)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "EpisodeStartUpdated",
+                Data = new {
+                    episodeId,
+                    newSeconds
+                }
+            };
         public static PamelloEvent EpisodeSkipStateUpdated(int episodeId, bool newState)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "EpisodeSkipStateUpdated",
+                Data = new {
+                    episodeId,
+                    newState
+                }
+            };
 
         //Playlist events
         public static PamelloEvent PlaylistUpdated(int playlistId)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "PlaylistUpdated",
+                Data = playlistId
+            };
         public static PamelloEvent PlaylistNameUpdated(int playlistId, string newName)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "PlaylistNameUpdated",
+                Data = new {
+                    playlistId,
+                    newName
+                }
+            };
         public static PamelloEvent PlaylistProtectionUpdated(int playlistId, bool newState)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "PlaylistProtectionUpdated",
+                Data = new {
+                    playlistId,
+                    newState
+                }
+            };
         public static PamelloEvent PlaylistSongsUpdated(int playlistId, IEnumerable<int> newSongsIds)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "PlaylistSongsUpdated",
+                Data = new {
+                    playlistId,
+                    newSongsIds
+                }
+            };
 
         //Song events
         public static PamelloEvent SongUpdated(int songId)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "SongUpdated",
+                Data = songId
+            };
         public static PamelloEvent SongNameUpdated(int songId, string newName)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "SongNameUpdated",
+                Data = new {
+                    songId,
+                    newName
+                }
+            };
         public static PamelloEvent SongAuthorUpdated(int songId, string newAuthor)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "SongAuthorUpdated",
+                Data = new {
+                    songId,
+                    newAuthor
+                }
+            };
         public static PamelloEvent SongPlayCountUpdated(int songId, int newCount)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "SongPlayCountUpdated",
+                Data = new {
+                    songId,
+                    newCount
+                }
+            };
         public static PamelloEvent SongDownloadStarted(int songId)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "SongDownloadStarted",
+                Data = songId
+            };
         public static PamelloEvent SongDownloadEnded(int songId, DownloadResult result)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "SongDownloadEnded",
+                Data = new {
+                    songId,
+                    result
+                }
+            };
 
         //User events
         public static PamelloEvent UserUpdated(int userId)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "UserUpdated",
+                Data = userId
+            };
         public static PamelloEvent UserNameUpdated(int userId, string newName)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "UserNameUpdated",
+                Data = new {
+                    userId,
+                    newName
+                }
+            };
         public static PamelloEvent UserPlayerSelected(int? newPlayerId)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "UserPlayerSelected",
+                Data = newPlayerId
+            };
         public static PamelloEvent UserAdministratorStateUpdated(int userId, bool newState)
-            => new PamelloEvent();
+            => new PamelloEvent() {
+                Header = "UserAdministratorStateUpdated",
+                Data = new {
+                    userId,
+                    newState
+                }
+            };
     }
 }
