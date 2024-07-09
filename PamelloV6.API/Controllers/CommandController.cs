@@ -43,7 +43,7 @@ namespace PamelloV6.API.Controllers
 
 			var user = _users.Get(userToken);
 			if (user is null) {
-				return NotFound($"Cant get user by {userToken} token");
+				return Unauthorized($"Cant get user by {userToken} token");
 			}
 
 			_commands.User = user;
