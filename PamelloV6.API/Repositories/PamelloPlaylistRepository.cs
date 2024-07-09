@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using PamelloV6.API.Model;
 using PamelloV6.Server.Model;
 using Discord;
+using AngleSharp.Dom.Events;
+using PamelloV6.API.Model.Events;
 
 namespace PamelloV6.API.Repositories
 {
@@ -43,7 +45,7 @@ namespace PamelloV6.API.Repositories
 
             var playlist = Load(playlistEntity);
 
-            _events.SendToAll("playlistCreated", playlist.Id);
+			_events.SendToAll(PamelloEvent.PlaylistCreated(playlist.Id));
 
             return playlist;
 		}

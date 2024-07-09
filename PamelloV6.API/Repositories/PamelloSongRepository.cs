@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Microsoft.EntityFrameworkCore;
 using PamelloV6.API.Model;
+using PamelloV6.API.Model.Events;
 using PamelloV6.API.Services;
 using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
@@ -90,7 +91,7 @@ namespace PamelloV6.API.Repositories
 
             song = Load(entity);
 
-            _events.SendToAll("songCreated", song.Id);
+            _events.SendToAll(PamelloEvent.SongCreated(song.Id));
 
             return Load(entity);
 		}

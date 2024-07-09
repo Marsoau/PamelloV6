@@ -35,7 +35,7 @@ namespace PamelloV6.API.Model.Audio
 
         public PamelloPlayer(string name, IServiceProvider services) : base(services) {
             Id = nextId++;
-            Name = name;
+            _name = name;
 
             var discordClient = services.GetRequiredService<DiscordSocketClient>();
 

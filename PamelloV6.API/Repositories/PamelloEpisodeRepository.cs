@@ -3,6 +3,7 @@ using PamelloV6.API.Services;
 using PamelloV6.DAL.Entity;
 using PamelloV6.DAL;
 using Microsoft.EntityFrameworkCore;
+using PamelloV6.API.Model.Events;
 
 namespace PamelloV6.API.Repositories
 {
@@ -41,7 +42,7 @@ namespace PamelloV6.API.Repositories
 
 			var episode = Load(episodeEntity);
 
-            _events.SendToAll("episodeCreated", episode.Id);
+            _events.SendToAll(PamelloEvent.EpisodeCreated(episode.Id));
 
             return episode;
 		}

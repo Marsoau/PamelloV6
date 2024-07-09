@@ -34,7 +34,6 @@ namespace PamelloV6.API.Model
 				Entity.IsProtected = value;
 				Save();
 
-                SendUpdate("updatedPlaylist");
                 _events.SendToAll(
                     PamelloEvent.PlaylistProtectionUpdated(Id, IsProtected)
                 );

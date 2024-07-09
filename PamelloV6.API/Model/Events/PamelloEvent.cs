@@ -25,6 +25,12 @@ namespace PamelloV6.API.Model.Events
             };
 
         //Player events
+        public static PamelloEvent PlayerCreated(int playerId)
+            => new PamelloEvent() {
+                Header = "PlayerCreated",
+                Data = playerId
+            };
+
         public static PamelloEvent PlayerNameUpdated(int playerId, string newName)
             => new PamelloEvent() {
                 Header = "PlayerNameUpdated",
@@ -93,6 +99,11 @@ namespace PamelloV6.API.Model.Events
                 Header = "EpisodeUpdated",
                 Data = episodeId
             };
+        public static PamelloEvent EpisodeCreated(int episodeId)
+            => new PamelloEvent() {
+                Header = "EpisodeCreated",
+                Data = episodeId
+            };
         public static PamelloEvent EpisodeNameUpdated(int episodeId, string newName)
             => new PamelloEvent() {
                 Header = "EpisodeNameUpdated",
@@ -124,6 +135,11 @@ namespace PamelloV6.API.Model.Events
                 Header = "PlaylistUpdated",
                 Data = playlistId
             };
+        public static PamelloEvent PlaylistCreated(int playlistId)
+            => new PamelloEvent() {
+                Header = "PlaylistCreated",
+                Data = playlistId
+            };
         public static PamelloEvent PlaylistNameUpdated(int playlistId, string newName)
             => new PamelloEvent() {
                 Header = "PlaylistNameUpdated",
@@ -153,6 +169,11 @@ namespace PamelloV6.API.Model.Events
         public static PamelloEvent SongUpdated(int songId)
             => new PamelloEvent() {
                 Header = "SongUpdated",
+                Data = songId
+            };
+        public static PamelloEvent SongCreated(int songId)
+            => new PamelloEvent() {
+                Header = "SongCreated",
                 Data = songId
             };
         public static PamelloEvent SongNameUpdated(int songId, string newName)

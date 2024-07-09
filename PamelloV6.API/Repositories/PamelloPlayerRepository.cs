@@ -1,4 +1,5 @@
 ﻿using PamelloV6.API.Model.Audio;
+using PamelloV6.API.Model.Events;
 
 namespace PamelloV6.API.Repositories
 {
@@ -17,7 +18,7 @@ namespace PamelloV6.API.Repositories
 			var player = new PamelloPlayer(name, _services);
 			_list.Add(player);
 
-			_events.SendToAll("playerCreated", player.Id);
+			_events.SendToAll(PamelloEvent.PlayerCreated(player.Id));
 
 			return player;
 		}

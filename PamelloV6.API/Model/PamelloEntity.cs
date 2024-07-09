@@ -30,7 +30,6 @@ namespace PamelloV6.API.Model
 		}
 
 		protected void Save() => _database.SaveChanges();
-		protected void SendUpdate(string header) => _events.SendToAll(header, Id);
 
 		public abstract object GetDTO();
 	}
