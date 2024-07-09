@@ -1,2 +1,12 @@
-<p id="p-test">{{api.authorizedUserToken}}</p>
-<button (click)="ButtonClick()">Make a request</button>
+<div class="main-container">
+    <div class="main-subcontainer main-subcontainer-left">
+        <app-player-selection/>
+        <app-player-controls/>
+        <app-multipage/>
+        <app-user-authorization/>
+    </div>
+    <div class="main-subcontainer main-subcontainer-right">
+        <app-player-queue/>
+        <app-multipage/>
+    </div>
+</div>

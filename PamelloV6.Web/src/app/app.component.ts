@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { PamelloV6API } from '../pamelloV6API';
+import { PlayerSelectionComponent } from "./player-selection/player-selection.component";
+import { PlayerControlsComponent } from "./player-controls/player-controls.component";
+import { MultipageComponent } from "./multipage/multipage.component";
+import { UserAuthorizationComponent } from "./user-authorization/user-authorization.component";
+import { PlayerQueueComponent } from "./player-queue/player-queue.component";
 
 @Component({
 	selector: 'app-root',
 	standalone: true,
-	imports: [RouterOutlet],
+	imports: [RouterOutlet, PlayerSelectionComponent, PlayerControlsComponent, MultipageComponent, UserAuthorizationComponent, PlayerQueueComponent],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.scss'
 })
