@@ -1,6 +1,6 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { lastValueFrom, map } from "rxjs";
+import { catchError, lastValueFrom, map } from "rxjs";
 
 @Injectable({
     providedIn: 'root',
@@ -10,7 +10,6 @@ export class PamelloV6API {
 
     authorizedUser: PamelloUser | null;
     authorizedUserToken: string | null;
-    selectedPlayer: PamelloPlayer | null;
     
     public readonly data: PamelloV6Data;
     public readonly events: PamelloV6Events;
@@ -21,17 +20,16 @@ export class PamelloV6API {
 
         this.data = new PamelloV6Data(http);
         this.events = new PamelloV6Events();
-        this.commands = new PamelloV6Commands(http);
+        this.commands = new PamelloV6Commands(this, http);
 
         this.authorizedUser = null;
-        this.selectedPlayer = null;
         this.authorizedUserToken = null;
 
         this.LoadTokenFromCookies();
         this.AuthorizeUserWithToken();
 
         this.events.UserPlayerSelected = async (playerId: number) => {
-            this.selectedPlayer = await this.data.GetPlayer(playerId);
+            this.authorizedUser!.selectedPlayerId = playerId;
         }
     }
 
@@ -106,6 +104,11 @@ class PamelloV6Data {
         let obs = this.http.get<PamelloPlayer>(`https://localhost:58631/Data/Player?id=${id}`);
         return await lastValueFrom(obs);
     }
+
+    public async SearchPlayers(page: number, count: number, query: string = "") {
+        let obs = this.http.get<SearchResult<PamelloPlayer>>(`https://localhost:58631/Data/Players/Search?q=${query}&page=${page}&count=${count}`);
+        return await lastValueFrom(obs);
+    }
 }
 class PamelloV6Events {
     private readonly events: EventSource;
@@ -126,15 +129,34 @@ class PamelloV6Events {
     }
 }
 class PamelloV6Commands {
+    private readonly api: PamelloV6API;
     private readonly http: HttpClient;
     
-    constructor(http: HttpClient) {
+    constructor(api: PamelloV6API, http: HttpClient) {
+        this.api = api;
         this.http = http;
+    }
+
+    private async InvokeCommand(commandString: string) {
+        return await lastValueFrom(
+            this.http.get(`https://localhost:58631/Command?name=${commandString}`, {
+                headers: new HttpHeaders({
+                    "user-token": this.api.authorizedUserToken ?? ""
+                }) 
+            })
+        )
+    }
+
+    public async PlayerCreate(playerName: string) {
+        return await this.InvokeCommand(`PlayerCreate&playerName=${playerName}`);
+    }
+    public async PlayerSelect(playerId: number | null) {
+        return await this.InvokeCommand(`PlayerSelect&playerId=${playerId ?? ""}`);
     }
 }
 
 
-class PamelloUser {
+export class PamelloUser {
     public id!: number;
     public name!: string;
     public coverUrl!: string;
@@ -143,7 +165,7 @@ class PamelloUser {
     public isAdministrator!: boolean;
     public ownedPlaylistIds!: number[];
 }
-class PamelloSong {
+export class PamelloSong {
     public id!: number;
     public title!: string;
     public author!: string;
@@ -154,21 +176,21 @@ class PamelloSong {
     public episodeIds!: number[];
     public playlistIds!: number[];
 }
-class PamelloEpisode {
+export class PamelloEpisode {
     public id!: number;
     public songId!: number;
     public name!: string;
     public start!: number;
     public skip!: boolean;
 }
-class PamelloPlaylist {
+export class PamelloPlaylist {
     public id!: number;
     public name!: string;
     public ownerId!: number;
     public isProtected!: boolean;
     public songIds!: number;
 }
-class PamelloPlayer {
+export class PamelloPlayer {
     public id!: number;
     public name!: string;
     public isPaused!: boolean;
@@ -180,4 +202,8 @@ class PamelloPlayer {
     public queueIsRandom!: boolean;
     public queueIsReversed!: boolean;
     public queueIsNoLeftovers!: boolean;
+}
+class SearchResult<T> {
+    pagesCount!: number;
+    results!: T[];
 }

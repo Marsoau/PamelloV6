@@ -43,3 +43,29 @@ app-root {
         color: #4F4F4F;
     }
 }
+
+.default-input {
+    padding: 0px 4px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #484848;
+
+    &::-webkit-input-placeholder {
+        font-weight: 500;
+        color: #C0C0C0;
+    }
+}
+
+.default-select {
+    padding: 0px 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #484848;
+}
+
+.default-option {
+    padding: 0px 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #484848;
+}

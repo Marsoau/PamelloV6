@@ -35,7 +35,7 @@ namespace PamelloV6.API.Repositories
 			else list = _list.Where(item => item.Name.ToLower().Contains(query.ToLower())).ToList();
 
             var start = page * count;
-			if (start > list.Count) {
+			if (start >= list.Count) {
 				return new SearchResponse<T>() {
                     PagesCount = 0,
                     Results = []

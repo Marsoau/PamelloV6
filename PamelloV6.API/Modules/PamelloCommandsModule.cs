@@ -41,131 +41,133 @@ namespace PamelloV6.API.Modules
 			_players = players;
 		}
 
-		public async Task<PamelloPlayer> PlayerCreate(string playerName) {
+		public int PlayerCreate(string playerName) {
 			RequireUser();
 
-			return _players.Create(playerName);
+			return _players.Create(playerName).Id;
 		}
-		public async Task PlayerSelect(int? playerId) {
+		public bool PlayerSelect(int? playerId) {
 			RequireUser();
 
 			if (playerId is null) {
                 User.SelectedPlayer = null;
-                return;
+                return true;
 			}
 
 			var player = _players.GetRequired(playerId.Value);
 			User.SelectedPlayer = player;
+
+			return true;
 		}
-		public async Task PlayerRename(string newName) {
+		public void PlayerRename(string newName) {
 			RequireUser();
 
 			updatedPlayer.Name = newName;
 		}
-		public async Task PlayerDelete(int playerId) => throw new NotImplementedException();
+		public void PlayerDelete(int playerId) => throw new NotImplementedException();
 
-		public async Task PlayerNext() {
+		public void PlayerNext() {
 			RequireUser();
 
 			updatedPlayer.Queue.GoToSong(updatedPlayer.Queue.Position + 1);
 		}
-		public async Task PlayerPrev() {
+		public void PlayerPrev() {
 			RequireUser();
 
 			updatedPlayer.Queue.GoToSong(updatedPlayer.Queue.Position - 1);
 		}
-		public async Task PlayerSkip() {
+		public void PlayerSkip() {
 			RequireUser();
 
 			updatedPlayer.Queue.GoToNextSong();
 		}
-		public async Task PlayerGoToSong(int songPosition, bool returnBack) {
+		public void PlayerGoToSong(int songPosition, bool returnBack) {
 			RequireUser();
 
 			updatedPlayer.Queue.GoToSong(songPosition, returnBack);
 		}
 
-		public async Task PlayerPause() {
+		public void PlayerPause() {
 			RequireUser();
 
 			updatedPlayer.IsPaused = true;
         }
-        public async Task PlayerResume() {
+        public void PlayerResume() {
             RequireUser();
 
             updatedPlayer.IsPaused = false;
         }
-        public async Task PlayerRewind(int seconds) {
+        public void PlayerRewind(int seconds) {
             RequireUser();
 
             updatedPlayer.Queue.Current?.RewindTo(new AudioTime(seconds));
         }
-        public async Task PlayerRewindToEpisode(int episodePosition) {
+        public void PlayerRewindToEpisode(int episodePosition) {
             RequireUser();
 
             updatedPlayer.Queue.Current?.RewindToEpisode(episodePosition);
         }
 
-        public async Task PlayerQueueShuffle() => throw new NotImplementedException();
-		public async Task PlayerQueueRandom(bool value) {
+        public void PlayerQueueShuffle() => throw new NotImplementedException();
+		public void PlayerQueueRandom(bool value) {
 			RequireUser();
 
 			updatedPlayer.Queue.IsRandom = value;
 		}
-		public async Task PlayerQueueReversed(bool value) {
+		public void PlayerQueueReversed(bool value) {
 			RequireUser();
 
 			updatedPlayer.Queue.IsReversed = value;
 		}
-		public async Task PlayerQueueNoLeftovers(bool value) {
+		public void PlayerQueueNoLeftovers(bool value) {
 			RequireUser();
 
 			updatedPlayer.Queue.IsNoLeftovers = value;
 		}
-		public async Task PlayerQueueClear() {
+		public void PlayerQueueClear() {
 			RequireUser();
 
 			updatedPlayer.Queue.Clear();
 		}
 
-		public async Task PlayerQueueAddSong(int songId) {
+		public void PlayerQueueAddSong(int songId) {
 			RequireUser();
 
 			updatedPlayer.Queue.AddSong(songId);
 		}
-		public async Task PlayerQueueInsertSong(int queuePosition, int songId) {
+		public void PlayerQueueInsertSong(int queuePosition, int songId) {
 			RequireUser();
 
 			updatedPlayer.Queue.InsertSong(queuePosition, songId);
 		}
-		public async Task PlayerQueueRemoveSong(int songPosition) {
+		public void PlayerQueueRemoveSong(int songPosition) {
 			RequireUser();
 
 			updatedPlayer.Queue.RemoveSong(songPosition);
 		}
-		public async Task PlayerQueueRequestNext(int? position) {
+		public void PlayerQueueRequestNext(int? position) {
 			RequireUser();
 
 			updatedPlayer.Queue.NextPositionRequest = position;
 		}
-		public async Task PlayerQueueSwap(int fromPosition, int withPosition) {
+		public void PlayerQueueSwap(int fromPosition, int withPosition) {
 			RequireUser();
 
 			updatedPlayer.Queue.SwapSongs(fromPosition, withPosition);
 		}
-		public async Task PlayerQueueMove(int fromPosition, int toPosition) {
+		public void PlayerQueueMove(int fromPosition, int toPosition) {
 			RequireUser();
 
 			updatedPlayer.Queue.MoveSong(fromPosition, toPosition);
 		}
 
-		public async Task<PamelloSong?> SongAddYoutube(string youtubeId) {
+		public async void SongAddYoutube(string youtubeId) {
 			var song = await _songs.Add(youtubeId);
 			song?.StartDownload();
 
-			return song;
+			return; //song;
 		}
-		public async Task SongEdit(int songId, string propertyName, string newValue) {
+		public void SongEdit(int songId, string propertyName, string newValue) {
 			RequireUser();
 
 			var song = _songs.GetRequired(songId);
@@ -183,28 +185,28 @@ namespace PamelloV6.API.Modules
 				}
 			}
 		}
-		public async Task SongDelete(int songId) => throw new NotImplementedException();
+		public void SongDelete(int songId) => throw new NotImplementedException();
 
-		public async Task PlaylistAdd(string playlistName, bool isProtected) {
+		public void PlaylistAdd(string playlistName, bool isProtected) {
 			RequireUser();
 
 			_playlists.Add(playlistName, isProtected, User);
 		}
-		public async Task PlaylistRename(int playlistId, string newName) {
+		public void PlaylistRename(int playlistId, string newName) {
 			RequireUser();
 
 			var playlist = _playlists.GetRequired(playlistId);
 			playlist.Name = newName;
 		}
-		public async Task PlaylistChangeProtection(int playlistId, bool protection) {
+		public void PlaylistChangeProtection(int playlistId, bool protection) {
 			RequireUser();
 
 			var playlist = _playlists.GetRequired(playlistId);
 			playlist.IsProtected = protection;
 		}
-		public async Task PlaylistDelete(int playlistId) => throw new NotImplementedException();
+		public void PlaylistDelete(int playlistId) => throw new NotImplementedException();
 
-		public async Task PlaylistAddSong(int playlistId, int songId) {
+		public void PlaylistAddSong(int playlistId, int songId) {
 			RequireUser();
 
 			var playlist = _playlists.GetRequired(playlistId);
@@ -212,7 +214,7 @@ namespace PamelloV6.API.Modules
 
 			playlist.AddSong(song);
 		}
-		public async Task PlaylistRemoveSong(int playlistId, int position) {
+		public void PlaylistRemoveSong(int playlistId, int position) {
 			RequireUser();
 
 			var playlist = _playlists.GetRequired(playlistId);
@@ -220,28 +222,28 @@ namespace PamelloV6.API.Modules
 			playlist.RemoveSong(position);
 		}
 
-		public async Task EpisodeAdd(int songId, string episodeName, int startSeconds, bool skip) {
+		public void EpisodeAdd(int songId, string episodeName, int startSeconds, bool skip) {
 			RequireUser();
 
 			var song = _songs.GetRequired(songId);
 
 			song.CreateEpisode(episodeName, startSeconds, skip);
 		}
-		public async Task EpisodeRename(int episodeId, string newName) {
+		public void EpisodeRename(int episodeId, string newName) {
 			RequireUser();
 
 			var episode = _episodes.GetRequired(episodeId);
 
 			episode.Name = newName;
 		}
-		public async Task EpisodeChangeStart(int episodeId, int newStart) {
+		public void EpisodeChangeStart(int episodeId, int newStart) {
 			RequireUser();
 
 			var episode = _episodes.GetRequired(episodeId);
 
 			episode.Start = new AudioTime(newStart);
 		}
-		public async Task EpisodeDelete(int episodeId) => throw new NotImplementedException();
+		public void EpisodeDelete(int episodeId) => throw new NotImplementedException();
 
 		private void RequireUser(bool mustBeAdmin = false) {
 			bool isAdministractor = User.IsAdministrator;

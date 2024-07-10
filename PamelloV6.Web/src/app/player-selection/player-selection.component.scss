@@ -1,0 +1,13 @@
+.player-selection-wrapper {
+    margin: 4px;
+}
+
+.player-creation-container, .player-selection-container {
+    display: grid;
+
+    grid-template-columns: auto 1fr auto;
+}
+
+.player-select, #player-creation-name-input {
+    background-color: #F0F0F0;
+}

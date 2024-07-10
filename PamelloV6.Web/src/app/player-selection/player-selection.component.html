@@ -1,1 +1,21 @@
-<p>player-selection works!</p>
+<div class="player-selection-wrapper">
+    @if (selectionMode) {
+        <div class="player-selection-container">
+            <button class="default-button" (click)="PlayerCreateClick()">Delete</button>
+            <select [value]="api.authorizedUser?.selectedPlayerId ?? ''" class="default-select player-select" (change)="SelectionChanged()">
+                <option class="default-option option-none" value="">None</option>
+                @for (player of availablePlayers; track availablePlayers) {
+                    <option class="default-option" [value]="player.id">{{player.name}}</option>
+                }
+            </select>
+            <button class="default-button" (click)="selectionMode = false">Create</button>
+        </div>
+    }
+    @else {
+        <div class="player-creation-container">
+            <button class="default-button" (click)="selectionMode = true">Cancel</button>
+            <input class="default-input" id="player-creation-name-input" placeholder="Player name"/>
+            <button class="default-button" (click)="PlayerCreateClick()">Create</button>
+        </div>
+    }
+</div>

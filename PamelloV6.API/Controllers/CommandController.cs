@@ -89,13 +89,12 @@ namespace PamelloV6.API.Controllers
             Console.WriteLine();
 
             try {
-                command.Invoke(_commands, args);
+                return Ok(command.Invoke(_commands, args));
 			}
 			catch (TargetInvocationException tie) {
 				return BadRequest($"Execution of command interrupted by exception, message: {tie.InnerException?.Message}");
 			}
 
-			return Ok();
         }
 	}
 }
