@@ -2,10 +2,10 @@
     @if (selectionMode) {
         <div class="player-selection-container">
             <button class="default-button" (click)="PlayerCreateClick()">Delete</button>
-            <select [value]="api.authorizedUser?.selectedPlayerId ?? ''" class="default-select player-select" (change)="SelectionChanged()">
-                <option class="default-option option-none" value="">None</option>
+            <select class="default-select player-select" (change)="SelectionChanged()">
+                <option class="default-option option-none" value="none">None</option>
                 @for (player of availablePlayers; track availablePlayers) {
-                    <option class="default-option" [value]="player.id">{{player.name}}</option>
+                    <option class="default-option" [value]="player.id" [selected]="api.authorizedUser!.selectedPlayerId == player.id">{{player.name}}</option>
                 }
             </select>
             <button class="default-button" (click)="selectionMode = false">Create</button>

@@ -42,10 +42,7 @@ export class PlayerSelectionComponent {
 		});
 	}
 
-	public PlayerCreateClick() {
-		let selectElement = document.getElementsByClassName("player-select")[0] as HTMLSelectElement;
-		console.log(`seitusedyuikgj 3: ${selectElement.options.length}`);
-		/*
+	public async PlayerCreateClick() {
 		let inputElement = document.getElementById("player-creation-name-input") as HTMLInputElement;
 		if (inputElement.value.length == 0) return;
 
@@ -53,17 +50,15 @@ export class PlayerSelectionComponent {
 		console.log(`new player id ${newPlayerId} test`);
 		this.selectionMode = true;
 		this.api.commands.PlayerSelect(newPlayerId);
-		*/
 	}
 	public SelectionChanged() {
-		/*
 		let selectElement = document.getElementsByClassName("player-select")[0] as HTMLSelectElement;
 		let selectedValue = selectElement.value;
 
 		this.UpdatePlayerSelectOption();
 
 		let valueNumber;
-		if (selectedValue.length == 0) {
+		if (selectedValue == "none") {
 			valueNumber = null;
 		}
 		else {
@@ -71,20 +66,16 @@ export class PlayerSelectionComponent {
 		}
 	
 		this.api.commands.PlayerSelect(valueNumber);
-		*/
 	}
 	public UpdatePlayerSelectOption() {
+		this.api.authorizedUser!.selectedPlayerId = this.api.authorizedUser!.selectedPlayerId;
 		let selectElement = document.getElementsByClassName("player-select")[0] as HTMLSelectElement;
-		console.log(`1 sp: ${this.api.authorizedUser?.selectedPlayerId}; v: ${selectElement.value}`);
+
 		if (this.api.authorizedUser?.selectedPlayerId == null) {
-			selectElement.value = "";
-			console.log("test1");
+			selectElement.value = "none";
 		}
 		else {
-			console.log(`test12 b: ${selectElement.value}; ${selectElement.options.length}`);
 			selectElement.value = this.api.authorizedUser.selectedPlayerId.toString();
-			console.log(`test12 a: ${selectElement.value}; ${this.api.authorizedUser.selectedPlayerId.toString()}`);
 		}
-		console.log(`2 sp: ${this.api.authorizedUser?.selectedPlayerId}; v: ${selectElement.value}`);
 	}
 }
