@@ -1,12 +1,33 @@
 <div class="main-container">
     <div class="main-subcontainer main-subcontainer-left">
-        <app-player-selection class="controller-item"/>
-        <app-player-controls class="controller-item"/>
-        <app-multipage class="controller-item"/>
+        @if (api.authorizedUser != null) {
+            <app-player-selection class="controller-item"/>
+        } @else {
+            <app-reqire-authorization/>
+        }
+        
+         @if (api.authorizedUser != null) {
+            <app-player-controls class="controller-item"/>
+        } @else {
+            <app-reqire-authorization/>
+        }
+         @if (api.authorizedUser != null) {
+            <app-multipage class="controller-item"/>
+        } @else {
+            <app-reqire-authorization/>
+        }
         <app-user-authorization class="controller-item"/>
     </div>
     <div class="main-subcontainer main-subcontainer-right">
-        <app-player-queue class="controller-item"/>
-        <app-multipage class="controller-item"/>
+         @if (api.authorizedUser != null) {
+            <app-player-queue class="controller-item"/>
+        } @else {
+            <app-reqire-authorization/>
+        }
+         @if (api.authorizedUser != null) {
+            <app-multipage class="controller-item"/>
+        } @else {
+            <app-reqire-authorization/>
+        }
     </div>
 </div>
