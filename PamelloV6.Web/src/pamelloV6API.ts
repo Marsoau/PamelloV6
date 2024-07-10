@@ -42,7 +42,7 @@ export class PamelloV6API {
         if (parts.length === 2) token = parts.pop()?.split(';').shift();
         else token = undefined;
 
-        if (token == undefined) {
+        if (token == undefined || token.length == 0) {
             this.authorizedUserToken = null;
             return;
         }
@@ -68,6 +68,12 @@ export class PamelloV6API {
         
         document.cookie = `token=${this.authorizedUserToken}`
         this.AuthorizeUserWithToken();
+    }
+
+    public UnauthorizeUser() {
+        document.cookie = `token=;`;
+        this.authorizedUser = null;
+        this.authorizedUserToken = null;
     }
 }
 

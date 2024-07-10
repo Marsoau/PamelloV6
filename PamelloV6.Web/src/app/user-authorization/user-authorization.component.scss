@@ -1,0 +1,74 @@
+.user-authorization-container {
+    display: grid;
+    
+	background-color: #F8F8F8;
+}
+
+.when-authorized-container {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+
+    .avatar-image {
+        height: 56px;
+        width: 56px;
+        margin: 4px;
+
+        object-fit: cover;
+    }
+    .info-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .authorized-user-name {
+            font-size: 24px;
+            font-weight: 500;
+            color: #484848;
+        }
+        .authorized-user-discord-id {
+            font-size: 16px;
+            font-weight: 500;
+            color: #727272;
+        
+            margin-bottom: 4px;
+        }
+    }
+
+    .button-container {
+        margin: 0px 4px;
+    }
+}
+
+.when-not-authorized-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+
+    margin: 4px;
+
+    .input-container {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+
+        .authorization-label, #authorization-input {
+            font-size: 16px;
+            font-weight: 500;
+            color: #484848;
+            
+            text-align: center;
+        }
+        #authorization-input {
+            margin: 0px 4px;
+
+            &::-webkit-input-placeholder {
+                font-weight: 500;
+                color: #C0C0C0;
+            }
+        }
+    }
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

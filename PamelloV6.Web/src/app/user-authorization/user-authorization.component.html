@@ -1,1 +1,23 @@
-<p>user-authorization works!</p>
+<div class="user-authorization-container">
+    @if (api.authorizedUser != null) {
+        <div class="when-authorized-container">
+            <img class="avatar-image" [src]="api.authorizedUser.coverUrl"/>
+            <div class="info-container">
+                <div class="authorized-user-name">{{api.authorizedUser.name}}</div>
+                <div class="authorized-user-discord-id">{{api.authorizedUser.discordId}}</div>
+            </div>
+            <div class="button-container">
+                <button class="default-button" (click)="Unauthorize()">Logout</button>
+            </div>
+        </div>
+    }
+    @else {
+        <div class="when-not-authorized-container">
+            <div class="input-container">
+                <div class="authorization-label">Authorization Code:</div>
+                <input type="text" id="authorization-input" placeholder="use /get-code in discord"/>
+                <button class="default-button" (click)="Authorize()">Authorize</button>
+            </div>
+        </div>
+    }
+</div>
