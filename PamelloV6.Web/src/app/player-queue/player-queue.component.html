@@ -1,1 +1,26 @@
-<p>player-queue works!</p>
+<div class="queue-list-container">
+    @for (song of songs; track songs) {
+        <div class="queue-song-container {{$index == position ? 'queue-song-container-current' : ''}}">
+            <div class="queue-song-info-container" (click)="SongClick($index)">
+                <div class="queue-song-next-decorator" [style]="$index == nextPosition ? 'display: block;' : 'display: none;'">Next</div>
+                <div class="queue-song-title">{{song.title}}</div>
+            </div>
+            <div class="queue-song-hidden-container">
+                <button class="default-button mini-button" (click)="NextClick($index)">{{$index == nextPosition ? "Remove next" : "Next"}}</button>
+                <button class="default-button mini-button" (click)="RemoveClick($index)">Remove</button>
+            </div>
+        </div>
+    }
+</div>
+<div class="gray-separator"></div>
+<div class="queue-controls-container">
+    <div class="queue-controls-subcontainer-left">
+        <button class="default-button {{isRandom ? 'green-button' : ''}}" (click)="RandomClick()">Random</button>
+        <button class="default-button {{isReversed ? 'green-button' : ''}}" (click)="ReversedClick()">Reversed</button>
+        <button class="default-button {{isNoLeftovers ? 'green-button' : ''}}" (click)="NoLeftoversClick()">No Leftovers</button>
+    </div>
+    <div class="queue-controls-subcontainer-right">
+        <button class="default-button">Shuffle</button>
+        <button class="default-button">Clear</button>
+    </div>
+</div>

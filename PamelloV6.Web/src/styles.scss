@@ -29,9 +29,13 @@ app-root {
     display: block;
 }
 
-.default-button {
+.gray-separator {
     background-color: #E0E0E0;
+}
+
+.default-button {
     color: #484848;
+    background-color: #E0E0E0;
 
     font-size: 16px;
     font-weight: 500;
@@ -39,16 +43,30 @@ app-root {
     padding: 2px 6px;
 
     &:hover {
-        background-color: #EAEAEA;
         color: #4F4F4F;
+        background-color: #EAEAEA;
 
         cursor: pointer;
     }
     &:disabled {
-        background-color: #F0F0F0;
         color: #808080;
+        background-color: #F0F0F0;
     
         cursor: default;
+    }
+}
+.mini-button {
+	font-size: 12px;
+	font-weight: 700;
+	margin: 2px;
+}
+.green-button {
+    color: #667565;
+    background-color: #afc9ad;
+
+    &:hover {
+        color: #7f8f7e;
+        background-color: #c0d8be;
     }
 }
 
