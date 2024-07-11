@@ -79,7 +79,8 @@ namespace PamelloV6.API.Model.Audio
 
                 CurrentSongTimePassed = Queue.Current?.Position.TotalSeconds ?? 0,
                 CurrentSongTimeTotal = Queue.Current?.Duration.TotalSeconds ?? 0,
-                
+
+                CurrentSongId = Queue.Current?.Song.Id,
                 QueueSongIds = Queue.SongAudios.Select(audio => audio.Song.Id),
                 QueuePosition = Queue.Position,
 				NextPositionRequest = Queue.NextPositionRequest,

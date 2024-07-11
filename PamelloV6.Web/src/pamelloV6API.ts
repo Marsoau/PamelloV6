@@ -122,11 +122,172 @@ class PamelloV6Events {
             handler(JSON.parse(message.data));
         })
     }
-    public set UserPlayerSelected(handler: any) {
-        this.events.addEventListener("UserPlayerSelected", (message) => {
-            handler(JSON.parse(message.data));
-        })
+    public set PlayerNameUpdated(handler: any) {
+            this.events.addEventListener("PlayerNameUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
     }
+    public set PlayerPauseUpdated(handler: any) {
+            this.events.addEventListener("PlayerPauseUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlayerCurrentTimeUpdated(handler: any) {
+            this.events.addEventListener("PlayerCurrentTimeUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlayerTotalTimeUpdated(handler: any) {
+            this.events.addEventListener("PlayerTotalTimeUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlauerQueuePositionUpdated(handler: any) {
+            this.events.addEventListener("PlauerQueuePositionUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlauerQueueSongUpdated(handler: any) {
+            this.events.addEventListener("PlauerQueueSongUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlauerQueueListUpdated(handler: any) {
+            this.events.addEventListener("PlauerQueueListUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlayerQueueIsRandomUpdated(handler: any) {
+            this.events.addEventListener("PlayerQueueIsRandomUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlayerQueueIsReversedUpdated(handler: any) {
+            this.events.addEventListener("PlayerQueueIsReversedUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlayerQueueIsNoLeftoversUpdated(handler: any) {
+            this.events.addEventListener("PlayerQueueIsNoLeftoversUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlayerQueueNextPositionUpdated(handler: any) {
+            this.events.addEventListener("PlayerQueueNextPositionUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set EpisodeUpdated(handler: any) {
+            this.events.addEventListener("EpisodeUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set EpisodeCreated(handler: any) {
+            this.events.addEventListener("EpisodeCreated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set EpisodeNameUpdated(handler: any) {
+            this.events.addEventListener("EpisodeNameUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set EpisodeStartUpdated(handler: any) {
+            this.events.addEventListener("EpisodeStartUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set EpisodeSkipStateUpdated(handler: any) {
+            this.events.addEventListener("EpisodeSkipStateUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlaylistUpdated(handler: any) {
+            this.events.addEventListener("PlaylistUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlaylistCreated(handler: any) {
+            this.events.addEventListener("PlaylistCreated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlaylistNameUpdated(handler: any) {
+            this.events.addEventListener("PlaylistNameUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlaylistProtectionUpdated(handler: any) {
+            this.events.addEventListener("PlaylistProtectionUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlaylistSongsUpdated(handler: any) {
+            this.events.addEventListener("PlaylistSongsUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set SongUpdated(handler: any) {
+            this.events.addEventListener("SongUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set SongCreated(handler: any) {
+            this.events.addEventListener("SongCreated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set SongNameUpdated(handler: any) {
+            this.events.addEventListener("SongNameUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set SongAuthorUpdated(handler: any) {
+            this.events.addEventListener("SongAuthorUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set SongPlayCountUpdated(handler: any) {
+            this.events.addEventListener("SongPlayCountUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set SongDownloadStarted(handler: any) {
+            this.events.addEventListener("SongDownloadStarted", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set SongDownloadEnded(handler: any) {
+            this.events.addEventListener("SongDownloadEnded", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set UserUpdated(handler: any) {
+            this.events.addEventListener("UserUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set UserNameUpdated(handler: any) {
+            this.events.addEventListener("UserNameUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set UserPlayerSelected(handler: any) {
+            this.events.addEventListener("UserPlayerSelected", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set UserAdministratorStateUpdated(handler: any) {
+            this.events.addEventListener("UserAdministratorStateUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set (handler: any) {
+            this.events.addEventListener("", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    
 }
 class PamelloV6Commands {
     private readonly api: PamelloV6API;
@@ -152,6 +313,120 @@ class PamelloV6Commands {
     }
     public async PlayerSelect(playerId: number | null) {
         return await this.InvokeCommand(`PlayerSelect&playerId=${playerId ?? ""}`);
+    }
+    public async PlayerRename(newName: string) {
+        return await this.InvokeCommand(`PlayerRename&newName=${newName}`);
+    }
+    public async PlayerDelete(playerId: number) {
+        return await this.InvokeCommand(`PlayerDelete&playerId=${playerId}`);
+    }
+    public async PlayerNext() {
+        return await this.InvokeCommand(`PlayerNext`);
+    }
+    public async PlayerPrev() {
+        return await this.InvokeCommand(`PlayerPrev`);
+    }
+    public async PlayerSkip() {
+        return await this.InvokeCommand(`PlayerSkip`);
+    }
+    public async PlayerGoToSong(songPosition: number, returnBack: Boolean) {
+        return await this.InvokeCommand(`PlayerGoToSong&songPosition=${songPosition}&returnBack=${returnBack}`);
+    }
+    public async PlayerPause() {
+        return await this.InvokeCommand(`PlayerPause`);
+    }
+    public async PlayerResume() {
+        return await this.InvokeCommand(`PlayerResume`);
+    }
+    public async PlayerRewind(seconds: number) {
+        return await this.InvokeCommand(`PlayerRewind&seconds=${seconds}`);
+    }
+    public async PlayerRewindToEpisode(episodePosition: number) {
+        return await this.InvokeCommand(`PlayerRewindToEpisode&episodePosition=${episodePosition}`);
+    }
+    public async PlayerQueueShuffle() {
+        return await this.InvokeCommand(`PlayerQueueShuffle`);
+    }
+    public async PlayerQueueRandom(value: Boolean) {
+        return await this.InvokeCommand(`PlayerQueueRandom&value=${value}`);
+    }
+    public async PlayerQueueReversed(value: Boolean) {
+        return await this.InvokeCommand(`PlayerQueueReversed&value=${value}`);
+    }
+    public async PlayerQueueNoLeftovers(value: Boolean) {
+        return await this.InvokeCommand(`PlayerQueueNoLeftovers&value=${value}`);
+    }
+    public async PlayerQueueClear() {
+        return await this.InvokeCommand(`PlayerQueueClear`);
+    }
+    public async PlayerQueueAddSong(songId: number) {
+        return await this.InvokeCommand(`PlayerQueueAddSong&songId=${songId}`);
+    }
+    public async PlayerQueueInsertSong(queuePosition: number, songId: number) {
+        return await this.InvokeCommand(`PlayerQueueInsertSong&queuePosition=${queuePosition}&songId=${songId}`);
+    }
+    public async PlayerQueueRemoveSong(songPosition: number) {
+        return await this.InvokeCommand(`PlayerQueueRemoveSong&songPosition=${songPosition}`);
+    }
+    public async PlayerQueueRequestNext(position: number | null) {
+        return await this.InvokeCommand(`PlayerQueueRequestNext&position=${position ?? ""}`);
+    }
+    public async PlayerQueueSwap(fromPosition: number, withPosition: number) {
+        return await this.InvokeCommand(`PlayerQueueSwap&fromPosition=${fromPosition}&withPosition=${withPosition}`);
+    }
+    public async PlayerQueueMove(fromPosition: number, toPosition: number) {
+        return await this.InvokeCommand(`PlayerQueueMove&fromPosition=${fromPosition}&toPosition=${toPosition}`);
+    }
+    public async SongAddYoutube(youtubeId: string) {
+        return await this.InvokeCommand(`SongAddYoutube&youtubeId=${youtubeId}`);
+    }
+    public async SongEdit(songId: number, propertyName: string, newValue: string) {
+        return await this.InvokeCommand(`SongEdit&songId=${songId}&propertyName=${propertyName}&newValue=${newValue}`);
+    }
+    public async SongDelete(songId: number) {
+        return await this.InvokeCommand(`SongDelete&songId=${songId}`);
+    }
+    public async PlaylistAdd(playlistName: string, isProtected: Boolean) {
+        return await this.InvokeCommand(`PlaylistAdd&playlistName=${playlistName}&isProtected=${isProtected}`);
+    }
+    public async PlaylistRename(playlistId: number, newName: string) {
+        return await this.InvokeCommand(`PlaylistRename&playlistId=${playlistId}&newName=${newName}`);
+    }
+    public async PlaylistChangeProtection(playlistId: number, protection: Boolean) {
+        return await this.InvokeCommand(`PlaylistChangeProtection&playlistId=${playlistId}&protection=${protection}`);
+    }
+    public async PlaylistDelete(playlistId: number) {
+        return await this.InvokeCommand(`PlaylistDelete&playlistId=${playlistId}`);
+    }
+    public async PlaylistAddSong(playlistId: number, songId: number) {
+        return await this.InvokeCommand(`PlaylistAddSong&playlistId=${playlistId}&songId=${songId}`);
+    }
+    public async PlaylistRemoveSong(playlistId: number, position: number) {
+        return await this.InvokeCommand(`PlaylistRemoveSong&playlistId=${playlistId}&position=${position}`);
+    }
+    public async EpisodeAdd(songId: number, episodeName: string, startSeconds: number, skip: Boolean) {
+        return await this.InvokeCommand(`EpisodeAdd&songId=${songId}&episodeName=${episodeName}&startSeconds=${startSeconds}&skip=${skip}`);
+    }
+    public async EpisodeRename(episodeId: number, newName: string) {
+        return await this.InvokeCommand(`EpisodeRename&episodeId=${episodeId}&newName=${newName}`);
+    }
+    public async EpisodeChangeStart(episodeId: number, newStart: number) {
+        return await this.InvokeCommand(`EpisodeChangeStart&episodeId=${episodeId}&newStart=${newStart}`);
+    }
+    public async EpisodeDelete(episodeId: number) {
+        return await this.InvokeCommand(`EpisodeDelete&episodeId=${episodeId}`);
+    }
+    public async GetType() {
+        return await this.InvokeCommand(`GetType`);
+    }
+    public async ToString() {
+        return await this.InvokeCommand(`ToString`);
+    }
+    public async Equals(obj: Object) {
+        return await this.InvokeCommand(`Equals&obj=${obj}`);
+    }
+    public async GetHashCode() {
+        return await this.InvokeCommand(`GetHashCode`);
     }
 }
 
@@ -196,6 +471,7 @@ export class PamelloPlayer {
     public isPaused!: boolean;
     public currentSongTimePassed!: number;
     public currentSongTimeTotal!: number;
+    public currentSongId!: number | null;
     public queueSongIds!: number[];
     public queuePosition!: number;
     public nextPositionRequest!: number | null;

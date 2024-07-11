@@ -39,7 +39,7 @@ namespace PamelloV6.API.Modules
 			_episodes = episodes;
 			_playlists = playlists;
 			_players = players;
-		}
+        }
 
 		public int PlayerCreate(string playerName) {
 			RequireUser();

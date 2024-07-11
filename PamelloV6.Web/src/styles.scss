@@ -41,6 +41,14 @@ app-root {
     &:hover {
         background-color: #EAEAEA;
         color: #4F4F4F;
+
+        cursor: pointer;
+    }
+    &:disabled {
+        background-color: #F0F0F0;
+        color: #808080;
+    
+        cursor: default;
     }
 }
 
@@ -68,4 +76,24 @@ app-root {
     font-size: 14px;
     font-weight: 600;
     color: #484848;
+}
+
+.default-slider {
+    appearance: none;
+	-webkit-appearance: none;
+	background-color: #E0E0E0;
+	padding: 2px;
+}
+
+.default-slider::-webkit-slider-thumb {
+
+	-webkit-appearance: none;
+	appearance: none;
+	width: 24px;
+	height: 24px;
+	background-color: #F0F0F0;
+}
+
+.default-slider::-webkit-slider-thumb:hover {
+	background-color: #F8F8F8;
 }

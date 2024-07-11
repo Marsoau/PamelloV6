@@ -1,1 +1,23 @@
-<p>player-controls works!</p>
+<div class="player-controls-container">
+    <div class="player-controls-cell player-controls-cell-cover">
+        <img [src]="currentSong?.coverUrl"/>
+    </div>
+    <div class="player-controls-cell player-controls-cell-info">
+        <div class="player-song-info-container">
+            <span class="player-song-title">{{currentSong?.title ?? "Test Title"}}</span>
+            <span class="player-song-author">{{currentSong?.author ?? "Test Author"}}</span>
+        </div>
+        <div class="player-time-container">
+            <span class="player-time">{{ToStringTime(sliderDrag ? sliderDragValue : selectedPlayer?.currentSongTimePassed ?? 0)}}</span>
+            <span class="player-duration">{{ToStringTime(selectedPlayer?.currentSongTimeTotal ?? 0)}}</span>
+        </div>
+    </div>
+    <div class="player-controls-cell player-controls-cell-buttons">
+        <button class="default-button back-button" (click)="BackClick()" [disabled]="(selectedPlayer?.queueSongIds?.length ?? 0) < 2">B</button>
+        <button class="default-button pp-button" (click)="PPClick()" [disabled]="selectedPlayer == null">{{selectedPlayer?.isPaused ? "R" : "P"}}</button>
+        <button class="default-button forward-button" (click)="ForwardClick()" [disabled]="(selectedPlayer?.queueSongIds?.length ?? 0) < 2">F</button>
+    </div>
+    <div class="player-controls-cell player-controls-cell-rewind">
+        <input class="default-slider" id="player-time-slider" type="range" min="0" (mousedown)="sliderDrag = true" (mousemove)="Test()" (change)="SliderChanged()" [max]="selectedPlayer?.currentSongTimeTotal ?? 0" [value]="sliderDrag ? null : selectedPlayer?.currentSongTimePassed ?? 0">
+    </div>
+</div>

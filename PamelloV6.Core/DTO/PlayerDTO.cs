@@ -16,6 +16,7 @@ namespace PamelloV6.Core.DTO
 		public int CurrentSongTimePassed { get; set; }
 		public int CurrentSongTimeTotal { get; set; }
 
+		public int? CurrentSongId { get; set; }
 		public IEnumerable<int> QueueSongIds { get; set; }
 		public int QueuePosition { get; set; }
 		public int? NextPositionRequest { get; set; }
