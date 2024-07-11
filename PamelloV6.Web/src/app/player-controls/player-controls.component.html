@@ -4,8 +4,8 @@
     </div>
     <div class="player-controls-cell player-controls-cell-info">
         <div class="player-song-info-container">
-            <span class="player-song-title">{{currentSong?.title ?? "Test Title"}}</span>
-            <span class="player-song-author">{{currentSong?.author ?? "Test Author"}}</span>
+            <span class="player-song-title">{{currentSong?.title}}</span>
+            <span class="player-song-author">{{currentSong?.author}}</span>
         </div>
         <div class="player-time-container">
             <span class="player-time">{{ToStringTime(sliderDrag ? sliderDragValue : selectedPlayer?.currentSongTimePassed ?? 0)}}</span>
