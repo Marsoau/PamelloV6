@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PamelloPlayer, PamelloSong, PamelloV6API } from '../../pamelloV6API';
+import { PamelloPlayer, PamelloSong, PamelloV6API } from '../../services/pamelloV6API.service';
 
 @Component({
 	selector: 'app-player-controls',
@@ -42,6 +42,10 @@ export class PlayerControlsComponent {
 		this.api.events.PlayerPauseUpdated = (newState: boolean) => {
 			this.selectedPlayer!.isPaused = newState;
 		}
+
+		this.api.events.PlauerQueueListUpdated = (newSongsIds: number[]) => {
+			this.selectedPlayer!.queueSongIds = newSongsIds;
+		}
 		this.api.events.PlauerQueueSongUpdated = (newSongId: number) => {
 			this.selectedPlayer!.currentSongId = newSongId;
 			this.UpdateCurrentSong();
@@ -63,13 +67,11 @@ export class PlayerControlsComponent {
 
 	private UpdateCurrentSong() {
 		if (this.selectedPlayer != null && this.selectedPlayer.currentSongId != null) {
-			console.log("f");
 			this.api.data.GetSong(this.selectedPlayer!.currentSongId).then(song => {
 				this.currentSong = song;
 			})
 		}
 		else {
-			console.log("s");
 			this.currentSong = null;
 		}
 	}

@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { PamelloV6API } from '../pamelloV6API';
+import { PamelloV6API } from '../services/pamelloV6API.service';
 import { PlayerSelectionComponent } from "./player-selection/player-selection.component";
 import { PlayerControlsComponent } from "./player-controls/player-controls.component";
 import { MultipageComponent } from "./multipage/multipage.component";
 import { UserAuthorizationComponent } from "./user-authorization/user-authorization.component";
 import { PlayerQueueComponent } from "./player-queue/player-queue.component";
 import { ReqireAuthorizationComponent } from "./reqire-authorization/reqire-authorization.component";
+import { NgIf } from '@angular/common';
 
 @Component({
 	selector: 'app-root',

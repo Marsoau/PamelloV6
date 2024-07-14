@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PamelloV6API } from '../../pamelloV6API';
+import { PamelloV6API } from '../../services/pamelloV6API.service';
 
 @Component({
 	selector: 'app-user-authorization',
