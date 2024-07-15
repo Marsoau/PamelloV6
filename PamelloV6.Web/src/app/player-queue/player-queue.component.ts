@@ -121,7 +121,7 @@ export class PlayerQueueComponent {
 	}
 
 	public ShuffleClick() {
-		this.api.commands.PlayerQueueShuffle();
+		//this.api.commands.PlayerQueueShuffle();
 	}
 	public ClearClick() {
 		this.api.commands.PlayerQueueClear();

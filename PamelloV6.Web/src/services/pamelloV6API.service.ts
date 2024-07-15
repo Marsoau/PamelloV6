@@ -307,30 +307,26 @@ class PamelloV6Commands {
             })
         )
     }
-
-    public async PlayerCreate(playerName: string) {
-        return await this.InvokeCommand(`PlayerCreate&playerName=${playerName}`);
+    public async PlayerCreate(playerName: string): Promise<number> {
+        return await this.InvokeCommand(`PlayerCreate&playerName=${playerName}`) as number;
     }
     public async PlayerSelect(playerId: number | null) {
-        return await this.InvokeCommand(`PlayerSelect&playerId=${playerId ?? ""}`);
+        return await this.InvokeCommand(`PlayerSelect&playerId=${playerId}`);
     }
     public async PlayerRename(newName: string) {
         return await this.InvokeCommand(`PlayerRename&newName=${newName}`);
     }
-    public async PlayerDelete(playerId: number) {
-        return await this.InvokeCommand(`PlayerDelete&playerId=${playerId}`);
+    public async PlayerNext(): Promise<number | null> {
+        return await this.InvokeCommand(`PlayerNext`) as number | null;
     }
-    public async PlayerNext() {
-        return await this.InvokeCommand(`PlayerNext`);
+    public async PlayerPrev(): Promise<number | null> {
+        return await this.InvokeCommand(`PlayerPrev`) as number | null;
     }
-    public async PlayerPrev() {
-        return await this.InvokeCommand(`PlayerPrev`);
+    public async PlayerSkip(): Promise<number | null> {
+        return await this.InvokeCommand(`PlayerSkip`) as number | null;
     }
-    public async PlayerSkip() {
-        return await this.InvokeCommand(`PlayerSkip`);
-    }
-    public async PlayerGoToSong(songPosition: number, returnBack: Boolean) {
-        return await this.InvokeCommand(`PlayerGoToSong&songPosition=${songPosition}&returnBack=${returnBack}`);
+    public async PlayerGoToSong(songPosition: number, returnBack: boolean): Promise<number | null> {
+        return await this.InvokeCommand(`PlayerGoToSong&songPosition=${songPosition}&returnBack=${returnBack}`) as number | null;
     }
     public async PlayerPause() {
         return await this.InvokeCommand(`PlayerPause`);
@@ -344,16 +340,13 @@ class PamelloV6Commands {
     public async PlayerRewindToEpisode(episodePosition: number) {
         return await this.InvokeCommand(`PlayerRewindToEpisode&episodePosition=${episodePosition}`);
     }
-    public async PlayerQueueShuffle() {
-        return await this.InvokeCommand(`PlayerQueueShuffle`);
-    }
-    public async PlayerQueueRandom(value: Boolean) {
+    public async PlayerQueueRandom(value: boolean) {
         return await this.InvokeCommand(`PlayerQueueRandom&value=${value}`);
     }
-    public async PlayerQueueReversed(value: Boolean) {
+    public async PlayerQueueReversed(value: boolean) {
         return await this.InvokeCommand(`PlayerQueueReversed&value=${value}`);
     }
-    public async PlayerQueueNoLeftovers(value: Boolean) {
+    public async PlayerQueueNoLeftovers(value: boolean) {
         return await this.InvokeCommand(`PlayerQueueNoLeftovers&value=${value}`);
     }
     public async PlayerQueueClear() {
@@ -365,11 +358,11 @@ class PamelloV6Commands {
     public async PlayerQueueInsertSong(queuePosition: number, songId: number) {
         return await this.InvokeCommand(`PlayerQueueInsertSong&queuePosition=${queuePosition}&songId=${songId}`);
     }
-    public async PlayerQueueRemoveSong(songPosition: number) {
-        return await this.InvokeCommand(`PlayerQueueRemoveSong&songPosition=${songPosition}`);
+    public async PlayerQueueRemoveSong(songPosition: number): Promise<number | null> {
+        return await this.InvokeCommand(`PlayerQueueRemoveSong&songPosition=${songPosition}`) as number | null;
     }
     public async PlayerQueueRequestNext(position: number | null) {
-        return await this.InvokeCommand(`PlayerQueueRequestNext&position=${position ?? ""}`);
+        return await this.InvokeCommand(`PlayerQueueRequestNext&position=${position}`);
     }
     public async PlayerQueueSwap(fromPosition: number, withPosition: number) {
         return await this.InvokeCommand(`PlayerQueueSwap&fromPosition=${fromPosition}&withPosition=${withPosition}`);
@@ -377,26 +370,23 @@ class PamelloV6Commands {
     public async PlayerQueueMove(fromPosition: number, toPosition: number) {
         return await this.InvokeCommand(`PlayerQueueMove&fromPosition=${fromPosition}&toPosition=${toPosition}`);
     }
-    public async SongAddYoutube(youtubeId: string) {
-        return await this.InvokeCommand(`SongAddYoutube&youtubeId=${youtubeId}`);
+    public async SongAddYoutube(youtubeId: string): Promise<number | null> {
+        return await this.InvokeCommand(`SongAddYoutube&youtubeId=${youtubeId}`) as number | null;
     }
-    public async SongEdit(songId: number, propertyName: string, newValue: string) {
-        return await this.InvokeCommand(`SongEdit&songId=${songId}&propertyName=${propertyName}&newValue=${newValue}`);
+    public async SongEditName(songId: number, newName: string): Promise<boolean> {
+        return await this.InvokeCommand(`SongEditName&songId=${songId}&newName=${newName}`) as boolean;
     }
-    public async SongDelete(songId: number) {
-        return await this.InvokeCommand(`SongDelete&songId=${songId}`);
+    public async SongEditAuthor(songId: number, newAuthor: string): Promise<boolean> {
+        return await this.InvokeCommand(`SongEditAuthor&songId=${songId}&newAuthor=${newAuthor}`) as boolean;
     }
-    public async PlaylistAdd(playlistName: string, isProtected: Boolean) {
-        return await this.InvokeCommand(`PlaylistAdd&playlistName=${playlistName}&isProtected=${isProtected}`);
+    public async PlaylistAdd(playlistName: string, isProtected: boolean): Promise<number> {
+        return await this.InvokeCommand(`PlaylistAdd&playlistName=${playlistName}&isProtected=${isProtected}`) as number;
     }
     public async PlaylistRename(playlistId: number, newName: string) {
         return await this.InvokeCommand(`PlaylistRename&playlistId=${playlistId}&newName=${newName}`);
     }
-    public async PlaylistChangeProtection(playlistId: number, protection: Boolean) {
+    public async PlaylistChangeProtection(playlistId: number, protection: boolean) {
         return await this.InvokeCommand(`PlaylistChangeProtection&playlistId=${playlistId}&protection=${protection}`);
-    }
-    public async PlaylistDelete(playlistId: number) {
-        return await this.InvokeCommand(`PlaylistDelete&playlistId=${playlistId}`);
     }
     public async PlaylistAddSong(playlistId: number, songId: number) {
         return await this.InvokeCommand(`PlaylistAddSong&playlistId=${playlistId}&songId=${songId}`);
@@ -404,29 +394,14 @@ class PamelloV6Commands {
     public async PlaylistRemoveSong(playlistId: number, position: number) {
         return await this.InvokeCommand(`PlaylistRemoveSong&playlistId=${playlistId}&position=${position}`);
     }
-    public async EpisodeAdd(songId: number, episodeName: string, startSeconds: number, skip: Boolean) {
-        return await this.InvokeCommand(`EpisodeAdd&songId=${songId}&episodeName=${episodeName}&startSeconds=${startSeconds}&skip=${skip}`);
+    public async EpisodeAdd(songId: number, episodeName: string, startSeconds: number, skip: boolean): Promise<number> {
+        return await this.InvokeCommand(`EpisodeAdd&songId=${songId}&episodeName=${episodeName}&startSeconds=${startSeconds}&skip=${skip}`) as number;
     }
     public async EpisodeRename(episodeId: number, newName: string) {
         return await this.InvokeCommand(`EpisodeRename&episodeId=${episodeId}&newName=${newName}`);
     }
     public async EpisodeChangeStart(episodeId: number, newStart: number) {
         return await this.InvokeCommand(`EpisodeChangeStart&episodeId=${episodeId}&newStart=${newStart}`);
-    }
-    public async EpisodeDelete(episodeId: number) {
-        return await this.InvokeCommand(`EpisodeDelete&episodeId=${episodeId}`);
-    }
-    public async GetType() {
-        return await this.InvokeCommand(`GetType`);
-    }
-    public async ToString() {
-        return await this.InvokeCommand(`ToString`);
-    }
-    public async Equals(obj: Object) {
-        return await this.InvokeCommand(`Equals&obj=${obj}`);
-    }
-    public async GetHashCode() {
-        return await this.InvokeCommand(`GetHashCode`);
     }
 }
 
@@ -445,7 +420,7 @@ export class PamelloSong {
     public title!: string;
     public author!: string;
     public coverUrl!: string;
-    public sourceUrl!: string;
+    public youtubeId!: string;
     public playCount!: number;
     public isDownloaded!: boolean;
     public episodeIds!: number[];

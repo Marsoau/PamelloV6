@@ -323,7 +323,7 @@ namespace PamelloV6.API.Modules
                     foreach (var parameter in method.GetParameters()) {
                         sb.Append($"&{parameter.Name}=${{{parameter.Name}}}");
                     }
-                    sb.AppendLine("`);\n}");
+                    sb.AppendLine($"`) as {method.ReturnType.Name};\n}}");
                 }
 			}
 
