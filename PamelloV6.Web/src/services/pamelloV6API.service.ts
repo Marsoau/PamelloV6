@@ -311,7 +311,7 @@ class PamelloV6Commands {
         return await this.InvokeCommand(`PlayerCreate&playerName=${playerName}`) as number;
     }
     public async PlayerSelect(playerId: number | null) {
-        return await this.InvokeCommand(`PlayerSelect&playerId=${playerId}`);
+        return await this.InvokeCommand(`PlayerSelect&playerId=${playerId ?? ''}`);
     }
     public async PlayerRename(newName: string) {
         return await this.InvokeCommand(`PlayerRename&newName=${newName}`);
@@ -362,7 +362,7 @@ class PamelloV6Commands {
         return await this.InvokeCommand(`PlayerQueueRemoveSong&songPosition=${songPosition}`) as number | null;
     }
     public async PlayerQueueRequestNext(position: number | null) {
-        return await this.InvokeCommand(`PlayerQueueRequestNext&position=${position}`);
+        return await this.InvokeCommand(`PlayerQueueRequestNext&position=${position ?? ''}`);
     }
     public async PlayerQueueSwap(fromPosition: number, withPosition: number) {
         return await this.InvokeCommand(`PlayerQueueSwap&fromPosition=${fromPosition}&withPosition=${withPosition}`);
