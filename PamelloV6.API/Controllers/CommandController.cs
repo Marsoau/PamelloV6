@@ -1,6 +1,7 @@
 ﻿using Discord.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PamelloV6.API.Attributes;
 using PamelloV6.API.Modules;
 using PamelloV6.API.Repositories;
 using PamelloV6.DAL.Entity;
@@ -49,7 +50,7 @@ namespace PamelloV6.API.Controllers
 			_commands.User = user;
 
 			var command = typeof(PamelloCommandsModule).GetMethod(queriedCommand);
-			if (command is null) {
+			if (command is null || !command.CustomAttributes.Any(attr => attr.AttributeType == typeof(PamelloCommandAttribute))) {
 				return NotFound($"Cant find command named \"{queriedCommand}\"");
 			}
 

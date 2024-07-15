@@ -48,19 +48,18 @@ namespace PamelloV6.API.Repositories
 
 			return Load(entity);
 		}
-		public PamelloSong? GetBySource(string sourceUrl) {
-			var song = _list.FirstOrDefault(song => song.YoutubeId == sourceUrl);
+		public PamelloSong? GetByYoutubeId(string youtubeId) {
+			var song = _list.FirstOrDefault(song => song.YoutubeId == youtubeId);
 			if (song is not null) return song;
 
-			var entity = _databaseSongs.FirstOrDefault(song => song.SourceUrl == sourceUrl);
+			var entity = _databaseSongs.FirstOrDefault(song => song.YoutubeId == youtubeId);
 			if (entity is null) return null;
 
 			return Load(entity);
 		}
 
-		public async Task<PamelloSong> Add(string youtubeId) {
-			var song = _list.FirstOrDefault(song => song.YoutubeId == $"https://www.youtube.com/watch?v={youtubeId}");
-			if (song is not null) return song;
+		public async Task<PamelloSong?> Add(string youtubeId) {
+			if (_list.Any(song => song.YoutubeId == youtubeId)) return null;
 
 			YoutubeVideoInfo youtubeInfo;
 			try {
@@ -74,7 +73,7 @@ namespace PamelloV6.API.Repositories
 				Title = youtubeInfo.Name,
 				Author = youtubeInfo.Author,
 				CoverUrl = $"https://img.youtube.com/vi/{youtubeId}/maxresdefault.jpg",
-				SourceUrl = $"https://www.youtube.com/watch?v={youtubeId}",
+				YoutubeId = youtubeId,
 				PlayCount = 0,
 				IsDownloaded = false,
 				Playlists = []
@@ -89,25 +88,22 @@ namespace PamelloV6.API.Repositories
 			_database.Songs.Add(entity);
 			_database.SaveChanges();
 
-            song = Load(entity);
+            var song = Load(entity);
 
             _events.SendToAll(PamelloEvent.SongCreated(song.Id));
 
-            return Load(entity);
+            return song;
 		}
 
 		public override void Delete(int songId) => throw new NotImplementedException();
 
-        public void LoadAll()
-        {
-            foreach (var songEntity in _databaseSongs)
-            {
+        public void LoadAll() {
+            foreach (var songEntity in _databaseSongs) {
                 Load(songEntity);
             }
         }
 
-        private PamelloSong Load(SongEntity songEntity)
-        {
+        private PamelloSong Load(SongEntity songEntity) {
             var song = _list.FirstOrDefault(song => song.Entity.Id == songEntity.Id);
             if (song is not null) return song;
 

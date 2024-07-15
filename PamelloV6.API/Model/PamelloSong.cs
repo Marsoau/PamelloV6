@@ -42,17 +42,9 @@ namespace PamelloV6.API.Model
 		}
 		public string CoverUrl { //remove
 			get => Entity.CoverUrl;
-			set {
-				Entity.CoverUrl = value;
-				Save();
-            }
 		}
 		public string YoutubeId { //change
-			get => Entity.SourceUrl;
-			set {
-				Entity.SourceUrl = value;
-				Save();
-			}
+			get => Entity.YoutubeId;
 		}
 		public int PlayCount {
 			get => Entity.PlayCount;

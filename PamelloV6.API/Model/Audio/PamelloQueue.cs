@@ -127,14 +127,11 @@ namespace PamelloV6.API.Model.Audio
 			SongAudios = new List<PamelloAudio>();
 		}
 
-		public PamelloSong? AddSong(int id) {
-            return InsertSong(SongAudios.Count, id);
+		public PamelloSong? AddSong(PamelloSong song) {
+            return InsertSong(SongAudios.Count, song);
 		}
 
-		public PamelloSong? InsertSong(int position, int id) {
-			var song = _songs.Get(id);
-			if (song is null) return null;
-
+		public PamelloSong? InsertSong(int position, PamelloSong song) {
 			var songAudio = new PamelloAudio(song);
 			SongAudios.Insert(position, songAudio);
 

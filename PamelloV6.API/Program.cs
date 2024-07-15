@@ -146,9 +146,14 @@ namespace PamelloV6.API
 			episodes.LoadAll();
 			playlists.LoadAll();
 
-			var authorisation = services.GetRequiredService<UserAuthorizationService>();
+            var authorisation = services.GetRequiredService<UserAuthorizationService>();
+            var commands = services.GetRequiredService<PamelloCommandsModule>();
 
-			Console.WriteLine(authorisation.GetCode(544933092503060509));
+            Console.WriteLine(authorisation.GetCode(544933092503060509));
+
+			Console.WriteLine("=======================================");
+            Console.WriteLine(commands.GetTSString());
+            Console.WriteLine("=======================================");
         }
 
 		public void StartupDatabaseServices(IServiceProvider services) {
