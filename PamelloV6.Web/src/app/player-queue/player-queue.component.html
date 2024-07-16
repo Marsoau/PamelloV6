@@ -1,6 +1,20 @@
 <div class="queue-list-container">
     @for (song of songs; track songs) {
-        <div class="queue-song-container {{$index == position ? 'queue-song-container-current' : ''}}">
+        <div class="song-drop-zone" [ngClass]="{
+                'song-drop-zone-over': zoneOver == $index
+            }"
+            (dragover)="DragOverSongDropZone($event, $index)"
+            (dragleave)="DragLeaveSongDropZone($event)"
+            (drop)="SongDrop($event, $index, 'move')"
+        >
+            <div class="song-drop-zone-decorator"></div>
+        </div>
+        <div class="queue-song-container {{$index == position ? 'queue-song-container-current' : ''}}"
+            draggable="true"
+            (dragstart)="SongDragStart($event, $index, song.id)"
+            (dragover)="DragOverSong($event)"
+            (drop)="SongDrop($event, $index, 'swap')"
+        >
             <div class="queue-song-info-container" (click)="SongClick($index)">
                 <div class="queue-song-next-decorator" [style]="$index == nextPosition ? 'display: block;' : 'display: none;'">Next</div>
                 <div class="queue-song-title">{{song.title}}</div>

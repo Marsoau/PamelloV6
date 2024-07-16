@@ -3,12 +3,26 @@
     grid-template-rows: 1fr 2px auto;
 }
 
+.song-drop-zone {
+    margin: 0px 4px;
+
+    &-over {
+        .song-drop-zone-decorator {
+            height: 8px;
+            background-color: orange;
+        }
+    }
+
+    &-decorator {
+        height: 4px;
+    }
+}
+
 .queue-song-container {
 	display: grid;
 	grid-template-columns: 1fr auto;
 
-	margin: 4px;
-	margin-bottom: 0;
+	margin: 0px 4px;
 
     font-size: 16px;
 	font-weight: 500;

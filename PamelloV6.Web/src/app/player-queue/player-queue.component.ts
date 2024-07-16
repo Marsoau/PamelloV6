@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { PamelloSong, PamelloV6API } from '../../services/pamelloV6API.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
 	selector: 'app-player-queue',
 	standalone: true,
-	imports: [],
+	imports: [CommonModule],
 	templateUrl: './player-queue.component.html',
 	styleUrl: './player-queue.component.scss'
 })
@@ -19,6 +20,10 @@ export class PlayerQueueComponent {
 	public isReversed: boolean;
 	public isNoLeftovers: boolean;
 
+	public dragPosition: number | null;
+
+	public zoneOver: number | null;
+
 	constructor(api: PamelloV6API) {
 		this.api = api;
 
@@ -29,6 +34,10 @@ export class PlayerQueueComponent {
 		this.isRandom = false;
 		this.isReversed = false;
 		this.isNoLeftovers = false;
+
+		this.dragPosition = null;
+
+		this.zoneOver = null;
 
 		this.SubscribeToEvents();
 		this.Update();
@@ -125,5 +134,42 @@ export class PlayerQueueComponent {
 	}
 	public ClearClick() {
 		this.api.commands.PlayerQueueClear();
+	}
+
+	public SongDragStart(event: DragEvent, dragPosition: number, songId: number) {
+		if (!event.dataTransfer) return;
+
+		event.dataTransfer.effectAllowed = "all";
+		event.dataTransfer.setData("header", "PamelloQueueSong");
+		event.dataTransfer.setData("drag-position", `${dragPosition}`);
+
+		event.dataTransfer.setData("text/html", "<div>test</div>");
+	}
+
+	public DragOverSong(event: DragEvent) {
+		event.preventDefault();
+	}
+	public DragOverSongDropZone(event: DragEvent, zoneIndex: number) {
+		this.zoneOver = zoneIndex;
+		event.preventDefault();
+	}
+	public DragLeaveSongDropZone(event: DragEvent) {
+		this.zoneOver = null;
+	}
+
+	public SongDrop(event: DragEvent, songPosition: number, action: "move" | "swap") {
+		this.zoneOver = null;
+		
+		if (!event.dataTransfer) return;
+		if (event.dataTransfer.getData("header") != "PamelloQueueSong") return;
+
+		let fromPosition = parseInt(event.dataTransfer.getData("drag-position"));
+
+		if (action == "swap") {
+			this.api.commands.PlayerQueueSwap(fromPosition, songPosition);
+		}
+		else if (action == "move") {
+			this.api.commands.PlayerQueueMove(fromPosition, songPosition);
+		}
 	}
 }
