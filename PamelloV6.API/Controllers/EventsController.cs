@@ -48,7 +48,7 @@ namespace PamelloV6.API.Controllers
 
             Response.Headers.ContentType = "text/event-stream";
             Response.Headers.CacheControl = "no-cache";
-            Response.Headers.Connection = "keep-alive";
+            //Response.Headers.Connection = "keep-alive";
             await Response.Body.FlushAsync();
 
             _events.AddListener(Response, user);

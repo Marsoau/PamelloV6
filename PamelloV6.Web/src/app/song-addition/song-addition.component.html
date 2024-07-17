@@ -1,1 +1,3 @@
-<p>song-addition works!</p>
+<app-inspector #inspector/>
+<div class="gray-separator"></div>
+<app-search #search (selectedSongChanged)="inspector.InspectSong($event)"/>

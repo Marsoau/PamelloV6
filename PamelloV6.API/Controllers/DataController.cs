@@ -137,9 +137,11 @@ namespace PamelloV6.API.Controllers
 
 			var pamelloEntities = _repository.Search(page, count, qSearch);
 			return Ok(new {
+				page = page,
 				pagesCount = pamelloEntities.PagesCount,
-				results = pamelloEntities.Results.Select(pamelloEntity => pamelloEntity.GetDTO())
-			});
+				results = pamelloEntities.Results.Select(pamelloEntity => pamelloEntity.GetDTO()),
+                query = qSearch,
+            });
 		}
 
 		private IActionResult HandleGetInfoRequest<T>(PamelloRepository<T> _repository) where T : PamelloEntity {

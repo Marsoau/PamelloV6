@@ -1,1 +1,27 @@
-<p>search works!</p>
+<div class="search-results-list-container">
+    @for (result of currentResults.results; track $index) {
+        @if (currentCategoryLabel == "Songs") {
+            <app-mini-song [song]="result" (selected)="selectedSongChanged.emit($event)"/>
+        }
+    }
+</div>
+<div class="gray-separator"></div>
+<div class="search-controls-container">
+    <div class="pages-controls-container">
+        <button class="default-button" (click)="PrevPage()">Prev</button>
+        <div class="pages-labels-container">
+            <div>{{currentResults.pageCount != 0 ? currentResults.page + 1 : 0}} / {{currentResults.pageCount}}</div>
+        </div>
+        <button class="default-button" (click)="NextPage()">Next</button>
+    </div>
+    <div class="gray-separator"></div>
+    <input class="default-input" placeholder="Search request" (input)="setQ($event)" />
+    <div class="gray-separator"></div>
+    <div class="button-container">
+        <button class="default-button" (click)="Search()">Search</button>
+    </div>
+    <div class="gray-separator"></div>
+    <div class="button-container">
+        <button class="default-button" (click)="SwitchCategory()">{{currentCategoryLabel}}</button>
+    </div>
+</div>

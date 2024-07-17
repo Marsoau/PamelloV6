@@ -1,1 +1,42 @@
-<p>inspector works!</p>
+<div class="inspector-header-container">
+    <div class="inspector-image-container" [style]="{'display': displayStyle == 'Song' ? 'grid' : 'none'}">
+        <img [src]="inspectedSong?.coverUrl"/>
+        <div class="gray-separator"></div>
+    </div>
+    <div class="inspector-info-container">
+        <div class="inspector-info-top-container">
+            @if (displayStyle == "Song") {
+                <div class="inspector-title">{{inspectedSong?.title}}</div>
+                <div class="inspector-subtitle">{{inspectedSong?.author}}</div>
+            }
+            @else if (displayStyle == "Playlist") {
+                <div class="inspector-title">{{inspectedPlaylist?.name}}</div>
+            }
+        </div>
+        <div class="inspector-info-bottom-container">
+            @if (displayStyle == "Song") {
+                <div class="inspector-addition-info-left">Plays: {{inspectedSong?.playCount}}</div>
+                <div class="inspector-addition-info-right">Id: {{inspectedSong?.id}}</div>
+            }
+            @else if (displayStyle == "Playlist") {
+                <div class="inspector-addition-info-left">Songs: {{inspectedPlaylist?.songIds?.length}}</div>
+                <div class="inspector-addition-info-right">Id: {{inspectedPlaylist?.id}}</div>
+            }
+        </div>
+    </div>
+</div>
+<div class="gray-separator"></div>
+<div class="inspector-list-container">
+    <div class="inspector-list">
+        @if (displayStyle == "Playlist") {
+            @for (song of songs; track $index) {
+                <app-mini-song [song]="song" [displayRemoveButton]="true"/>
+            }
+        }
+        @if (displayStyle == "Song") {
+            @for (episode of episodes; track $index) {
+                <div>{{episode.name}}</div>
+            }
+        }
+    </div>
+</div>

@@ -1,0 +1,60 @@
+:host {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: 20px;
+
+    background-color: #F0F0F0;
+
+    &:hover {
+        background-color: #F8F8F8;
+
+        .song-buttons-container {
+            display: flex;
+        }
+    }
+}
+
+.song-info-container {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+
+    img {
+        width: 20px;
+        height: 20px;
+        
+        object-fit: cover;
+    }
+    .song-title-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    
+        div {
+            color: #242424;
+    
+            margin-left: 4px;
+    
+            font-size: 12px;
+            font-weight: 500;
+    
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.song-buttons-container {
+    display: none;
+
+    button {
+        padding: 0px 4px;
+        margin: 2px 2px 2px 0px;
+    }
+}
+
+

@@ -7,12 +7,12 @@ import { MultipageComponent } from "./multipage/multipage.component";
 import { UserAuthorizationComponent } from "./user-authorization/user-authorization.component";
 import { PlayerQueueComponent } from "./player-queue/player-queue.component";
 import { ReqireAuthorizationComponent } from "./reqire-authorization/reqire-authorization.component";
-import { NgIf } from '@angular/common';
+import { SongAdditionComponent } from "./song-addition/song-addition.component";
 
 @Component({
 	selector: 'app-root',
 	standalone: true,
-	imports: [RouterOutlet, PlayerSelectionComponent, PlayerControlsComponent, MultipageComponent, UserAuthorizationComponent, PlayerQueueComponent, ReqireAuthorizationComponent],
+	imports: [RouterOutlet, PlayerSelectionComponent, PlayerControlsComponent, MultipageComponent, UserAuthorizationComponent, PlayerQueueComponent, ReqireAuthorizationComponent, SongAdditionComponent],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.scss'
 })

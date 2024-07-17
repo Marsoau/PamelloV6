@@ -1,1 +1,14 @@
-<p>mini-song works!</p>
+<div class="song-info-container" (click)="Select()">
+    <img [src]="song?.coverUrl"/>
+    <div class="song-title-container">
+        <div>{{song?.title}}</div>
+    </div>
+</div>
+<div class="song-buttons-container">
+    @if (api.authorizedUser?.selectedPlayerId != null) {
+        <button class="default-button mini-button" (click)="Add()">Add</button>
+    }
+    @if (displayRemoveButton) {
+        <button class="default-button mini-button" (click)="Remove()">Remove</button>
+    }
+</div>

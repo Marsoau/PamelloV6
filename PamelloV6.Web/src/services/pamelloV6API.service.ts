@@ -105,6 +105,10 @@ class PamelloV6Data {
         return await lastValueFrom(obs);
     }
 
+    public async SearchSongs(page: number, count: number, query: string = "") {
+        let obs = this.http.get<SearchResult<PamelloSong>>(`https://localhost:58631/Data/Songs/Search?q=${query}&page=${page}&count=${count}`);
+        return await lastValueFrom(obs);
+    }
     public async SearchPlayers(page: number, count: number, query: string = "") {
         let obs = this.http.get<SearchResult<PamelloPlayer>>(`https://localhost:58631/Data/Players/Search?q=${query}&page=${page}&count=${count}`);
         return await lastValueFrom(obs);
@@ -438,7 +442,7 @@ export class PamelloPlaylist {
     public name!: string;
     public ownerId!: number;
     public isProtected!: boolean;
-    public songIds!: number;
+    public songIds!: number[];
 }
 export class PamelloPlayer {
     public id!: number;
@@ -454,7 +458,9 @@ export class PamelloPlayer {
     public queueIsReversed!: boolean;
     public queueIsNoLeftovers!: boolean;
 }
-class SearchResult<T> {
+export class SearchResult<T> {
+    page!: number;
     pagesCount!: number;
     results!: T[];
+    query!: string;
 }
