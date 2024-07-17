@@ -14,7 +14,17 @@
         <div *NgIf="true; else elseBlock">asdasdasdasd</div>
         <ng-template #elseBlock>kfkfkfkfkfkff</ng-template>
         @if (api.authorizedUser != null) {
-            <app-multipage class="controller-item"/>
+            <app-multipage class="controller-item">
+                <app-page header="log">
+                    <div>first page</div>
+                </app-page>
+                <app-page header="episodes">
+                    <div>secaa page</div>
+                </app-page>
+                <app-page header="playlists">
+                    <div>thitadfa page</div>
+                </app-page>
+            </app-multipage>
         } @else {
             <app-reqire-authorization/>
         }

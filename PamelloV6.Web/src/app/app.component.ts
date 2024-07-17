@@ -8,11 +8,13 @@ import { UserAuthorizationComponent } from "./user-authorization/user-authorizat
 import { PlayerQueueComponent } from "./player-queue/player-queue.component";
 import { ReqireAuthorizationComponent } from "./reqire-authorization/reqire-authorization.component";
 import { SongAdditionComponent } from "./song-addition/song-addition.component";
+import { MiniSongComponent } from "./mini-song/mini-song.component";
+import { PageComponent } from "./page/page.component";
 
 @Component({
 	selector: 'app-root',
 	standalone: true,
-	imports: [RouterOutlet, PlayerSelectionComponent, PlayerControlsComponent, MultipageComponent, UserAuthorizationComponent, PlayerQueueComponent, ReqireAuthorizationComponent, SongAdditionComponent],
+	imports: [RouterOutlet, PlayerSelectionComponent, PlayerControlsComponent, MultipageComponent, UserAuthorizationComponent, PlayerQueueComponent, ReqireAuthorizationComponent, SongAdditionComponent, MiniSongComponent, PageComponent],
 	templateUrl: './app.component.html',
 	styleUrl: './app.component.scss'
 })

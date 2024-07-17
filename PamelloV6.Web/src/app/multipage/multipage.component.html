@@ -1,1 +1,14 @@
-<p>multipage works!</p>
+<div class="multipage-page-headers-container">
+    @for (page of pages; track $index) {
+        <div class="page-header">{{page.header}}</div>
+    }
+</div>
+<div class="multipage-page-content-container">
+    @for (page of pages; track $index) {
+        <div class="page-content-container" [style]="{
+            'display': true ? 'grid' : 'none'
+        }"
+            [innerHTML]=""
+        ></div>
+    }
+</div>
