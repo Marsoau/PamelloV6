@@ -1,3 +1,3 @@
 <app-inspector #inspector/>
 <div class="gray-separator"></div>
-<app-search #search (selectedSongChanged)="inspector.InspectSong($event)"/>
+<app-search #search (selectedSongChanged)="inspector.InspectSong($event)" (selectedPlaylistChanged)="inspector.InspectPlaylist($event)"/>

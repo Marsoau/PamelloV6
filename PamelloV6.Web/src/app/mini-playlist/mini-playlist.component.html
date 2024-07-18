@@ -1,1 +1,11 @@
-<p>mini-playlist works!</p>
+<div class="playlist-title-container" (click)="Select()">
+    <div>{{playlist?.name}}</div>
+</div>
+<div class="playlist-buttons-container">
+    @if (api.authorizedUser?.selectedPlayerId != null) {
+        <button class="default-button mini-button" (click)="Add()">Add</button>
+    }
+    @if (displayRemoveButton) {
+        <button class="default-button mini-button" (click)="Remove()">Remove</button>
+    }
+</div>

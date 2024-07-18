@@ -109,6 +109,10 @@ class PamelloV6Data {
         let obs = this.http.get<SearchResult<PamelloSong>>(`https://localhost:58631/Data/Songs/Search?q=${query}&page=${page}&count=${count}`);
         return await lastValueFrom(obs);
     }
+    public async SearchPlaylists(page: number, count: number, query: string = "") {
+        let obs = this.http.get<SearchResult<PamelloPlaylist>>(`https://localhost:58631/Data/Playlists/Search?q=${query}&page=${page}&count=${count}`);
+        return await lastValueFrom(obs);
+    }
     public async SearchPlayers(page: number, count: number, query: string = "") {
         let obs = this.http.get<SearchResult<PamelloPlayer>>(`https://localhost:58631/Data/Players/Search?q=${query}&page=${page}&count=${count}`);
         return await lastValueFrom(obs);

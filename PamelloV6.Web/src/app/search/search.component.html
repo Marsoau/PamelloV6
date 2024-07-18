@@ -3,6 +3,9 @@
         @if (currentCategoryLabel == "Songs") {
             <app-mini-song [song]="result" (selected)="selectedSongChanged.emit($event)"/>
         }
+        @if (currentCategoryLabel == "Playlists") {
+            <app-mini-playlist [playlist]="result" (selected)="selectedPlaylistChanged.emit($event)"/>
+        }
     }
 </div>
 <div class="gray-separator"></div>

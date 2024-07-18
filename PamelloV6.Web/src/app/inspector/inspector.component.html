@@ -30,12 +30,15 @@
     <div class="inspector-list">
         @if (displayStyle == "Playlist") {
             @for (song of songs; track $index) {
-                <app-mini-song [song]="song" [displayRemoveButton]="true"/>
+                <app-mini-song [song]="song" [displayRemoveButton]="true" (selected)="InspectSong($event)"/>
             }
         }
         @if (displayStyle == "Song") {
             @for (episode of episodes; track $index) {
                 <div>{{episode.name}}</div>
+            }
+            @for (playlist of playlists; track $index) {
+                <app-mini-playlist [playlist]="playlist" [displayRemoveButton]="true" (selected)="InspectPlaylist($event)"/>
             }
         }
     </div>
