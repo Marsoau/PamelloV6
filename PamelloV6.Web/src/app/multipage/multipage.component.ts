@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, contentChild, contentChildren, ContentChildren, ElementRef, Input, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, contentChild, contentChildren, ContentChildren, ElementRef, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MiniSongComponent } from '../mini-song/mini-song.component';
 import { PageComponent } from '../page/page.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -13,11 +13,10 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 })
 export class MultipageComponent {
 	@Input() pages!: string[];
+	@Input() public selectedPage: number | null = null;
 
 	@ContentChildren("page") children!: QueryList<any>;
 	@ViewChild("test") testChild!: ElementRef<any>;
-
-	public selectedPage: number | null = null;
 
 	public constructor(
 		private _sanitizer: DomSanitizer

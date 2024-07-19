@@ -1,6 +1,6 @@
 :host {
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
 }
 
 .multipage-page-headers-container {
@@ -25,5 +25,19 @@
 
             cursor: default;
         }
+    }
+}
+
+.multipage-page-list-container {
+    display: grid;
+    
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+
+    .multipage-page-container {
+        display: grid;
+
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr);
     }
 }

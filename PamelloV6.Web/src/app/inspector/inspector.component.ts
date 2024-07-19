@@ -3,11 +3,13 @@ import { PamelloEpisode, PamelloPlaylist, PamelloSong, PamelloV6API } from '../.
 import { MiniSongComponent } from "../mini-song/mini-song.component";
 import { MiniPlaylistComponent } from "../mini-playlist/mini-playlist.component";
 import { PageComponent } from "../page/page.component";
+import { MultipageComponent } from "../multipage/multipage.component";
+import { MiniEpisodeComponent } from "../mini-episode/mini-episode.component";
 
 @Component({
 	selector: 'app-inspector',
 	standalone: true,
-	imports: [MiniSongComponent, MiniPlaylistComponent, PageComponent],
+	imports: [MiniSongComponent, MiniPlaylistComponent, PageComponent, MultipageComponent, MiniEpisodeComponent],
 	templateUrl: './inspector.component.html',
 	styleUrl: './inspector.component.scss'
 })
@@ -33,7 +35,7 @@ export class InspectorComponent {
 		this.episodes = [];
 		this.playlists = [];
 
-		this.InspectPlaylistId(1);
+		this.InspectSongId(2);
 	}
 
 	public async InspectSongId(songId: number) {
@@ -54,6 +56,8 @@ export class InspectorComponent {
 		this.displayStyle = "Playlist";
 		this.inspectedPlaylist = playlist;
 		
+		console.log(`inspecting ${playlist.name}`);
+
 		this.LoadSongs();
 	}
 

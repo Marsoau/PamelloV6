@@ -7,10 +7,27 @@
         </div>
     }
 </div>
-<div class="multipage-page-content-container">
+<div class="multipage-page-list-container">
+    <div [style]="{
+        'display': selectedPage == 0 ? 'grid' : 'none'
+    }" class="multipage-page-container">
+        <ng-content select="[page-0]"></ng-content>
+    </div>
+    <div [style]="{
+        'display': selectedPage == 1 ? 'grid' : 'none'
+    }" class="multipage-page-container">
+        <ng-content select="[page-1]"></ng-content>
+    </div>
+    <div [style]="{
+        'display': selectedPage == 2 ? 'grid' : 'none'
+    }" class="multipage-page-container">
+        <ng-content select="[page-2]"></ng-content>
+    </div>
+    <!--
     @for (child of children; track $index) {
         <div [style]="{
             'display': selectedPage == $index ? 'grid' : 'none'
-        }" [innerHtml]="safeHtml(child.nativeElement.innerHTML)"></div>
+        }" [innerHtml]="safeHtml(child.nativeElement.innerHTML)" class="multipage-page-container"></div>
     }
+    -->
 </div>

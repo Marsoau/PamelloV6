@@ -15,13 +15,13 @@
         <ng-template #elseBlock>kfkfkfkfkfkff</ng-template>
         @if (api.authorizedUser != null) {
             <app-multipage class="controller-item" [pages]="['Speakers', 'Episodes', 'Log']">
-                <div #page>
+                <div page-0>
                     Speakers
                 </div>
-                <div #page>
+                <div page-1>
                     Episodes
                 </div>
-                <div #page>
+                <div page-2>
                     Log
                 </div>
             </app-multipage>

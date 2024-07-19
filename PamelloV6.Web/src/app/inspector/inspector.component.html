@@ -27,18 +27,30 @@
 </div>
 <div class="gray-separator"></div>
 <div class="inspector-list-container">
-    <!--
     @if (displayStyle == "Playlist") {
-        <div class="inspector-list-controls"></div>
         <div class="inspector-list">
             @for (song of songs; track $index) {
                 <app-mini-song [song]="song" [displayRemoveButton]="true" (selected)="InspectSong($event)"/>
             }
         </div>
     }
-    -->
+    @else if (displayStyle == "Song") {
+        <app-multipage class="controller-item" [pages]="['Episodes', 'playlists']" [selectedPage]="0">
+            <div page-0 class="inspector-list">
+                @for (episode of episodes; track $index) {
+                    <div>{{episode.name}}</div>
+                }
+            </div>
+            <div page-1 class="inspector-list">
+                @for (playlist of playlists; track $index) {
+                    <app-mini-playlist [playlist]="playlist" [displayRemoveButton]="true" (selected)="this.InspectPlaylist($event)"/>
+                }
+            </div>
+        </app-multipage>
+    }
 
 
+    <!--
     <div class="inspector-list">
         @if (displayStyle == "Playlist") {
             @for (song of songs; track $index) {
@@ -54,4 +66,5 @@
             }
         }
     </div>
+    -->
 </div>
