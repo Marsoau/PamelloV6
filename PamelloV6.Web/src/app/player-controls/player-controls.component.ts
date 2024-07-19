@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { PamelloPlayer, PamelloSong, PamelloV6API } from '../../services/pamelloV6API.service';
+import { StringTimePipe } from '../string-time.pipe';
 
 @Component({
 	selector: 'app-player-controls',
 	standalone: true,
-	imports: [],
+	imports: [StringTimePipe],
 	templateUrl: './player-controls.component.html',
 	styleUrl: './player-controls.component.scss'
 })
@@ -106,12 +107,5 @@ export class PlayerControlsComponent {
 		let slider = document.getElementById("player-time-slider") as HTMLInputElement;
 
 		this.sliderDragValue = parseInt(slider.value);
-	}
-
-	ToStringTime(seconds: number) {
-		let h = Math.floor(seconds / 3600);
-		let m = Math.floor((seconds - h * 3600) / 60);
-		let s = seconds % 60;
-		return `${(h) ? (h + ":") : ("")}${(m > 9) ? ("") : ("0")}${(m) ? (m) : ("0")}:${(s > 9) ? ("") : ("0")}${(s) ? (s) : ("0")}`;
 	}
 }

@@ -8,8 +8,8 @@
             <span class="player-song-author">{{currentSong?.author}}</span>
         </div>
         <div class="player-time-container">
-            <span class="player-time">{{ToStringTime(sliderDrag ? sliderDragValue : selectedPlayer?.currentSongTimePassed ?? 0)}}</span>
-            <span class="player-duration">{{ToStringTime(selectedPlayer?.currentSongTimeTotal ?? 0)}}</span>
+            <span class="player-time">{{(sliderDrag ? sliderDragValue : selectedPlayer?.currentSongTimePassed ?? 0) | stringTime}}</span>
+            <span class="player-duration">{{(selectedPlayer?.currentSongTimeTotal ?? 0) | stringTime}}</span>
         </div>
     </div>
     <div class="player-controls-cell player-controls-cell-buttons">

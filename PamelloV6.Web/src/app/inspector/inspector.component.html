@@ -38,7 +38,7 @@
         <app-multipage class="controller-item" [pages]="['Episodes', 'playlists']" [selectedPage]="0">
             <div page-0 class="inspector-list">
                 @for (episode of episodes; track $index) {
-                    <div>{{episode.name}}</div>
+                    <app-mini-episode [episode]="episode" [displayRemoveButton]="true"/>
                 }
             </div>
             <div page-1 class="inspector-list">

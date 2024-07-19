@@ -1,1 +1,14 @@
-<p>mini-episode works!</p>
+<div class="episode-title-container">
+    <div class="episode-title">{{episode?.name}}</div>
+    <button class="default-button mini-button edit-title-button">Edit</button>
+</div>
+<div class="episode-time-container">
+    <button class="default-button mini-button edit-time-button">Edit</button>
+    <div class="episode-time">{{episode?.start ?? 0 | stringTime}}</div>
+</div>
+<div class="episode-checkbox-container">
+    <button class="default-button mini-button edit-time-button">Remove</button>
+    <div class="episode-checkbox" [ngClass]="{
+        'episode-checkbox-active': !episode?.skip
+    }"></div>
+</div>
