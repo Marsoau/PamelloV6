@@ -1,14 +1,16 @@
 <div class="multipage-page-headers-container">
-    @for (page of pages; track $index) {
-        <div class="page-header">{{page.header}}</div>
+    @for (pageHeader of pages; track $index) {
+        <div [ngClass]="{
+            'page-header-container-selected': selectedPage == $index
+        }" class="page-header-container" (click)="selectedPage = $index">
+            {{pageHeader}}
+        </div>
     }
 </div>
 <div class="multipage-page-content-container">
-    @for (page of pages; track $index) {
-        <div class="page-content-container" [style]="{
-            'display': true ? 'grid' : 'none'
-        }"
-            [innerHTML]=""
-        ></div>
+    @for (child of children; track $index) {
+        <div [style]="{
+            'display': selectedPage == $index ? 'grid' : 'none'
+        }" [innerHtml]="safeHtml(child.nativeElement.innerHTML)"></div>
     }
 </div>

@@ -2,11 +2,12 @@ import { Component, Input } from '@angular/core';
 import { PamelloEpisode, PamelloPlaylist, PamelloSong, PamelloV6API } from '../../services/pamelloV6API.service';
 import { MiniSongComponent } from "../mini-song/mini-song.component";
 import { MiniPlaylistComponent } from "../mini-playlist/mini-playlist.component";
+import { PageComponent } from "../page/page.component";
 
 @Component({
 	selector: 'app-inspector',
 	standalone: true,
-	imports: [MiniSongComponent, MiniPlaylistComponent],
+	imports: [MiniSongComponent, MiniPlaylistComponent, PageComponent],
 	templateUrl: './inspector.component.html',
 	styleUrl: './inspector.component.scss'
 })

@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, ContentChildren, Input, QueryList } from '@angular/core';
+import { AfterViewInit, Component, contentChild, contentChildren, ContentChildren, ElementRef, Input, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MiniSongComponent } from '../mini-song/mini-song.component';
 import { PageComponent } from '../page/page.component';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
 	selector: 'app-multipage',
@@ -11,7 +12,20 @@ import { PageComponent } from '../page/page.component';
 	styleUrl: './multipage.component.scss'
 })
 export class MultipageComponent {
-	@ContentChildren(PageComponent) pages!: QueryList<PageComponent>;
+	@Input() pages!: string[];
 
-	public selectedPage: number | null = 1;
+	@ContentChildren("page") children!: QueryList<any>;
+	@ViewChild("test") testChild!: ElementRef<any>;
+
+	public selectedPage: number | null = null;
+
+	public constructor(
+		private _sanitizer: DomSanitizer
+	) {
+
+	}
+
+	safeHtml(html: string): SafeHtml {
+		return this._sanitizer.bypassSecurityTrustHtml(html);
+	}
 }

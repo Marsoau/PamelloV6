@@ -27,6 +27,18 @@
 </div>
 <div class="gray-separator"></div>
 <div class="inspector-list-container">
+    <!--
+    @if (displayStyle == "Playlist") {
+        <div class="inspector-list-controls"></div>
+        <div class="inspector-list">
+            @for (song of songs; track $index) {
+                <app-mini-song [song]="song" [displayRemoveButton]="true" (selected)="InspectSong($event)"/>
+            }
+        </div>
+    }
+    -->
+
+
     <div class="inspector-list">
         @if (displayStyle == "Playlist") {
             @for (song of songs; track $index) {
