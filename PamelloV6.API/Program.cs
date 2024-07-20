@@ -29,9 +29,9 @@ namespace PamelloV6.API
 
 			StartupDatabaseServices(app.Services);
 
-			await StartupDiscordServicesAsync(app.Services);
+            await StartupPamelloServicesAsync(app.Services);
 
-			await StartupPamelloServicesAsync(app.Services);
+            await StartupDiscordServicesAsync(app.Services);
 
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment()) {
@@ -161,3 +161,12 @@ namespace PamelloV6.API
 		}
 	}
 }
+
+/*
+
+freeorder-list component: 40min
+song/playlist name/author edit in inspector: 20min
+
+
+
+*/
