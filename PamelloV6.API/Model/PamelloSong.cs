@@ -123,10 +123,41 @@ namespace PamelloV6.API.Model
 		}
 
 		public PamelloEpisode CreateEpisode(string name, int start, bool skip = false) {
-			return _episodes.Add(name, start, skip, this);
-		}
+			var episode = _episodes.Add(name, start, skip, this);
 
-		public override string ToString() {
+            _events.SendToAll(
+				PamelloEvent.SongEpisodesUpdated(Id, Episodes.Select(episode => episode.Id))
+			);
+
+			return episode;
+        }
+
+        public void MoveEpisode(int fromPosition, int toPosition) {
+            if (toPosition > fromPosition) toPosition--;
+
+            var episode = Entity.Episodes[fromPosition];
+            Entity.Episodes.RemoveAt(fromPosition);
+            Entity.Episodes.Insert(toPosition, episode);
+
+            Save();
+
+            _events.SendToAll(
+                PamelloEvent.SongEpisodesUpdated(Id, Episodes.Select(episode => episode.Id))
+            );
+        }
+        public void SwapEpisode(int fromPosition, int withPosition) {
+            var buffer = Entity.Episodes[fromPosition];
+            Entity.Episodes[fromPosition] = Entity.Episodes[withPosition];
+            Entity.Episodes[withPosition] = buffer;
+
+            Save();
+
+            _events.SendToAll(
+                PamelloEvent.SongEpisodesUpdated(Id, Episodes.Select(episode => episode.Id))
+            );
+        }
+
+        public override string ToString() {
 			return $"[S: {Id}] {Name}";
 		}
 

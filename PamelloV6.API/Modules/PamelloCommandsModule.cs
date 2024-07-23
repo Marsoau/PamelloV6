@@ -245,6 +245,22 @@ namespace PamelloV6.API.Modules
             song.Author = newAuthor;
             return true;
         }
+        [PamelloCommand]
+        public void SongMoveEpisode(int songId, int fromPosition, int toPosition) {
+            RequireUser();
+
+            var song = _songs.GetRequired(songId);
+
+            song.MoveEpisode(fromPosition, toPosition);
+        }
+        [PamelloCommand]
+        public void SongSwapEpisode(int songId, int fromPosition, int withPosition) {
+            RequireUser();
+
+            var song = _songs.GetRequired(songId);
+
+            song.SwapEpisode(fromPosition, withPosition);
+        }
         public void SongDelete(int songId) => throw new NotImplementedException();
 
         [PamelloCommand]
@@ -271,12 +287,37 @@ namespace PamelloV6.API.Modules
 
         [PamelloCommand]
         public void PlaylistAddSong(int playlistId, int songId) {
-			RequireUser();
+            RequireUser();
 
-			var playlist = _playlists.GetRequired(playlistId);
-			var song = _songs.GetRequired(songId);
+            var playlist = _playlists.GetRequired(playlistId);
+            var song = _songs.GetRequired(songId);
 
-			playlist.AddSong(song);
+            playlist.AddSong(song);
+        }
+        [PamelloCommand]
+        public void PlaylistInsertSong(int playlistId, int songId, int position) {
+            RequireUser();
+
+            var playlist = _playlists.GetRequired(playlistId);
+            var song = _songs.GetRequired(songId);
+
+            playlist.InsertSong(position, song);
+        }
+        [PamelloCommand]
+        public void PlaylistMoveSong(int playlistId, int fromPosition, int toPosition) {
+            RequireUser();
+
+            var playlist = _playlists.GetRequired(playlistId);
+
+            playlist.MoveSong(fromPosition, toPosition);
+        }
+        [PamelloCommand]
+        public void PlaylistSwapSong(int playlistId, int fromPosition, int withPosition) {
+            RequireUser();
+
+            var playlist = _playlists.GetRequired(playlistId);
+
+            playlist.SwapSong(fromPosition, withPosition);
         }
         [PamelloCommand]
         public void PlaylistRemoveSong(int playlistId, int position) {

@@ -200,6 +200,14 @@ namespace PamelloV6.API.Model.Events
                     newCount
                 }
             };
+        public static PamelloEvent SongEpisodesUpdated(int songId, IEnumerable<int> newEpisodesIds)
+            => new PamelloEvent() {
+                Header = "SongEpisodesUpdated",
+                Data = new {
+                    songId,
+                    newEpisodesIds
+                }
+            };
         public static PamelloEvent SongDownloadStarted(int songId)
             => new PamelloEvent() {
                 Header = "SongDownloadStarted",

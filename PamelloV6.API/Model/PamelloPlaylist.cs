@@ -1,4 +1,5 @@
-﻿using PamelloV6.API.Model.Events;
+﻿using AngleSharp.Dom;
+using PamelloV6.API.Model.Events;
 using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
@@ -67,15 +68,39 @@ namespace PamelloV6.API.Model
                 PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
             );
         }
-		public void InsertSong(int position, PamelloSong song) {
-			Entity.Songs.Insert(position, song.Entity);
-			Save();
+        public void InsertSong(int position, PamelloSong song) {
+            Entity.Songs.Insert(position, song.Entity);
+            Save();
 
             _events.SendToAll(
                 PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
             );
         }
-		public void RemoveSong(int position) {
+        public void MoveSong(int fromPosition, int toPosition) {
+			if (toPosition > fromPosition) toPosition--;
+
+			var song = Entity.Songs[fromPosition];
+            Entity.Songs.RemoveAt(fromPosition);
+			Entity.Songs.Insert(toPosition, song);
+
+            Save();
+
+            _events.SendToAll(
+                PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
+            );
+        }
+        public void SwapSong(int fromPosition, int withPosition) {
+			var buffer = Entity.Songs[fromPosition];
+            Entity.Songs[fromPosition] = Entity.Songs[withPosition];
+			Entity.Songs[withPosition] = buffer;
+			
+            Save();
+
+            _events.SendToAll(
+                PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
+            );
+        }
+        public void RemoveSong(int position) {
 			Entity.Songs.RemoveAt(position);
 			Save();
 
