@@ -1,6 +1,7 @@
 ﻿using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using PamelloV6.API.Model.Interactions;
 using PamelloV6.API.Modules;
 using PamelloV6.API.Repositories;
 using PamelloV6.Server.Model;
@@ -8,29 +9,6 @@ using System.Reflection;
 
 namespace PamelloV6.Server.Handlers
 {
-    public class SocketPamelloInteractionContext : SocketInteractionContext
-	{
-		public readonly PamelloUser User;
-		public readonly PamelloCommandsModule Commands;
-
-		public readonly IServiceProvider Services;
-
-		public SocketPamelloInteractionContext(
-			PamelloUser pamelloUser,
-			DiscordSocketClient client,
-			SocketInteraction interaction,
-			
-			IServiceProvider services
-		) : base(client, interaction) {
-			User = pamelloUser;
-
-			Services = services;
-
-			Commands = services.GetRequiredService<PamelloCommandsModule>();
-			Commands.User = User;
-		}
-	}
-
 	public class InteractionHandler {
 		private readonly DiscordSocketClient _client;
 		private readonly InteractionService _commands;

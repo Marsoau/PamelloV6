@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Expressions;
 using Newtonsoft.Json.Linq;
 using PamelloV6.API.Model;
 using PamelloV6.API.Model.Audio;
+using PamelloV6.API.Model.Interactions;
 using PamelloV6.API.Modules;
 using PamelloV6.API.Repositories;
 using PamelloV6.Server.Handlers;
@@ -50,6 +51,7 @@ namespace PamelloV6.Server.Modules
 			[Summary("name", "Name of the new player")] string name
 		) {
 			Context.Commands.PlayerCreate(name);
+			
 		}
 
 		[SlashCommand("connect", "Create new player")]
