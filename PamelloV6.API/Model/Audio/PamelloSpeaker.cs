@@ -1,17 +1,34 @@
 ﻿using Discord.Audio;
+using Discord.WebSocket;
 
 namespace PamelloV6.API.Model.Audio
 {
 	public class PamelloSpeaker
-	{
-		public Stream OutputStream;
+    {
+        private readonly DiscordSocketClient _discordClient;
 
-		public PamelloSpeaker(IAudioClient ac) {
-			OutputStream = ac.CreatePCMStream(AudioApplication.Mixed);
+		private IAudioClient? _ac;
+        private Stream? _audioOutputStream;
+
+		public bool IsConnected {
+			get =>
+				_audioOutputStream is not null &&
+				_ac is not null &&
+				_ac.ConnectionState == Discord.ConnectionState.Connected;
+		}
+
+        public PamelloSpeaker(DiscordSocketClient discordClient) {
+			_discordClient = discordClient;
+		}
+
+		public async Task Connect(SocketVoiceChannel voiceChannel) {
+			_ac = await voiceChannel.ConnectAsync();
+			_audioOutputStream = _ac.CreatePCMStream(AudioApplication.Mixed);
 		}
 
 		public void PlayBytes(byte[] audioBytes) {
-			OutputStream.Write(audioBytes);
-		}
+			if (!IsConnected) return;
+			_audioOutputStream?.Write(audioBytes);
+        }
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.WebSocket;
 using PamelloV6.API.Attributes;
 using PamelloV6.API.Model;
 using PamelloV6.API.Model.Audio;
@@ -18,13 +19,15 @@ namespace PamelloV6.API.Modules
 		protected readonly PamelloPlaylistRepository _playlists;
 		protected readonly PamelloPlayerRepository _players;
 
+		protected readonly DiscordSocketClient _discordClient;
+
 		private PamelloUser? _user;
 		public PamelloUser User {
 			get => _user ?? throw new Exception("User required");
 			set => _user = value;
 		}
 
-		public PamelloPlayer updatedPlayer {
+		public PamelloPlayer selectedPlayer {
 			get => (_user ?? throw new Exception("User required"))
 				.SelectedPlayer ?? throw new Exception("Selected player required");
 		}
@@ -34,13 +37,17 @@ namespace PamelloV6.API.Modules
 			PamelloSongRepository songs,
 			PamelloEpisodeRepository episodes,
 			PamelloPlaylistRepository playlists,
-			PamelloPlayerRepository players
-		) {
+			PamelloPlayerRepository players,
+
+            DiscordSocketClient discordClient
+        ) {
 			_users = users;
 			_songs = songs;
 			_episodes = episodes;
 			_playlists = playlists;
 			_players = players;
+
+			_discordClient = discordClient;
         }
 
 
@@ -62,61 +69,71 @@ namespace PamelloV6.API.Modules
 			User.SelectedPlayer = player;
         }
         [PamelloCommand]
-        public void PlayerRename(string newName) {
-			RequireUser();
+        public async Task PlayerConnect() {
+            RequireUser();
 
-			updatedPlayer.Name = newName;
-		}
-		public void PlayerDelete(int playerId) => throw new NotImplementedException();
+			var guild = _discordClient.GetGuild(1250768227542241450);
+			var vc = guild.GetUser(User.DiscordUser.Id).VoiceChannel;
+			if (vc is null) return;
+
+            await selectedPlayer.Speaker.Connect(vc);
+        }
+        [PamelloCommand]
+        public void PlayerRename(string newName) {
+            RequireUser();
+
+            selectedPlayer.Name = newName;
+        }
+        public void PlayerDelete(int playerId) => throw new NotImplementedException();
 
         [PamelloCommand]
         public int? PlayerNext() {
 			RequireUser();
 
-			return updatedPlayer.Queue.GoToSong(updatedPlayer.Queue.Position + 1)?.Id;
+			return selectedPlayer.Queue.GoToSong(selectedPlayer.Queue.Position + 1)?.Id;
         }
         [PamelloCommand]
         public int? PlayerPrev() {
 			RequireUser();
 
-            return updatedPlayer.Queue.GoToSong(updatedPlayer.Queue.Position - 1)?.Id;
+            return selectedPlayer.Queue.GoToSong(selectedPlayer.Queue.Position - 1)?.Id;
         }
         [PamelloCommand]
         public int? PlayerSkip() {
 			RequireUser();
 
-			return updatedPlayer.Queue.GoToNextSong()?.Id;
+			return selectedPlayer.Queue.GoToNextSong()?.Id;
         }
         [PamelloCommand]
         public int? PlayerGoToSong(int songPosition, bool returnBack) {
 			RequireUser();
 
-			return updatedPlayer.Queue.GoToSong(songPosition, returnBack)?.Id;
+			return selectedPlayer.Queue.GoToSong(songPosition, returnBack)?.Id;
 		}
 
         [PamelloCommand]
         public void PlayerPause() {
 			RequireUser();
 
-			updatedPlayer.IsPaused = true;
+			selectedPlayer.IsPaused = true;
         }
         [PamelloCommand]
         public void PlayerResume() {
             RequireUser();
 
-            updatedPlayer.IsPaused = false;
+            selectedPlayer.IsPaused = false;
         }
         [PamelloCommand]
         public void PlayerRewind(int seconds) {
             RequireUser();
 
-            updatedPlayer.Queue.Current?.RewindTo(new AudioTime(seconds));
+            selectedPlayer.Queue.Current?.RewindTo(new AudioTime(seconds));
         }
         [PamelloCommand]
         public void PlayerRewindToEpisode(int episodePosition) {
             RequireUser();
 
-            updatedPlayer.Queue.Current?.RewindToEpisode(episodePosition);
+            selectedPlayer.Queue.Current?.RewindToEpisode(episodePosition);
         }
 
         public void PlayerQueueShuffle() => throw new NotImplementedException();
@@ -124,25 +141,25 @@ namespace PamelloV6.API.Modules
         public void PlayerQueueRandom(bool value) {
 			RequireUser();
 
-			updatedPlayer.Queue.IsRandom = value;
+			selectedPlayer.Queue.IsRandom = value;
         }
         [PamelloCommand]
         public void PlayerQueueReversed(bool value) {
 			RequireUser();
 
-			updatedPlayer.Queue.IsReversed = value;
+			selectedPlayer.Queue.IsReversed = value;
         }
         [PamelloCommand]
         public void PlayerQueueNoLeftovers(bool value) {
 			RequireUser();
 
-			updatedPlayer.Queue.IsNoLeftovers = value;
+			selectedPlayer.Queue.IsNoLeftovers = value;
         }
         [PamelloCommand]
         public void PlayerQueueClear() {
 			RequireUser();
 
-			updatedPlayer.Queue.Clear();
+			selectedPlayer.Queue.Clear();
 		}
 
         [PamelloCommand]
@@ -150,38 +167,38 @@ namespace PamelloV6.API.Modules
 			RequireUser();
 
 			var song = _songs.GetRequired(songId);
-			updatedPlayer.Queue.AddSong(song);
+			selectedPlayer.Queue.AddSong(song);
         }
         [PamelloCommand]
         public void PlayerQueueInsertSong(int queuePosition, int songId) {
 			RequireUser();
 
             var song = _songs.GetRequired(songId);
-            updatedPlayer.Queue.InsertSong(queuePosition, song);
+            selectedPlayer.Queue.InsertSong(queuePosition, song);
         }
         [PamelloCommand]
         public int? PlayerQueueRemoveSong(int songPosition) {
 			RequireUser();
 
-            return updatedPlayer.Queue.RemoveSong(songPosition)?.Id;
+            return selectedPlayer.Queue.RemoveSong(songPosition)?.Id;
         }
         [PamelloCommand]
         public void PlayerQueueRequestNext(int? position) {
 			RequireUser();
 
-			updatedPlayer.Queue.NextPositionRequest = position;
+			selectedPlayer.Queue.NextPositionRequest = position;
         }
         [PamelloCommand]
         public void PlayerQueueSwap(int fromPosition, int withPosition) {
 			RequireUser();
 
-			updatedPlayer.Queue.SwapSongs(fromPosition, withPosition);
+			selectedPlayer.Queue.SwapSongs(fromPosition, withPosition);
         }
         [PamelloCommand]
         public void PlayerQueueMove(int fromPosition, int toPosition) {
 			RequireUser();
 
-			updatedPlayer.Queue.MoveSong(fromPosition, toPosition);
+			selectedPlayer.Queue.MoveSong(fromPosition, toPosition);
 		}
 
         [PamelloCommand]

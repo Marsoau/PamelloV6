@@ -40,9 +40,9 @@ namespace PamelloV6.API.Model.Audio
             var discordClient = services.GetRequiredService<DiscordSocketClient>();
 
             var guild = discordClient.GetGuild(1250768227542241450);
-            var ac = guild.GetVoiceChannel(1250768228137959512).ConnectAsync().Result;
+            var vc = guild.GetVoiceChannel(1250768228137959512);
 
-            Speaker = new PamelloSpeaker(ac);
+            Speaker = new PamelloSpeaker(discordClient);
             Queue = new PamelloQueue(this, services);
 
             Task.Run(MusicLoop);
@@ -53,7 +53,8 @@ namespace PamelloV6.API.Model.Audio
 
             while (true) {
                 if (IsPaused ||
-                    Queue.Current is null
+                    Queue.Current is null ||
+                    !Speaker.IsConnected
                 ) {
                     await Task.Delay(200);
                     continue;

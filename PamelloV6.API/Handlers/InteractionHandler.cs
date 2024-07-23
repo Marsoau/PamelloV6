@@ -87,7 +87,7 @@ namespace PamelloV6.Server.Handlers
 			);
 
             if ((await _commands.ExecuteCommandAsync(context, _services)).IsSuccess) {
-				await interaction.ModifyOriginalResponseAsync(message => message.Content = $"Command executed");
+				//await interaction.ModifyOriginalResponseAsync(message => message.Content = $"Command executed");
 			}
 			else {
 				await interaction.ModifyOriginalResponseAsync(message => message.Content = $"Error ocured");
