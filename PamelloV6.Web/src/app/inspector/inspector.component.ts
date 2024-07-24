@@ -5,11 +5,13 @@ import { MiniPlaylistComponent } from "../mini-playlist/mini-playlist.component"
 import { PageComponent } from "../page/page.component";
 import { MultipageComponent } from "../multipage/multipage.component";
 import { MiniEpisodeComponent } from "../mini-episode/mini-episode.component";
+import { ReorderListComponent } from "../reorder-list/reorder-list.component";
+import { ReorderItemComponent } from "../reorder-item/reorder-item.component";
 
 @Component({
 	selector: 'app-inspector',
 	standalone: true,
-	imports: [MiniSongComponent, MiniPlaylistComponent, PageComponent, MultipageComponent, MiniEpisodeComponent],
+	imports: [MiniSongComponent, MiniPlaylistComponent, PageComponent, MultipageComponent, MiniEpisodeComponent, ReorderListComponent, ReorderItemComponent],
 	templateUrl: './inspector.component.html',
 	styleUrl: './inspector.component.scss'
 })
@@ -35,7 +37,7 @@ export class InspectorComponent {
 		this.episodes = [];
 		this.playlists = [];
 
-		this.InspectSongId(2);
+		this.InspectPlaylistId(1);
 	}
 
 	public async InspectSongId(songId: number) {

@@ -28,11 +28,13 @@
 <div class="gray-separator"></div>
 <div class="inspector-list-container">
     @if (displayStyle == "Playlist") {
-        <div class="inspector-list">
+        <app-reorder-list>
             @for (song of songs; track $index) {
-                <app-mini-song [song]="song" [displayRemoveButton]="true" (selected)="InspectSong($event)"/>
+                <app-reorder-item key="{{$index}}" [dropZoneHeight]="2">
+                    <app-mini-song [song]="song" [displayRemoveButton]="true" (selected)="InspectSong($event)"/>
+                </app-reorder-item>
             }
-        </div>
+        </app-reorder-list>
     }
     @else if (displayStyle == "Song") {
         <app-multipage class="controller-item" [pages]="['Episodes', 'playlists']" [selectedPage]="0">
@@ -41,11 +43,13 @@
                     <app-mini-episode [episode]="episode" [displayRemoveButton]="true"/>
                 }
             </div>
-            <div page-1 class="inspector-list">
+            <app-reorder-list page-1>
                 @for (playlist of playlists; track $index) {
-                    <app-mini-playlist [playlist]="playlist" [displayRemoveButton]="true" (selected)="this.InspectPlaylist($event)"/>
+                    <app-reorder-item key="{{$index}}" [dropZoneHeight]="2">
+                        <app-mini-playlist [playlist]="playlist" [displayRemoveButton]="true" (selected)="this.InspectPlaylist($event)"/>
+                    </app-reorder-item>
                 }
-            </div>
+            </app-reorder-list>
         </app-multipage>
     }
 
