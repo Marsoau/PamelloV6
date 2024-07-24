@@ -1,30 +1,38 @@
 <div class="queue-list-container">
-    @for (song of songs; track songs) {
-        <div class="song-drop-zone" [ngClass]="{
-                'song-drop-zone-over': zoneOver == $index
-            }"
-            (dragover)="DragOverSongDropZone($event, $index)"
-            (dragleave)="DragLeaveSongDropZone($event)"
-            (drop)="SongDrop($event, $index, 'move')"
-        >
-            <div class="song-drop-zone-decorator"></div>
-        </div>
-        <div class="queue-song-container {{$index == position ? 'queue-song-container-current' : ''}}"
-            draggable="true"
-            (dragstart)="SongDragStart($event, $index, song.id)"
-            (dragover)="DragOverSong($event)"
-            (drop)="SongDrop($event, $index, 'swap')"
-        >
-            <div class="queue-song-info-container" (click)="SongClick($index)">
-                <div class="queue-song-next-decorator" [style]="$index == nextPosition ? 'display: block;' : 'display: none;'">Next</div>
-                <div class="queue-song-title">{{song.title}}</div>
+    <app-reorder-list (added)="songAdded($event)">
+        @for (song of songs; track songs) {
+            <app-reorder-item key="{{$index}}" (moved)="songMoved($event)" (swapped)="songSwapped($event)">
+                <app-queue-song [song]="song" [position]="$index" [isCurrent]="position == $index" [isNext]="nextPosition == $index" />
+            </app-reorder-item>
+        
+            <!--
+            <div class="song-drop-zone" [ngClass]="{
+                    'song-drop-zone-over': zoneOver == $index
+                }"
+                (dragover)="DragOverSongDropZone($event, $index)"
+                (dragleave)="DragLeaveSongDropZone($event)"
+                (drop)="SongDrop($event, $index, 'move')"
+            >
+                <div class="song-drop-zone-decorator"></div>
             </div>
-            <div class="queue-song-hidden-container">
-                <button class="default-button mini-button" (click)="NextClick($index)">{{$index == nextPosition ? "Remove next" : "Next"}}</button>
-                <button class="default-button mini-button" (click)="RemoveClick($index)">Remove</button>
+            <div class="queue-song-container {{$index == position ? 'queue-song-container-current' : ''}}"
+                draggable="true"
+                (dragstart)="SongDragStart($event, $index, song.id)"
+                (dragover)="DragOverSong($event)"
+                (drop)="SongDrop($event, $index, 'swap')"
+            >
+                <div class="queue-song-info-container" (click)="SongClick($index)">
+                    <div class="queue-song-next-decorator" [style]="$index == nextPosition ? 'display: block;' : 'display: none;'">Next</div>
+                    <div class="queue-song-title">{{song.title}}</div>
+                </div>
+                <div class="queue-song-hidden-container">
+                    <button class="default-button mini-button" (click)="NextClick($index)">{{$index == nextPosition ? "Remove next" : "Next"}}</button>
+                    <button class="default-button mini-button" (click)="RemoveClick($index)">Remove</button>
+                </div>
             </div>
-        </div>
-    }
+            -->
+        }
+    </app-reorder-list>
 </div>
 <div class="gray-separator"></div>
 <div class="queue-controls-container">

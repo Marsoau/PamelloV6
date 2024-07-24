@@ -1,0 +1,16 @@
+<div class="queue-song-container" [ngClass]="{
+        'queue-song-container-current': isCurrent
+    }">
+<!--
+-->
+    <div class="queue-song-info-container" (click)="SongClick()">
+        <div class="queue-song-next-decorator" [ngStyle]="{
+            'display': isNext ? 'block' : 'none'
+        }">Next</div>
+        <div class="queue-song-title">{{song?.title}}</div>
+    </div>
+    <div class="queue-song-hidden-container">
+        <button class="default-button mini-button" (click)="NextClick()">{{isNext ? "Remove next" : "Next"}}</button>
+        <button class="default-button mini-button" (click)="RemoveClick()">Remove</button>
+    </div>
+</div>

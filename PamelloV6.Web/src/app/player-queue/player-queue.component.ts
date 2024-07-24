@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 import { PamelloSong, PamelloV6API } from '../../services/pamelloV6API.service';
 import { CommonModule } from '@angular/common';
+import { ReorderListComponent } from "../reorder-list/reorder-list.component";
+import { ReorderEvent, ReorderItemComponent } from "../reorder-item/reorder-item.component";
+import { QueueSongComponent } from "../queue-song/queue-song.component";
 
 @Component({
 	selector: 'app-player-queue',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [CommonModule, ReorderListComponent, ReorderItemComponent, QueueSongComponent],
 	templateUrl: './player-queue.component.html',
 	styleUrl: './player-queue.component.scss'
 })
@@ -91,6 +94,7 @@ export class PlayerQueueComponent {
 
 		let defaultSong = new PamelloSong();
 		defaultSong.title = "Loadfing...";
+
 		for (let i = 0; i < songsIds.length; i++) {
 			this.songs.push(defaultSong);
 			this.api.data.GetSong(songsIds[i]).then(song => {
@@ -136,40 +140,19 @@ export class PlayerQueueComponent {
 		this.api.commands.PlayerQueueClear();
 	}
 
-	public SongDragStart(event: DragEvent, dragPosition: number, songId: number) {
-		if (!event.dataTransfer) return;
+	songAdded(event: string) {
 
-		event.dataTransfer.effectAllowed = "all";
-		event.dataTransfer.setData("header", "PamelloQueueSong");
-		event.dataTransfer.setData("drag-position", `${dragPosition}`);
-
-		event.dataTransfer.setData("text/html", "<div>test</div>");
 	}
+	songMoved(event: ReorderEvent) {
+		let fromPosition = parseInt(event.firstKey);
+		let toPosition = parseInt(event.secondKey);
 
-	public DragOverSong(event: DragEvent) {
-		event.preventDefault();
+		this.api.commands.PlayerQueueMove(fromPosition, toPosition);
 	}
-	public DragOverSongDropZone(event: DragEvent, zoneIndex: number) {
-		this.zoneOver = zoneIndex;
-		event.preventDefault();
-	}
-	public DragLeaveSongDropZone(event: DragEvent) {
-		this.zoneOver = null;
-	}
+	songSwapped(event: ReorderEvent) {
+		let fromPosition = parseInt(event.firstKey);
+		let withPosition = parseInt(event.secondKey);
 
-	public SongDrop(event: DragEvent, songPosition: number, action: "move" | "swap") {
-		this.zoneOver = null;
-		
-		if (!event.dataTransfer) return;
-		if (event.dataTransfer.getData("header") != "PamelloQueueSong") return;
-
-		let fromPosition = parseInt(event.dataTransfer.getData("drag-position"));
-
-		if (action == "swap") {
-			this.api.commands.PlayerQueueSwap(fromPosition, songPosition);
-		}
-		else if (action == "move") {
-			this.api.commands.PlayerQueueMove(fromPosition, songPosition);
-		}
+		this.api.commands.PlayerQueueSwap(fromPosition, withPosition);
 	}
 }

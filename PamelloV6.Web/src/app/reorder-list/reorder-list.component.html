@@ -1,0 +1,14 @@
+<div class="reorder-list-container"
+    (dragover)="DragOverList($event)"
+    (dragleave)="DragLeaveList($event)"
+>
+    <ng-content></ng-content>
+    <div class="reorder-addition-area"
+        [ngStyle]="{
+            'display': displayAdd ? 'block' : 'none'
+        }"
+        (dragover)="DragOverAdd($event)"
+        (dragleave)="DragLeaveAdd($event)"
+        (drop)="DragDropAdd($event)"
+    >Add</div>
+</div>

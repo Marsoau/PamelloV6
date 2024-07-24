@@ -1,0 +1,13 @@
+.song-drop-zone {
+    &-over {
+        .song-drop-zone-decorator {
+            height: 8px;
+            background-color: orange;
+        }
+    }
+
+    &-decorator {
+        height: 4px;
+    }
+}
+
