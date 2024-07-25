@@ -63,13 +63,29 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr);
 
-    .inspector-list {
-        overflow-y: scroll;
-        overflow-x: hidden;
+    .inspector-list-page-container {
+        display: grid;
+        grid-template-rows: auto 2px 1fr;
 
-        app-mini-episode {
+        .inspector-list-addition {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            grid-gap: 2px;
+
             margin: 2px;
-            margin-bottom: 0;
+            padding: 2px;
+
+            background-color: #F0F0F0;
+        }
+
+        .inspector-list {
+            overflow-y: scroll;
+            overflow-x: hidden;
+    
+            app-mini-episode {
+                margin: 2px;
+                margin-bottom: 0;
+            }
         }
     }
 }

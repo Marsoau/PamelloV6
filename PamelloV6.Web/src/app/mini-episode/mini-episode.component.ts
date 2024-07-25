@@ -76,4 +76,7 @@ export class MiniEpisodeComponent {
 
 		this.api.commands.EpisodeChangeSkipState(this.episode.id, !this.episode.skip);
 	}
+	public Remove() {
+		
+	}
 }

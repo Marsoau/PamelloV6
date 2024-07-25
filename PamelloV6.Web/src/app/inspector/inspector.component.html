@@ -38,23 +38,42 @@
     }
     @else if (displayStyle == "Song") {
         <app-multipage class="controller-item" [pages]="['Episodes', 'playlists']" [selectedPage]="0">
-            <div page-0 class="inspector-list">
-                @for (episode of episodes; track $index) {
-                    <app-mini-episode [episode]="episode" [displayRemoveButton]="true"/>
-                }
+            <div page-0 class="inspector-list-page-container">
+                <div class="inspector-list-addition">
+                    <input type="text" name="song-new-episode-input" [(ngModel)]="newEpisodeNameInput"/>
+                    <button class="default-button mini-button" (click)="AddEpisodeToSong()">Add episode</button>
+                </div>
+                <div class="gray-separator"></div>
+                <div class="inspector-list">
+                    @for (episode of episodes; track $index) {
+                        <app-mini-episode [episode]="episode" [displayRemoveButton]="true"/>
+                    }
+                </div>
             </div>
-            <app-reorder-list page-1>
-                @for (playlist of playlists; track $index) {
-                    <app-reorder-item key="{{$index}}" [dropZoneHeight]="2">
-                        <app-mini-playlist [playlist]="playlist" [displayRemoveButton]="true" (selected)="this.InspectPlaylist($event)"/>
-                    </app-reorder-item>
-                }
-            </app-reorder-list>
+            <div page-1 class="inspector-list-page-container">
+                <div class="inspector-list-addition">
+                    <input type="text" name="song-new-playlist-input" [(ngModel)]="newPlaylistNameInput"/>
+                    <button class="default-button mini-button" (click)="AddPlaylistToSong()">Add playlist</button>
+                </div>
+                <div class="gray-separator"></div>
+                <app-reorder-list>
+                    @for (playlist of playlists; track $index) {
+                        <app-reorder-item key="{{$index}}" [dropZoneHeight]="2">
+                            <app-mini-playlist [playlist]="playlist" [displayRemoveButton]="true" (selected)="this.InspectPlaylist($event)"/>
+                        </app-reorder-item>
+                    }
+                </app-reorder-list>
+            </div>
         </app-multipage>
     }
-
-
+    
+    
     <!--
+    <div class="gray-separator"></div>
+    <div class="inspector-controls-container">
+        
+    </div>
+
     <div class="inspector-list">
         @if (displayStyle == "Playlist") {
             @for (song of songs; track $index) {

@@ -7,11 +7,12 @@ import { MultipageComponent } from "../multipage/multipage.component";
 import { MiniEpisodeComponent } from "../mini-episode/mini-episode.component";
 import { ReorderListComponent } from "../reorder-list/reorder-list.component";
 import { ReorderItemComponent } from "../reorder-item/reorder-item.component";
+import { FormsModule } from '@angular/forms';
 
 @Component({
 	selector: 'app-inspector',
 	standalone: true,
-	imports: [MiniSongComponent, MiniPlaylistComponent, PageComponent, MultipageComponent, MiniEpisodeComponent, ReorderListComponent, ReorderItemComponent],
+	imports: [MiniSongComponent, MiniPlaylistComponent, PageComponent, MultipageComponent, MiniEpisodeComponent, ReorderListComponent, ReorderItemComponent, FormsModule],
 	templateUrl: './inspector.component.html',
 	styleUrl: './inspector.component.scss'
 })
@@ -25,6 +26,9 @@ export class InspectorComponent {
 	public inspectedSong: PamelloSong | null;
 	public inspectedPlaylist: PamelloPlaylist | null;
 
+	public newEpisodeNameInput: string;
+	public newPlaylistNameInput: string;
+
 	public constructor(
 		public readonly api: PamelloV6API
 	) {
@@ -36,6 +40,9 @@ export class InspectorComponent {
 		this.songs = [];
 		this.episodes = [];
 		this.playlists = [];
+
+		this.newEpisodeNameInput = "";
+		this.newPlaylistNameInput = "";
 
 		this.InspectSongId(2);
 	}
@@ -104,5 +111,17 @@ export class InspectorComponent {
 				this.songs[i] = song;
 			})
 		}
+	}
+
+	public AddEpisodeToSong() {
+		if (!this.inspectedSong) return;
+
+		this.api.commands.EpisodeAdd(this.inspectedSong.id, this.newEpisodeNameInput, 0, false);
+	}
+	public async AddPlaylistToSong() {
+		if (!this.inspectedSong) return;
+
+		let newPlaylistId = await this.api.commands.PlaylistAdd(this.newPlaylistNameInput, false);
+		this.api.commands.PlaylistAddSong(newPlaylistId, this.inspectedSong.id);
 	}
 }
