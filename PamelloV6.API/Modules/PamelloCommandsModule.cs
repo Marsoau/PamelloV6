@@ -346,13 +346,21 @@ namespace PamelloV6.API.Modules
         }
         [PamelloCommand]
         public void EpisodeChangeStart(int episodeId, int newStart) {
-			RequireUser();
+            RequireUser();
 
-			var episode = _episodes.GetRequired(episodeId);
+            var episode = _episodes.GetRequired(episodeId);
 
-			episode.Start = new AudioTime(newStart);
-		}
-		public void EpisodeDelete(int episodeId) => throw new NotImplementedException();
+            episode.Start = new AudioTime(newStart);
+        }
+        [PamelloCommand]
+        public void EpisodeChangeSkipState(int episodeId, bool newState) {
+            RequireUser();
+
+            var episode = _episodes.GetRequired(episodeId);
+
+            episode.Skip = newState;
+        }
+        public void EpisodeDelete(int episodeId) => throw new NotImplementedException();
 
 		private void RequireUser(bool mustBeAdmin = false) {
 			bool isAdministractor = User.IsAdministrator;

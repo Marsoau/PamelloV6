@@ -411,6 +411,9 @@ class PamelloV6Commands {
     public async EpisodeChangeStart(episodeId: number, newStart: number) {
         return await this.InvokeCommand(`EpisodeChangeStart&episodeId=${episodeId}&newStart=${newStart}`);
     }
+    public async EpisodeChangeSkipState(episodeId: number, newState: boolean) {
+        return await this.InvokeCommand(`EpisodeChangeSkipState&episodeId=${episodeId}&newState=${newState}`);
+    }
 }
 
 

@@ -37,7 +37,7 @@ export class InspectorComponent {
 		this.episodes = [];
 		this.playlists = [];
 
-		this.InspectPlaylistId(1);
+		this.InspectSongId(2);
 	}
 
 	public async InspectSongId(songId: number) {
