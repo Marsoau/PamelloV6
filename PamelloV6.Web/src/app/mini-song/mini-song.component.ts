@@ -4,7 +4,6 @@ import { PamelloSong, PamelloV6API } from '../../services/pamelloV6API.service';
 @Component({
 	selector: 'app-mini-song',
 	standalone: true,
-	providers: [PamelloV6API],
 	imports: [],
 	templateUrl: './mini-song.component.html',
 	styleUrl: './mini-song.component.scss'
