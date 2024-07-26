@@ -58,15 +58,15 @@ namespace PamelloV6.API.Repositories
 			return Load(entity);
 		}
 
-		public async Task<PamelloSong?> Add(string youtubeId) {
-			if (_list.Any(song => song.YoutubeId == youtubeId)) return null;
+		public async Task<PamelloSong> Add(string youtubeId) {
+			if (_list.Any(song => song.YoutubeId == youtubeId)) throw new Exception("This song is already in database");
 
 			YoutubeVideoInfo youtubeInfo;
 			try {
 				youtubeInfo = await _youtube.GetVideoInfo(youtubeId);
 			}
 			catch (Exception x) {
-				throw new Exception($"Error ocured while attempting to get youtube video info:\n{x}");
+				throw new Exception($"Error occured while attempting to get youtube video {youtubeId} info");
 			}
 
 			var entity = new SongEntity() {

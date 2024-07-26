@@ -6,6 +6,8 @@ using PamelloV6.API.Modules;
 using PamelloV6.API.Repositories;
 using PamelloV6.Server.Model;
 using System.Reflection;
+using PamelloV6.API.Extensions;
+using PamelloV6.API.Model.Interactions.Builders;
 
 namespace PamelloV6.Server.Handlers
 {
@@ -53,7 +55,7 @@ namespace PamelloV6.Server.Handlers
 
 			var pamelloUser = _users.Get(interaction.User.Id);
 			if (pamelloUser is null) {
-				await interaction.ModifyOriginalResponseAsync(message => message.Content = $"Unexpected error");
+                await interaction.RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError("Unexpected error occured"));
 				throw new Exception($"Cant execute discord command with null PamelloUser, discord user id: {interaction.User.Id}");
 			}
 
@@ -68,7 +70,7 @@ namespace PamelloV6.Server.Handlers
 				//await interaction.ModifyOriginalResponseAsync(message => message.Content = $"Command executed");
 			}
 			else {
-				await interaction.ModifyOriginalResponseAsync(message => message.Content = $"Error ocured");
+                await interaction.RespondWithEmbedAsync(PamelloEmbedBuilder.BuildException("Unidentified error occured"));
             }
 		}
 	}

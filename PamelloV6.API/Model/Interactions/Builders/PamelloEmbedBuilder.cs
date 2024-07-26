@@ -12,29 +12,35 @@ namespace PamelloV6.API.Model.Interactions.Builders
             .WithColor(color)
             .Build();
         }
-        public static Embed BuildInfo(string message) {
-            return new EmbedBuilder() {
-                Title = "Info",
-                Description = message,
-            }
-            .WithColor(0x003030FF)
-            .Build();
+        public static Embed BuildInfo(string header, string message) {
+            return Info(header, message).Build();
         }
         public static Embed BuildError(string message) {
+            return Error(message).Build();
+        }
+        public static Embed BuildException(string message) {
+            return Exception(message).Build();
+        }
+        public static EmbedBuilder Info(string header, string message) {
+            return new EmbedBuilder() {
+                Title = header,
+                Description = message,
+            }
+            .WithColor(0x007272FF);
+        }
+        public static EmbedBuilder Error(string message) {
             return new EmbedBuilder() {
                 Title = "Error",
                 Description = message,
             }
-            .WithColor(0x00484848)
-            .Build();
+            .WithColor(0x00484848);
         }
-        public static Embed BuildException(string message) {
+        public static EmbedBuilder Exception(string message) {
             return new EmbedBuilder() {
                 Title = "Exception",
                 Description = message,
             }
-            .WithColor(0x00FF3030)
-            .Build();
+            .WithColor(0x00FF3030);
         }
     }
 }

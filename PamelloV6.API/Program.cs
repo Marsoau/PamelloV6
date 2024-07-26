@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using PamelloV6.DAL.Entity;
 using PamelloV6.API.Repositories;
 using PamelloV6.API.Services;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace PamelloV6.API
 {
@@ -121,12 +122,14 @@ namespace PamelloV6.API
 				var guild = MainDiscordClient.GetGuild(1250768227542241450);
 
 				foreach (var command in await guild.GetApplicationCommandsAsync()) {
-					await command.DeleteAsync();
-				}
+                    Console.WriteLine($"Deleting {command.Name} command");
+                    await command.DeleteAsync();
+                }
 
-				await interactionService.RegisterCommandsGloballyAsync(true);
+                Console.WriteLine($"Registering commands");
+                await interactionService.RegisterCommandsGloballyAsync(true);
 
-				discordReady.SetResult();
+                discordReady.SetResult();
 			};
 
 			await MainDiscordClient.LoginAsync(TokenType.Bot, "MTI1MDc2MzM0NjcxNDY5MzYzMg.GqF3b4.OVu84ru-0_-RtKUwcrQchAppjZgxaHUgnu_5yw");
@@ -151,9 +154,9 @@ namespace PamelloV6.API
 
             Console.WriteLine(authorisation.GetCode(544933092503060509));
 
-			Console.WriteLine("=======================================");
-            Console.WriteLine(commands.GetTSString());
-            Console.WriteLine("=======================================");
+			//Console.WriteLine("=======================================");
+            //Console.WriteLine(commands.GetTSString());
+            //Console.WriteLine("=======================================");
         }
 
 		public void StartupDatabaseServices(IServiceProvider services) {

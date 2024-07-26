@@ -216,14 +216,11 @@ namespace PamelloV6.API.Model.Audio
 
             return true;
 		}
-		public PamelloSong? GoToSong(int songPosition, bool returnBack = false) {
-			if (SongAudios.Count == 0) return null;
+		public PamelloSong GoToSong(int songPosition, bool returnBack = false) {
+			if (SongAudios.Count == 0) throw new Exception("Queue is empty");
 
 			var nextPosition = NormalizeQueuePosition(songPosition);
-
-			if (Position == nextPosition) return Current?.Song;
-
-			if (returnBack) NextPositionRequest = Position;
+			if (returnBack && Position != nextPosition) NextPositionRequest = Position;
 
             Position = nextPosition;
 			Current = SongAudios[Position];

@@ -63,6 +63,7 @@ namespace PamelloV6.API.Modules
 
 			if (playerId is null) {
                 User.SelectedPlayer = null;
+                return;
 			}
 
 			var player = _players.GetRequired(playerId.Value);
@@ -74,7 +75,7 @@ namespace PamelloV6.API.Modules
 
 			var guild = _discordClient.GetGuild(1250768227542241450);
 			var vc = guild.GetUser(User.DiscordUser.Id).VoiceChannel;
-			if (vc is null) return;
+			if (vc is null) throw new Exception("Execting user must be in voice channel");
 
             await selectedPlayer.Speaker.Connect(vc);
         }
@@ -87,16 +88,16 @@ namespace PamelloV6.API.Modules
         public void PlayerDelete(int playerId) => throw new NotImplementedException();
 
         [PamelloCommand]
-        public int? PlayerNext() {
+        public int PlayerNext() {
 			RequireUser();
 
-			return selectedPlayer.Queue.GoToSong(selectedPlayer.Queue.Position + 1)?.Id;
+			return selectedPlayer.Queue.GoToSong(selectedPlayer.Queue.Position + 1).Id;
         }
         [PamelloCommand]
-        public int? PlayerPrev() {
+        public int PlayerPrev() {
 			RequireUser();
 
-            return selectedPlayer.Queue.GoToSong(selectedPlayer.Queue.Position - 1)?.Id;
+            return selectedPlayer.Queue.GoToSong(selectedPlayer.Queue.Position - 1).Id;
         }
         [PamelloCommand]
         public int? PlayerSkip() {
@@ -105,10 +106,10 @@ namespace PamelloV6.API.Modules
 			return selectedPlayer.Queue.GoToNextSong()?.Id;
         }
         [PamelloCommand]
-        public int? PlayerGoToSong(int songPosition, bool returnBack) {
+        public int PlayerGoToSong(int songPosition, bool returnBack) {
 			RequireUser();
 
-			return selectedPlayer.Queue.GoToSong(songPosition, returnBack)?.Id;
+			return selectedPlayer.Queue.GoToSong(songPosition, returnBack).Id;
 		}
 
         [PamelloCommand]

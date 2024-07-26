@@ -3,6 +3,7 @@ using AngleSharp;
 using Microsoft.Extensions.Configuration;
 using PamelloV6.API.Model;
 using System.Text.Json;
+using System.Web;
 
 namespace PamelloV6.API.Services
 {
@@ -13,6 +14,18 @@ namespace PamelloV6.API.Services
 		public YoutubeInfoService(IHttpClientFactory httpClientFactory) {
 			_httpClientFactory = httpClientFactory;
 		}
+
+		public string GetVideoIdFromUrl(string url) {
+			var uri = new Uri(url);
+			var query = HttpUtility.ParseQueryString(uri.Query);
+
+			var youtubeId = query["v"];
+			if (youtubeId is null || youtubeId.Length != 11) {
+				throw new Exception($"cant find youtube id in url \"{url}\"");
+			}
+
+            return youtubeId;
+        }
 
 		public async Task<YoutubeVideoInfo> GetVideoInfo(string youtubeId) {
 			var client = _httpClientFactory.CreateClient();

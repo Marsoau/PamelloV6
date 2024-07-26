@@ -27,7 +27,7 @@ namespace PamelloV6.API.Model
             }
 		}
 		public PamelloUser Owner {
-			get => _users.Get(Entity.Id) ?? throw new Exception("Attempted to get song that doesnt exist");
+			get => _users.Get(Entity.Owner.Id) ?? throw new Exception("Attempted to get user that doesnt exist");
 		}
 		public bool IsProtected {
 			get => Entity.IsProtected;
