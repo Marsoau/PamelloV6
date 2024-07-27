@@ -154,12 +154,12 @@ namespace PamelloV6.API.Model.Audio
 			);
         }
 
-        public PamelloSong? RemoveSong(int songPosition) {
-			if (SongAudios.Count == 0) return null;
+        public PamelloSong RemoveSong(int songPosition) {
+            if (SongAudios.Count == 0) throw new Exception("Queue is empty");
 
-			PamelloSong? song;
+            PamelloSong? song;
 			if (SongAudios.Count == 1) {
-				song = SongAudios.FirstOrDefault()?.Song;
+				song = SongAudios.First().Song;
 				Clear();
                 return song;
 			}
@@ -197,22 +197,22 @@ namespace PamelloV6.API.Model.Audio
 
             return true;
 		}
-		public bool SwapSongs(int fromPosition, int withPosition) {
+		public bool SwapSongs(int inPosition, int withPosition) {
 			if (SongAudios.Count <= 1) return false;
 
-			fromPosition = NormalizeQueuePosition(fromPosition);
+			inPosition = NormalizeQueuePosition(inPosition);
 			withPosition = NormalizeQueuePosition(withPosition);
 
-			if (fromPosition == withPosition) return false;
+			if (inPosition == withPosition) return false;
 
-			var buffer = SongAudios[fromPosition];
-			SongAudios[fromPosition] = SongAudios[withPosition];
+			var buffer = SongAudios[inPosition];
+			SongAudios[inPosition] = SongAudios[withPosition];
 			SongAudios[withPosition] = buffer;
 
             SendQueueUpdatedEvent();
 
-			if (fromPosition == Position) Position = withPosition;
-			else if (withPosition == Position) Position = fromPosition;
+			if (inPosition == Position) Position = withPosition;
+			else if (withPosition == Position) Position = inPosition;
 
             return true;
 		}

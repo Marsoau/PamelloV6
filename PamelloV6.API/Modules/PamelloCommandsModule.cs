@@ -4,6 +4,7 @@ using PamelloV6.API.Attributes;
 using PamelloV6.API.Model;
 using PamelloV6.API.Model.Audio;
 using PamelloV6.API.Repositories;
+using PamelloV6.API.Services;
 using PamelloV6.Core.DTO;
 using PamelloV6.Server.Model;
 using System.Diagnostics.CodeAnalysis;
@@ -20,8 +21,10 @@ namespace PamelloV6.API.Modules
 		protected readonly PamelloPlayerRepository _players;
 
 		protected readonly DiscordSocketClient _discordClient;
+        protected readonly YoutubeInfoService _youtube;
 
-		private PamelloUser? _user;
+
+        private PamelloUser? _user;
 		public PamelloUser User {
 			get => _user ?? throw new Exception("User required");
 			set => _user = value;
@@ -39,7 +42,8 @@ namespace PamelloV6.API.Modules
 			PamelloPlaylistRepository playlists,
 			PamelloPlayerRepository players,
 
-            DiscordSocketClient discordClient
+            DiscordSocketClient discordClient,
+            YoutubeInfoService youtube
         ) {
 			_users = users;
 			_songs = songs;
@@ -48,6 +52,7 @@ namespace PamelloV6.API.Modules
 			_players = players;
 
 			_discordClient = discordClient;
+            _youtube = youtube;
         }
 
 
@@ -171,6 +176,17 @@ namespace PamelloV6.API.Modules
 			selectedPlayer.Queue.AddSong(song);
         }
         [PamelloCommand]
+        public void PlayerQueueAddPlaylist(int playlistId) {
+			RequireUser();
+
+			var playlist = _playlists.GetRequired(playlistId);
+            var songs = playlist.Songs;
+
+            foreach (var song in songs) {
+                selectedPlayer.Queue.AddSong(song);
+            }
+        }
+        [PamelloCommand]
         public void PlayerQueueInsertSong(int queuePosition, int songId) {
 			RequireUser();
 
@@ -178,10 +194,10 @@ namespace PamelloV6.API.Modules
             selectedPlayer.Queue.InsertSong(queuePosition, song);
         }
         [PamelloCommand]
-        public int? PlayerQueueRemoveSong(int songPosition) {
+        public int PlayerQueueRemoveSong(int songPosition) {
 			RequireUser();
 
-            return selectedPlayer.Queue.RemoveSong(songPosition)?.Id;
+            return selectedPlayer.Queue.RemoveSong(songPosition).Id;
         }
         [PamelloCommand]
         public void PlayerQueueRequestNext(int? position) {
@@ -190,10 +206,10 @@ namespace PamelloV6.API.Modules
 			selectedPlayer.Queue.NextPositionRequest = position;
         }
         [PamelloCommand]
-        public void PlayerQueueSwap(int fromPosition, int withPosition) {
+        public void PlayerQueueSwap(int inPosition, int withPosition) {
 			RequireUser();
 
-			selectedPlayer.Queue.SwapSongs(fromPosition, withPosition);
+			selectedPlayer.Queue.SwapSongs(inPosition, withPosition);
         }
         [PamelloCommand]
         public void PlayerQueueMove(int fromPosition, int toPosition) {
@@ -203,48 +219,25 @@ namespace PamelloV6.API.Modules
 		}
 
         [PamelloCommand]
-        public async Task<int?> SongAddYoutube(string youtubeId) {
+        public async Task<int> SongAddYoutube(string youtubeId) {
 			var song = await _songs.Add(youtubeId);
-			song?.StartDownload();
+			song.StartDownload();
 
-			return song?.Id;
+			return song.Id;
         }
         [PamelloCommand]
-        public bool SongEditName(int songId, string newName) {
+        public void SongEditName(int songId, string newName) {
 			RequireUser();
 
-            var song = _songs.Get(songId);
-			if (song is null) return false;
-
+            var song = _songs.GetRequired(songId);
 			song.Name = newName;
-			return true;
-
-            /*
-			var song = _songs.GetRequired(songId);
-
-			var songType = song.GetType();
-
-			foreach (var property in songType.GetProperties()) {
-				if (property.Name == propertyName) {
-					if (!(property.SetMethod?.IsPublic ?? false)) {
-						throw new Exception("This property doesnt have public setter");
-					}
-
-					property.SetValue(song, newValue);
-					return;
-				}
-			}
-			*/
         }
         [PamelloCommand]
-        public bool SongEditAuthor(int songId, string newAuthor) {
+        public void SongEditAuthor(int songId, string newAuthor) {
             RequireUser();
 
-            var song = _songs.Get(songId);
-            if (song is null) return false;
-
+            var song = _songs.GetRequired(songId);
             song.Author = newAuthor;
-            return true;
         }
         [PamelloCommand]
         public void SongMoveEpisode(int songId, int fromPosition, int toPosition) {

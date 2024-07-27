@@ -123,11 +123,11 @@ namespace PamelloV6.API
 
 				foreach (var command in await guild.GetApplicationCommandsAsync()) {
                     Console.WriteLine($"Deleting {command.Name} command");
-                    await command.DeleteAsync();
+                    //await command.DeleteAsync();
                 }
 
                 Console.WriteLine($"Registering commands");
-                await interactionService.RegisterCommandsGloballyAsync(true);
+                await interactionService.RegisterCommandsToGuildAsync(1250768227542241450, true);
 
                 discordReady.SetResult();
 			};

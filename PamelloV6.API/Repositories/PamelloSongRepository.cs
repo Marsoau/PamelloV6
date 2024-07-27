@@ -56,9 +56,40 @@ namespace PamelloV6.API.Repositories
 			if (entity is null) return null;
 
 			return Load(entity);
-		}
+        }
+        public async Task<PamelloSong> GetByValue(string songValue, bool useYoutubeId = true, bool createIfUrlProvided = false) {
+            PamelloSong song;
 
-		public async Task<PamelloSong> Add(string youtubeId) {
+			if (int.TryParse(songValue, out var songId)) {
+                var s = Get(songId);
+                if (s is null) throw new Exception($"Song with id \"{songId}\" not found in database");
+
+                song = s;
+            }
+            else if (useYoutubeId && songValue.StartsWith("http")) {
+                var youtubeId = _youtube.GetVideoIdFromUrl(songValue);
+
+                var s = GetByYoutubeId(youtubeId);
+                if (s is null) {
+                    if (createIfUrlProvided) {
+                        s = await Add(youtubeId);
+                    }
+                    else throw new Exception($"Song with youtube id \"{youtubeId}\" not found in database");
+                }
+
+                song = s;
+            }
+            else {
+                var s = GetByName(songValue);
+                if (s is null) throw new Exception($"Song with name \"{songValue}\" not found in database");
+
+                song = s;
+            }
+
+            return song;
+        }
+
+        public async Task<PamelloSong> Add(string youtubeId) {
 			if (_list.Any(song => song.YoutubeId == youtubeId)) throw new Exception("This song is already in database");
 
 			YoutubeVideoInfo youtubeInfo;

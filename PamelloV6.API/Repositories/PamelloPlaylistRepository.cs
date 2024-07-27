@@ -6,6 +6,7 @@ using PamelloV6.Server.Model;
 using Discord;
 using AngleSharp.Dom.Events;
 using PamelloV6.API.Model.Events;
+using System.Text.Json.Nodes;
 
 namespace PamelloV6.API.Repositories
 {
@@ -30,9 +31,32 @@ namespace PamelloV6.API.Repositories
 			if (entity is null) return null;
 
 			return Load(entity);
-		}
+        }
+        public PamelloPlaylist? GetByName(string name) {
+            var playlist = _list.FirstOrDefault(playlist => playlist.Name == name);
+            if (playlist is not null) return playlist;
 
-		public PamelloPlaylist Add(string name, bool isProtected, PamelloUser owner) {
+            var entity = _databasePlaylists.FirstOrDefault(playlist => playlist.Name == name);
+            if (entity is null) return null;
+
+            return Load(entity);
+        }
+        public PamelloPlaylist GetByValue(string playlistValue) {
+            if (int.TryParse(playlistValue, out var songId)) {
+                var playlist = Get(songId);
+                if (playlist is null) throw new Exception($"Playlist with id \"{songId}\" not found in database");
+
+                return playlist;
+            }
+			else {
+                var playlist = GetByName(playlistValue);
+                if (playlist is null) throw new Exception($"Playlist with name \"{playlistValue}\" not found in database");
+
+                return playlist;
+            }
+        }
+
+        public PamelloPlaylist Add(string name, bool isProtected, PamelloUser owner) {
 			var playlistEntity = new PlaylistEntity() {
 				Name = name,
 				Owner = owner.Entity,
@@ -69,5 +93,5 @@ namespace PamelloV6.API.Repositories
 
 			return playlist;
 		}
-	}
+    }
 }
