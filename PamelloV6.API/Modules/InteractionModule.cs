@@ -59,6 +59,9 @@ namespace PamelloV6.Server.Modules
         [SlashCommand("connect", "Connect player to your voice channel")]
         public async Task ConnectHander()
             => await Connect();
+        [SlashCommand("disconnect", "Disconnect player from voice channel")]
+        public async Task DisconnectHander()
+            => await Disconnect();
 
         [SlashCommand("report-problem", "Report a problem")]
         public async Task ReportProblemHandler(

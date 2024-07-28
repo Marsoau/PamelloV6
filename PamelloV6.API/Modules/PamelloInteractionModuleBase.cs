@@ -87,13 +87,28 @@ namespace PamelloV6.API.Modules
 
         //general
         public async Task Add(string songValue) {
+            if (Context.User.SelectedPlayer is null) {
+                await PlayerCreate("Player");
+            }
             await PlayerQueueSongAdd(songValue);
+			if (!(Context.User.SelectedPlayer?.Speaker.IsConnected ?? false)) {
+                await Context.Commands.PlayerConnect();
+            }
         }
         public async Task AddPlaylist(string playlistValue) {
+            if (Context.User.SelectedPlayer is null) {
+                await PlayerCreate("Player");
+            }
             await PlayerQueuePlaylistAdd(playlistValue);
         }
         public async Task Connect() {
-			await PlayerConnect();
+            if (Context.User.SelectedPlayer is null) {
+				await PlayerCreate("Player");
+			}
+            await PlayerConnect();
+        }
+        public async Task Disconnect() {
+            await PlayerDisconnect();
         }
 
         //player
@@ -157,7 +172,18 @@ namespace PamelloV6.API.Modules
 
 			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Connect player", "Selected player connected to the voice channel"));
 		}
-		public async Task PlayerDelete(string value) {
+        public async Task PlayerDisconnect() {
+            try {
+                await Context.Commands.PlayerDisconnect();
+            }
+            catch (Exception x) {
+                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
+                return;
+            }
+
+            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Connect player", "Selected player connected to the voice channel"));
+        }
+        public async Task PlayerDelete(string value) {
 			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Delete player", "This command is unavailable yet"));
 		}
 		public async Task PlayerList(int page = 1) {

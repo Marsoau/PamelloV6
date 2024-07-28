@@ -55,6 +55,18 @@ namespace PamelloV6.API.Model.Events
                 Header = "PlayerTotalTimeUpdated",
                 Data = newSeconds
             };
+        public static PamelloEvent PlayerSpeakerConnected(string speakerGuildName, string speakerVCName)
+            => new PamelloEvent() {
+                Header = "PlayerSpeakerConnected",
+                Data = new {
+                    speakerGuildName,
+                    speakerVCName
+                }
+            };
+        public static PamelloEvent PlayerSpeakerDisconnected()
+            => new PamelloEvent() {
+                Header = "PlayerSpeakerDisconnected"
+            };
 
         //Player Queue events
         public static PamelloEvent PlauerQueuePositionUpdated(int newPosition)

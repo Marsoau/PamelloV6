@@ -42,7 +42,7 @@ namespace PamelloV6.API.Model.Audio
             var guild = discordClient.GetGuild(1250768227542241450);
             var vc = guild.GetVoiceChannel(1250768228137959512);
 
-            Speaker = new PamelloSpeaker(discordClient);
+            Speaker = new PamelloSpeaker(this, services);
             Queue = new PamelloQueue(this, services);
 
             Task.Run(MusicLoop);
@@ -77,6 +77,10 @@ namespace PamelloV6.API.Model.Audio
                 Name = Name,
 
                 IsPaused = IsPaused,
+
+                SpeakerConnected = Speaker.IsConnected,
+                SpeakerGuildName = Speaker.VoiceChannel?.Guild.Name ?? "",
+                SpeakerVCName = Speaker.VoiceChannel?.Name ?? "",
 
                 CurrentSongTimePassed = Queue.Current?.Position.TotalSeconds ?? 0,
                 CurrentSongTimeTotal = Queue.Current?.Duration.TotalSeconds ?? 0,

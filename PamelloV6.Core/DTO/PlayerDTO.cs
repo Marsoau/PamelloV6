@@ -11,7 +11,11 @@ namespace PamelloV6.Core.DTO
 		public int Id { get; set; }
 		public string Name { get; set; }
 
-		public bool IsPaused { get; set; }
+		public bool SpeakerConnected { get; set; }
+        public string SpeakerGuildName { get; set; }
+        public string SpeakerVCName { get; set; }
+
+        public bool IsPaused { get; set; }
 		
 		public int CurrentSongTimePassed { get; set; }
 		public int CurrentSongTimeTotal { get; set; }

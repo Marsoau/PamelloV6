@@ -33,9 +33,9 @@ namespace PamelloV6.API.Services
                 if (listener.User.Id == userId) listener.SendEvent(pamelloEvent);
             }
         }
-        public void SendToAllWithSelectedPlayer(int updatedPlayerId, PamelloEvent pamelloEvent) {
+        public void SendToAllWithSelectedPlayer(int selectedPlayerId, PamelloEvent pamelloEvent) {
             foreach (var listener in _listeners) {
-                if (listener.User.SelectedPlayer?.Id == updatedPlayerId) listener.SendEvent(pamelloEvent);
+                if (listener.User.SelectedPlayer?.Id == selectedPlayerId) listener.SendEvent(pamelloEvent);
             }
         }
     }

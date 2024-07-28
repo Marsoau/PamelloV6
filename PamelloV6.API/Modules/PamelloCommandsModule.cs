@@ -85,6 +85,12 @@ namespace PamelloV6.API.Modules
             await selectedPlayer.Speaker.Connect(vc);
         }
         [PamelloCommand]
+        public async Task PlayerDisconnect() {
+            RequireUser();
+
+            await selectedPlayer.Speaker.Disconnect();
+        }
+        [PamelloCommand]
         public void PlayerRename(string newName) {
             RequireUser();
 
