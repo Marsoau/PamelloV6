@@ -39,9 +39,6 @@ namespace PamelloV6.API.Model.Audio
 
             var discordClient = services.GetRequiredService<DiscordSocketClient>();
 
-            var guild = discordClient.GetGuild(1250768227542241450);
-            var vc = guild.GetVoiceChannel(1250768228137959512);
-
             Speaker = new PamelloSpeaker(this, services);
             Queue = new PamelloQueue(this, services);
 
@@ -56,18 +53,26 @@ namespace PamelloV6.API.Model.Audio
                     Queue.Current is null ||
                     !Speaker.IsConnected
                 ) {
-                    await Task.Delay(200);
+                    Console.WriteLine($"Waiting {IsPaused}, {Queue.Current is null}, {!Speaker.IsConnected}");
+                    await Task.Delay(1000);
                     continue;
                 }
 
                 if (!Queue.Current.IsInitialized) {
+                    Console.WriteLine($"Started initialization of {Queue.Current.Song.Name}");
                     await Queue.Current.TryInitialize();
+                    Console.WriteLine($"Initialzed {Queue.Current.Song.Name}");
                 }
 
                 audioBytes = Queue.Current?.NextBytes();
 
-                if (audioBytes is not null) Speaker.PlayBytes(audioBytes);
-                else Queue.GoToNextSong();
+                try {
+                    if (audioBytes is not null) Speaker.PlayBytes(audioBytes);
+                    else Queue.GoToNextSong();
+                }
+                catch (Exception x) {
+                    Console.WriteLine("Catch");
+                }
             }
         }
 

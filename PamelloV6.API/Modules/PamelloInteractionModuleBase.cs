@@ -13,6 +13,7 @@ using PamelloV6.API.Model.Interactions.Builders;
 using PamelloV6.API.Repositories;
 using PamelloV6.API.Services;
 using PamelloV6.Core.DTO;
+using PamelloV6.Server.Services;
 using System.Text;
 using System.Text.Json.Nodes;
 
@@ -26,16 +27,18 @@ namespace PamelloV6.API.Modules
 		protected readonly PamelloPlaylistRepository _playlists;
 		protected readonly PamelloPlayerRepository _players;
 		protected readonly YoutubeInfoService _youtube;
+        protected readonly UserAuthorizationService _authorization;
 
-		public PamelloInteractionModuleBase(
+        public PamelloInteractionModuleBase(
 			PamelloUserRepository users,
 			PamelloSongRepository songs,
 			PamelloEpisodeRepository episodes,
 			PamelloPlaylistRepository playlists,
 			PamelloPlayerRepository players,
 
-			YoutubeInfoService youtube
-		) {
+			YoutubeInfoService youtube,
+            UserAuthorizationService authorization
+        ) {
 			_users = users;
 			_songs = songs;
 			_episodes = episodes;
@@ -43,6 +46,7 @@ namespace PamelloV6.API.Modules
 			_players = players;
 
 			_youtube = youtube;
+			_authorization = authorization;
 		}
 
 		protected async Task RespondWithEmbedAsync(Embed embed) {
@@ -109,6 +113,9 @@ namespace PamelloV6.API.Modules
         }
         public async Task Disconnect() {
             await PlayerDisconnect();
+        }
+        public async Task GetCode() {
+			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Authroization code", _authorization.GetCode(Context.User.DiscordUser.Id).ToString()));
         }
 
         //player

@@ -12,13 +12,6 @@ export class ReorderListComponent {
 	@Output() public added = new EventEmitter<string>();
 	public displayAdd: boolean = false;
 
-	DragOverList(event: DragEvent) {
-		
-	}
-	DragLeaveList(event: DragEvent) {
-		
-	}
-
 	DragOverAdd(event: DragEvent) {
 		event.preventDefault();
 	}

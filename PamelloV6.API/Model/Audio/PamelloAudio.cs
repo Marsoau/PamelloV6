@@ -16,7 +16,7 @@ namespace PamelloV6.API.Model.Audio
 		public PamelloEpisode? NextEpisode { get; private set; }
 
 		public bool IsInitialized {
-			get => _audioStream is not null;
+			get => Song.IsDownloaded && _audioStream is not null;
 		}
 
 		public PamelloAudio(PamelloSong song) {

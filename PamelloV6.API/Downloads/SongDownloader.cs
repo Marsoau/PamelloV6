@@ -44,13 +44,16 @@ namespace PamelloV6.API.Downloads
 				UseShellExecute = false,
 				RedirectStandardOutput = true
 			};
-			if (!process.Start()) {
+
+            Console.WriteLine($"Started fownload of {youtubeVideoId}");
+            if (!process.Start()) {
 				return DownloadResult.CantStart;
 			}
 
 			await process.WaitForExitAsync();
+            Console.WriteLine($"Download end of {youtubeVideoId}");
 
-			IsDownloading = false;
+            IsDownloading = false;
 
 			var finalResult = (DownloadResult)process.ExitCode;
 			OnEnd?.Invoke(finalResult);

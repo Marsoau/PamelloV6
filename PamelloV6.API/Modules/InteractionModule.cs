@@ -19,6 +19,7 @@ using PamelloV6.Server.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -39,14 +40,16 @@ namespace PamelloV6.Server.Modules
             PamelloPlaylistRepository playlists,
             PamelloPlayerRepository players,
 
-            YoutubeInfoService youtube
+            YoutubeInfoService youtube,
+            UserAuthorizationService authorization
         ) : base(
             users,
             songs,
             episodes,
             playlists,
             players,
-            youtube
+            youtube,
+            authorization
         ) {
 
         }
@@ -62,6 +65,9 @@ namespace PamelloV6.Server.Modules
         [SlashCommand("disconnect", "Disconnect player from voice channel")]
         public async Task DisconnectHander()
             => await Disconnect();
+        [SlashCommand("get-code", "Get authorization code")]
+        public async Task GetCodeHander()
+            => await GetCode();
 
         [SlashCommand("report-problem", "Report a problem")]
         public async Task ReportProblemHandler(
@@ -90,14 +96,16 @@ namespace PamelloV6.Server.Modules
             PamelloPlaylistRepository playlists,
             PamelloPlayerRepository players,
 
-            YoutubeInfoService youtube
+            YoutubeInfoService youtube,
+            UserAuthorizationService authorization
         ) : base(
 			users,
 			songs,
 			episodes,
 			playlists,
 			players,
-            youtube
+            youtube,
+            authorization
         ) {
 
 		}
@@ -154,14 +162,16 @@ namespace PamelloV6.Server.Modules
                 PamelloPlaylistRepository playlists,
                 PamelloPlayerRepository players,
 
-				YoutubeInfoService youtube
+				YoutubeInfoService youtube,
+                UserAuthorizationService authorization
             ) : base(
                 users,
                 songs,
                 episodes,
                 playlists,
                 players,
-                youtube
+                youtube,
+                authorization
             ) {
 
             }
@@ -239,14 +249,16 @@ namespace PamelloV6.Server.Modules
             PamelloPlaylistRepository playlists,
             PamelloPlayerRepository players,
 
-            YoutubeInfoService youtube
+            YoutubeInfoService youtube,
+            UserAuthorizationService authorization
         ) : base(
             users,
             songs,
             episodes,
             playlists,
             players,
-            youtube
+            youtube,
+            authorization
         ) {
 
         }
@@ -295,14 +307,16 @@ namespace PamelloV6.Server.Modules
                 PamelloPlaylistRepository playlists,
                 PamelloPlayerRepository players,
 
-                YoutubeInfoService youtube
+                YoutubeInfoService youtube,
+                UserAuthorizationService authorization
             ) : base(
                 users,
                 songs,
                 episodes,
                 playlists,
                 players,
-				youtube
+				youtube,
+                authorization
             ) {
 
             }
@@ -342,14 +356,16 @@ namespace PamelloV6.Server.Modules
             PamelloPlaylistRepository playlists,
             PamelloPlayerRepository players,
 
-            YoutubeInfoService youtube
+            YoutubeInfoService youtube,
+            UserAuthorizationService authorization
         ) : base(
             users,
             songs,
             episodes,
             playlists,
             players,
-            youtube
+            youtube,
+            authorization
         ) {
 
         }

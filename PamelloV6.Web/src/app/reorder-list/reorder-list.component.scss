@@ -5,9 +5,17 @@
 .reorder-list-container {
     overflow-y: scroll;
     overflow-x: hidden;
+
+    /*
+    &:hover .reorder-addition-area {
+        display: block;
+    }
+    */
 }
 
 .reorder-addition-area {
+    display: none;
+    
     color: #727272;
     background-color: #AAAAAA;
 

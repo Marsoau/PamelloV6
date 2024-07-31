@@ -7,6 +7,7 @@ using PamelloV6.API.Repositories;
 using PamelloV6.API.Services;
 using PamelloV6.Core.DTO;
 using PamelloV6.Server.Model;
+using PamelloV6.Server.Services;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
@@ -78,7 +79,7 @@ namespace PamelloV6.API.Modules
         public async Task PlayerConnect() {
             RequireUser();
 
-			var guild = _discordClient.GetGuild(1250768227542241450);
+			var guild = _discordClient.GetGuild(1210318314224615454);
 			var vc = guild.GetUser(User.DiscordUser.Id).VoiceChannel;
 			if (vc is null) throw new Exception("Execting user must be in voice channel");
 
@@ -223,7 +224,6 @@ namespace PamelloV6.API.Modules
 
 			selectedPlayer.Queue.MoveSong(fromPosition, toPosition);
 		}
-
         [PamelloCommand]
         public async Task<int> SongAddYoutube(string youtubeId) {
 			var song = await _songs.Add(youtubeId);

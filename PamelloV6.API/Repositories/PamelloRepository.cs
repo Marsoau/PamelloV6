@@ -28,25 +28,27 @@ namespace PamelloV6.API.Repositories
             _list = new List<T>();
 		}
 
-		public SearchResponse<T> Search(int page, int count, string? query) {
+		public SearchResponse<T> Search(int page, int pageSize, string? query) {
 			List<T> list;
 
 			if (query is null) list = _list;
 			else list = _list.Where(item => item.Name.ToLower().Contains(query.ToLower())).ToList();
 
-            var start = page * count;
+            var start = page * pageSize;
 			if (start >= list.Count) {
 				return new SearchResponse<T>() {
                     PagesCount = 0,
                     Results = []
                 };
             }
-			if (start + count > list.Count) {
+
+			var count = pageSize;
+			if (start + pageSize > list.Count) {
 				count = list.Count - start;
             }
 
 			return new SearchResponse<T>() {
-				PagesCount = list.Count / count + (list.Count % count != 0 ? 1 : 0),
+				PagesCount = list.Count / pageSize + (list.Count % pageSize != 0 ? 1 : 0),
 				Results = list.GetRange(start, count)
             };
 		}

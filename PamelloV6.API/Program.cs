@@ -119,7 +119,7 @@ namespace PamelloV6.API
 
 			var discordReady = new TaskCompletionSource();
 			MainDiscordClient.Ready += async () => {
-				var guild = MainDiscordClient.GetGuild(1250768227542241450);
+				var guild = MainDiscordClient.GetGuild(1210318314224615454);
 
 				foreach (var command in await guild.GetApplicationCommandsAsync()) {
                     Console.WriteLine($"Deleting {command.Name} command");
@@ -127,12 +127,12 @@ namespace PamelloV6.API
                 }
 
                 Console.WriteLine($"Registering commands");
-                await interactionService.RegisterCommandsToGuildAsync(1250768227542241450, true);
+                await interactionService.RegisterCommandsGloballyAsync();
 
                 discordReady.SetResult();
 			};
 
-			await MainDiscordClient.LoginAsync(TokenType.Bot, "MTI1MDc2MzM0NjcxNDY5MzYzMg.GqF3b4.OVu84ru-0_-RtKUwcrQchAppjZgxaHUgnu_5yw");
+			await MainDiscordClient.LoginAsync(TokenType.Bot, "OTA0MjcyNTk2OTE1MzM1MTc5.GwXKBa._OAb-Kw-OVT3EfWQSqCHz2bK6q_ZJtllwHWj1o");
 			await MainDiscordClient.StartAsync();
 
 			await discordReady.Task;

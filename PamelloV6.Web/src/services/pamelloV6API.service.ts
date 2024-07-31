@@ -19,7 +19,7 @@ export class PamelloV6API {
         this.http = http;
 
         this.data = new PamelloV6Data(http);
-        this.events = new PamelloV6Events();
+        this.events = new PamelloV6Events(this);
         this.commands = new PamelloV6Commands(this, http);
 
         this.authorizedUser = null;
@@ -27,6 +27,7 @@ export class PamelloV6API {
 
         this.LoadTokenFromCookies();
         this.AuthorizeUserWithToken();
+        this.events.ConnectEvents();
 
         this.events.UserPlayerSelected = async (playerId: number) => {
             this.authorizedUser!.selectedPlayerId = playerId;
@@ -49,14 +50,14 @@ export class PamelloV6API {
     }
 
     public async AuthorizeUserWithToken() {
-        let obsUser = this.http.get<PamelloUser | null>(`https://localhost:58631/Data/User?token=${this.authorizedUserToken}`);
+        let obsUser = this.http.get<PamelloUser | null>(`https://188.47.60.95:58631/Data/User?token=${this.authorizedUserToken}`);
         this.authorizedUser = await lastValueFrom(obsUser);
 
         console.log(this.authorizedUser);
     }
 
     public async AuthorizeUserWithCode(code: number) {
-        let obsToken = this.http.get<string | null>(`https://localhost:58631/Authorization/GetToken?code=${code}`);
+        let obsToken = this.http.get<string | null>(`https://188.47.60.95:58631/Authorization/GetToken?code=${code}`);
         this.authorizedUserToken = await lastValueFrom(obsToken);
 
         if (this.authorizedUserToken == null) {
@@ -85,44 +86,49 @@ class PamelloV6Data {
     }
 
     public async GetUser(id: number) {
-        let obs = this.http.get<PamelloUser>(`https://localhost:58631/Data/User?id=${id}`);
+        let obs = this.http.get<PamelloUser>(`https://188.47.60.95:58631/Data/User?id=${id}`);
         return await lastValueFrom(obs);
     }
     public async GetSong(id: number) {
-        let obs = this.http.get<PamelloSong>(`https://localhost:58631/Data/Song?id=${id}`);
+        let obs = this.http.get<PamelloSong>(`https://188.47.60.95:58631/Data/Song?id=${id}`);
         return await lastValueFrom(obs);
     }
     public async GetEpisode(id: number) {
-        let obs = this.http.get<PamelloEpisode>(`https://localhost:58631/Data/Episode?id=${id}`);
+        let obs = this.http.get<PamelloEpisode>(`https://188.47.60.95:58631/Data/Episode?id=${id}`);
         return await lastValueFrom(obs);
     }
     public async GetPlaylist(id: number) {
-        let obs = this.http.get<PamelloPlaylist>(`https://localhost:58631/Data/Playlist?id=${id}`);
+        let obs = this.http.get<PamelloPlaylist>(`https://188.47.60.95:58631/Data/Playlist?id=${id}`);
         return await lastValueFrom(obs);
     }
     public async GetPlayer(id: number) {
-        let obs = this.http.get<PamelloPlayer>(`https://localhost:58631/Data/Player?id=${id}`);
+        let obs = this.http.get<PamelloPlayer>(`https://188.47.60.95:58631/Data/Player?id=${id}`);
         return await lastValueFrom(obs);
     }
 
     public async SearchSongs(page: number, count: number, query: string = "") {
-        let obs = this.http.get<SearchResult<PamelloSong>>(`https://localhost:58631/Data/Songs/Search?q=${query}&page=${page}&count=${count}`);
+        let obs = this.http.get<SearchResult<PamelloSong>>(`https://188.47.60.95:58631/Data/Songs/Search?q=${query}&page=${page}&count=${count}`);
         return await lastValueFrom(obs);
     }
     public async SearchPlaylists(page: number, count: number, query: string = "") {
-        let obs = this.http.get<SearchResult<PamelloPlaylist>>(`https://localhost:58631/Data/Playlists/Search?q=${query}&page=${page}&count=${count}`);
+        let obs = this.http.get<SearchResult<PamelloPlaylist>>(`https://188.47.60.95:58631/Data/Playlists/Search?q=${query}&page=${page}&count=${count}`);
         return await lastValueFrom(obs);
     }
     public async SearchPlayers(page: number, count: number, query: string = "") {
-        let obs = this.http.get<SearchResult<PamelloPlayer>>(`https://localhost:58631/Data/Players/Search?q=${query}&page=${page}&count=${count}`);
+        let obs = this.http.get<SearchResult<PamelloPlayer>>(`https://188.47.60.95:58631/Data/Players/Search?q=${query}&page=${page}&count=${count}`);
         return await lastValueFrom(obs);
     }
 }
 class PamelloV6Events {
-    private readonly events: EventSource;
+    private readonly api: PamelloV6API;
+    private events!: EventSource;
     
-    public constructor() {
-        this.events = new EventSource(`https://localhost:58631/Events?as=690D0DDB-57D6-4265-9816-EA5C05FFE8D0`);
+    public constructor(api: PamelloV6API) {
+        this.api = api;
+    }
+
+    public ConnectEvents() {
+        this.events = new EventSource(`https://188.47.60.95:58631/Events?as=${this.api.authorizedUserToken}`);
     }
 
     public set PlayerCreated(handler: any) {
@@ -142,6 +148,16 @@ class PamelloV6Events {
     }
     public set PlayerCurrentTimeUpdated(handler: any) {
             this.events.addEventListener("PlayerCurrentTimeUpdated", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlayerSpeakerConnected(handler: any) {
+            this.events.addEventListener("PlayerSpeakerConnected", (message) => {
+                    handler(JSON.parse(message.data));
+            })
+    }
+    public set PlayerSpeakerDisconnected(handler: any) {
+            this.events.addEventListener("PlayerSpeakerDisconnected", (message) => {
                     handler(JSON.parse(message.data));
             })
     }
@@ -308,7 +324,7 @@ class PamelloV6Commands {
 
     private async InvokeCommand(commandString: string) {
         return await lastValueFrom(
-            this.http.get(`https://localhost:58631/Command?name=${commandString}`, {
+            this.http.get(`https://188.47.60.95:58631/Command?name=${commandString}`, {
                 headers: new HttpHeaders({
                     "user-token": this.api.authorizedUserToken ?? ""
                 }) 
@@ -373,7 +389,7 @@ class PamelloV6Commands {
         return await this.InvokeCommand(`PlayerQueueRequestNext&position=${position ?? ''}`);
     }
     public async PlayerQueueSwap(fromPosition: number, withPosition: number) {
-        return await this.InvokeCommand(`PlayerQueueSwap&fromPosition=${fromPosition}&withPosition=${withPosition}`);
+        return await this.InvokeCommand(`PlayerQueueSwap&inPosition=${fromPosition}&withPosition=${withPosition}`);
     }
     public async PlayerQueueMove(fromPosition: number, toPosition: number) {
         return await this.InvokeCommand(`PlayerQueueMove&fromPosition=${fromPosition}&toPosition=${toPosition}`);

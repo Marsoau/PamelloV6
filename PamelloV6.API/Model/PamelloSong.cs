@@ -110,15 +110,7 @@ namespace PamelloV6.API.Model
 				return _downloadTask;
 			}
 
-			var souceUri = new Uri(YoutubeId);
-			if (!(souceUri.Host is "www.youtube.com" or "youtu.be")) {
-				throw new Exception("Only youtube source are suported for auto downloading");
-			}
-			
-			var youtubeId = HttpUtility.ParseQueryString(souceUri.Query)["v"]
-				?? throw new Exception("Cant find youtube id in url");
-
-			_downloadTask = Task.Run(() => _downloader.DownloadFromYoutubeAsync(youtubeId));
+			_downloadTask = Task.Run(() => _downloader.DownloadFromYoutubeAsync(YoutubeId));
 			return _downloadTask;
 		}
 

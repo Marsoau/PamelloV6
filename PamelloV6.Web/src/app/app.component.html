@@ -12,17 +12,7 @@
             <app-reqire-authorization/>
         }
         @if (api.authorizedUser != null) {
-            <app-multipage class="controller-item" [pages]="['Speakers', 'Episodes', 'Log']">
-                <div page-0>
-                    Speakers
-                </div>
-                <div page-1>
-                    Episodes
-                </div>
-                <div page-2>
-                    Log
-                </div>
-            </app-multipage>
+            <app-player-speakers class="controller-item"/>
         } @else {
             <app-reqire-authorization/>
         }
