@@ -9,12 +9,19 @@
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="1.1.2" />
     <PackageReference Include="Discord.Net" Version="3.15.0" />
+    <PackageReference Include="NetEscapades.Configuration.Yaml" Version="3.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PamelloV6.Core\PamelloV6.Core.csproj" />
     <ProjectReference Include="..\PamelloV6.DAL\PamelloV6.DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Config\config.yaml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

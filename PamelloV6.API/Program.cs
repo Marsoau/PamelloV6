@@ -11,6 +11,7 @@ using PamelloV6.DAL.Entity;
 using PamelloV6.API.Repositories;
 using PamelloV6.API.Services;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using PamelloV6.API.Config;
 
 namespace PamelloV6.API
 {
@@ -119,7 +120,7 @@ namespace PamelloV6.API
 
 			var discordReady = new TaskCompletionSource();
 			MainDiscordClient.Ready += async () => {
-				var guild = MainDiscordClient.GetGuild(1210318314224615454);
+				var guild = MainDiscordClient.GetGuild(PamelloConfig.TestGuildId);
 
 				foreach (var command in await guild.GetApplicationCommandsAsync()) {
                     Console.WriteLine($"Deleting {command.Name} command");
@@ -132,7 +133,7 @@ namespace PamelloV6.API
                 discordReady.SetResult();
 			};
 
-			await MainDiscordClient.LoginAsync(TokenType.Bot, "OTA0MjcyNTk2OTE1MzM1MTc5.GwXKBa._OAb-Kw-OVT3EfWQSqCHz2bK6q_ZJtllwHWj1o");
+			await MainDiscordClient.LoginAsync(TokenType.Bot, PamelloConfig.BotToken);
 			await MainDiscordClient.StartAsync();
 
 			await discordReady.Task;
