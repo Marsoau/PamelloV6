@@ -95,7 +95,7 @@ namespace PamelloV6.API.Modules
                 await PlayerCreate("Player");
             }
             await PlayerQueueSongAdd(songValue);
-			if (!(Context.User.SelectedPlayer?.Speaker.IsConnected ?? false)) {
+			if (!(Context.User.SelectedPlayer?.Speakers.IsAnyConnected ?? false)) {
                 await Context.Commands.PlayerConnect();
             }
         }

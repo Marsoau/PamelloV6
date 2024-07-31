@@ -20,7 +20,7 @@ namespace PamelloV6.API.Model.Audio
             }
         }
 
-		public readonly PamelloSpeaker Speaker;
+		public readonly PamelloSpeakerCollection Speakers;
 		public readonly PamelloQueue Queue;
 
         private bool _isPaused;
@@ -39,7 +39,7 @@ namespace PamelloV6.API.Model.Audio
 
             var discordClient = services.GetRequiredService<DiscordSocketClient>();
 
-            Speaker = new PamelloSpeaker(this, services);
+            Speakers = new PamelloSpeakerCollection(this, services);
             Queue = new PamelloQueue(this, services);
 
             Task.Run(MusicLoop);
@@ -51,9 +51,9 @@ namespace PamelloV6.API.Model.Audio
             while (true) {
                 if (IsPaused ||
                     Queue.Current is null ||
-                    !Speaker.IsConnected
+                    !Speakers.IsAnyConnected
                 ) {
-                    Console.WriteLine($"Waiting {IsPaused}, {Queue.Current is null}, {!Speaker.IsConnected}");
+                    Console.WriteLine($"Waiting:\tIsPaused: {IsPaused}\n\tQueue.Current is null: {Queue.Current is null}\n\t!Speakers.IsAnyConnected: {!Speakers.IsAnyConnected}");
                     await Task.Delay(1000);
                     continue;
                 }
@@ -67,7 +67,7 @@ namespace PamelloV6.API.Model.Audio
                 audioBytes = Queue.Current?.NextBytes();
 
                 try {
-                    if (audioBytes is not null) Speaker.PlayBytes(audioBytes);
+                    if (audioBytes is not null) Speakers.PlayBytes(audioBytes);
                     else Queue.GoToNextSong();
                 }
                 catch (Exception x) {
@@ -83,9 +83,7 @@ namespace PamelloV6.API.Model.Audio
 
                 IsPaused = IsPaused,
 
-                SpeakerConnected = Speaker.IsConnected,
-                SpeakerGuildName = Speaker.VoiceChannel?.Guild.Name ?? "",
-                SpeakerVCName = Speaker.VoiceChannel?.Name ?? "",
+                SpeakerConnected = Speakers.IsAnyConnected,
 
                 CurrentSongTimePassed = Queue.Current?.Position.TotalSeconds ?? 0,
                 CurrentSongTimeTotal = Queue.Current?.Duration.TotalSeconds ?? 0,

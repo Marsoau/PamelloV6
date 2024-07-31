@@ -79,17 +79,13 @@ namespace PamelloV6.API.Modules
         public async Task PlayerConnect() {
             RequireUser();
 
-			var guild = _discordClient.GetGuild(1210318314224615454);
-			var vc = guild.GetUser(User.DiscordUser.Id).VoiceChannel;
-			if (vc is null) throw new Exception("Execting user must be in voice channel");
-
-            await selectedPlayer.Speaker.Connect(vc);
+            await selectedPlayer.Speakers.ConnectToUser(User.DiscordUser.Id);
         }
         [PamelloCommand]
         public async Task PlayerDisconnect() {
             RequireUser();
 
-            await selectedPlayer.Speaker.Disconnect();
+            //await selectedPlayer.Speaker.Disconnect();
         }
         [PamelloCommand]
         public void PlayerRename(string newName) {
