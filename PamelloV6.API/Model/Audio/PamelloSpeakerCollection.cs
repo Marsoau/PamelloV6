@@ -1,4 +1,5 @@
 ﻿using Discord.WebSocket;
+using PamelloV6.API.Exceptions;
 using PamelloV6.API.Model.Events;
 using PamelloV6.API.Services;
 using PamelloV6.Server.Services;
@@ -52,14 +53,14 @@ namespace PamelloV6.API.Model.Audio
 
 			foreach (var speaker in _speakers) {
 				if (speaker.DiscordClientUserId == freeClient.CurrentUser.Id && speaker.Guild.Id == guildId) {
-					if (speaker.VoiceChannel is not null) throw new Exception($"Unexpected speaker discord client error");
+					if (speaker.VoiceChannel is not null) throw new PamelloException($"Unexpected speaker discord client error");
 					
 					await speaker.Connect(vcId);
 					return;
 				}
 
 				if (speaker.VoiceChannel?.Id == vcId) {
-					throw new Exception($"Player \"{_parentPlayer.Name}\" already connected to this voice channel");
+					throw new PamelloException($"Player \"{_parentPlayer.Name}\" already connected to this voice channel");
 				}
 			}
 
@@ -95,7 +96,7 @@ namespace PamelloV6.API.Model.Audio
 				if (vc is null) return discordClient;
 			}
 
-			throw new Exception($"No free speakers found in guild {guildId}");
+			throw new PamelloException($"No free speakers found in guild {guildId}");
 		}
 
 		public void PlayBytes(byte[] audioBytes) {

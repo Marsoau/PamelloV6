@@ -83,7 +83,6 @@ namespace PamelloV6.API.Model.Audio
 
                 IsPaused = IsPaused,
 
-                SpeakersConnected = Speakers.IsAnyConnected,
                 Speakers = Speakers.Speakers.Select(speaker => speaker.GetDTO()),
 
                 CurrentSongTimePassed = Queue.Current?.Position.TotalSeconds ?? 0,

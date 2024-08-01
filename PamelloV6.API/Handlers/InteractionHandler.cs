@@ -8,6 +8,7 @@ using PamelloV6.Server.Model;
 using System.Reflection;
 using PamelloV6.API.Extensions;
 using PamelloV6.API.Model.Interactions.Builders;
+using PamelloV6.API.Exceptions;
 
 namespace PamelloV6.Server.Handlers
 {
@@ -56,7 +57,7 @@ namespace PamelloV6.Server.Handlers
 			var pamelloUser = _users.Get(interaction.User.Id);
 			if (pamelloUser is null) {
                 await interaction.RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError("Unexpected error occured"));
-				throw new Exception($"Cant execute discord command with null PamelloUser, discord user id: {interaction.User.Id}");
+				throw new PamelloException($"Cant execute discord command with null PamelloUser, discord user id: {interaction.User.Id}");
 			}
 
 			var context = new SocketPamelloInteractionContext(
@@ -66,12 +67,18 @@ namespace PamelloV6.Server.Handlers
 				_services
 			);
 
-            if ((await _commands.ExecuteCommandAsync(context, _services)).IsSuccess) {
-				//await interaction.ModifyOriginalResponseAsync(message => message.Content = $"Command executed");
-			}
-			else {
-                await interaction.RespondWithEmbedAsync(PamelloEmbedBuilder.BuildException("Unidentified error occured"));
+			var executionResult = await _commands.ExecuteCommandAsync(context, _services);
+
+            if (!executionResult.IsSuccess) {
+				if (executionResult is ExecuteResult result &&
+					result.Exception?.InnerException is PamelloException pamelloException
+				) {
+                    await interaction.RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(pamelloException.Message));
+                }
+                else {
+                    await interaction.RespondWithEmbedAsync(PamelloEmbedBuilder.BuildException("Unidentified error occured"));
+                }
             }
-		}
+        }
 	}
 }

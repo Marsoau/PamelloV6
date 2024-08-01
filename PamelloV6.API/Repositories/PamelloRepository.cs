@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Html;
+using PamelloV6.API.Exceptions;
 using PamelloV6.API.Model;
 using PamelloV6.API.Model.Responses;
 using PamelloV6.API.Services;
@@ -53,7 +54,7 @@ namespace PamelloV6.API.Repositories
             };
 		}
 		public T GetRequired(int id)
-			=> Get(id) ?? throw new Exception($"Cant find required {typeof(T).Name} with id {id}");
+			=> Get(id) ?? throw new PamelloException($"Cant find required {typeof(T).Name} with id {id}");
 		public abstract T? Get(int id);
 		public abstract void Delete(int id);
 	}

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using PamelloV6.API.Model;
 using System.Text.Json;
 using System.Web;
+using PamelloV6.API.Exceptions;
 
 namespace PamelloV6.API.Services
 {
@@ -21,7 +22,7 @@ namespace PamelloV6.API.Services
 
 			var youtubeId = query["v"];
 			if (youtubeId is null || youtubeId.Length != 11) {
-				throw new Exception($"cant find youtube id in url \"{url}\"");
+				throw new PamelloException($"cant find youtube id in url \"{url}\"");
 			}
 
             return youtubeId;
@@ -70,7 +71,7 @@ namespace PamelloV6.API.Services
 			}
 
 			if (jsonStr is null) {
-				throw new Exception("Couldnt find requires json object in html");
+				throw new PamelloException("Couldnt find requires json object in html");
 			}
 
 			File.WriteAllText(@"D:\json\v.json", jsonStr);

@@ -1,4 +1,5 @@
 ﻿using Discord.WebSocket;
+using PamelloV6.API.Exceptions;
 using PamelloV6.API.Model;
 using PamelloV6.API.Model.Audio;
 using PamelloV6.API.Model.Events;
@@ -37,7 +38,7 @@ namespace PamelloV6.Server.Model
 
 		public List<PamelloPlaylist> OwnedPlaylists {
 			get => Entity.OwnedPlaylists.Select(playlistEntity => _playlists.Get(playlistEntity.Id)
-				?? throw new Exception("Attempted to get song that doesnt exist")).ToList();
+				?? throw new PamelloException("Attempted to get song that doesnt exist")).ToList();
 		}
 
 		private PamelloPlayer? _selectedPlayer;

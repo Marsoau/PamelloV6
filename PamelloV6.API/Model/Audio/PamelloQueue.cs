@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Dom.Events;
 using AngleSharp.Text;
+using PamelloV6.API.Exceptions;
 using PamelloV6.API.Model.Events;
 using PamelloV6.API.Repositories;
 using PamelloV6.API.Services;
@@ -155,7 +156,7 @@ namespace PamelloV6.API.Model.Audio
         }
 
         public PamelloSong RemoveSong(int songPosition) {
-            if (SongAudios.Count == 0) throw new Exception("Queue is empty");
+            if (SongAudios.Count == 0) throw new PamelloException("Queue is empty");
 
             PamelloSong? song;
 			if (SongAudios.Count == 1) {
@@ -217,7 +218,7 @@ namespace PamelloV6.API.Model.Audio
             return true;
 		}
 		public PamelloSong GoToSong(int songPosition, bool returnBack = false) {
-			if (SongAudios.Count == 0) throw new Exception("Queue is empty");
+			if (SongAudios.Count == 0) throw new PamelloException("Queue is empty");
 
 			var nextPosition = NormalizeQueuePosition(songPosition);
 			if (returnBack && Position != nextPosition) NextPositionRequest = Position;

@@ -7,6 +7,7 @@ using Discord;
 using AngleSharp.Dom.Events;
 using PamelloV6.API.Model.Events;
 using System.Text.Json.Nodes;
+using PamelloV6.API.Exceptions;
 
 namespace PamelloV6.API.Repositories
 {
@@ -44,13 +45,13 @@ namespace PamelloV6.API.Repositories
         public PamelloPlaylist GetByValue(string playlistValue) {
             if (int.TryParse(playlistValue, out var songId)) {
                 var playlist = Get(songId);
-                if (playlist is null) throw new Exception($"Playlist with id \"{songId}\" not found in database");
+                if (playlist is null) throw new PamelloException($"Playlist with id \"{songId}\" not found in database");
 
                 return playlist;
             }
 			else {
                 var playlist = GetByName(playlistValue);
-                if (playlist is null) throw new Exception($"Playlist with name \"{playlistValue}\" not found in database");
+                if (playlist is null) throw new PamelloException($"Playlist with name \"{playlistValue}\" not found in database");
 
                 return playlist;
             }

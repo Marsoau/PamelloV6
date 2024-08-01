@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Dom;
+using PamelloV6.API.Exceptions;
 using PamelloV6.API.Model.Events;
 using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
@@ -27,7 +28,7 @@ namespace PamelloV6.API.Model
             }
 		}
 		public PamelloUser Owner {
-			get => _users.Get(Entity.Owner.Id) ?? throw new Exception("Attempted to get user that doesnt exist");
+			get => _users.Get(Entity.Owner.Id) ?? throw new PamelloException("Attempted to get user that doesnt exist");
 		}
 		public bool IsProtected {
 			get => Entity.IsProtected;
@@ -43,7 +44,7 @@ namespace PamelloV6.API.Model
 
 		public List<PamelloSong> Songs {
 			get => Entity.Songs.Select(songEntity => _songs.Get(songEntity.Id)
-				?? throw new Exception("Attempted to get song that doesnt exist")).ToList();
+				?? throw new PamelloException("Attempted to get song that doesnt exist")).ToList();
 		}
 
 		public PamelloPlaylist(PlaylistEntity entity,

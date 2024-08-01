@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Audio;
 using Discord.WebSocket;
+using PamelloV6.API.Exceptions;
 using PamelloV6.API.Model.Events;
 using PamelloV6.API.Services;
 using PamelloV6.Core.DTO;
@@ -36,7 +37,7 @@ namespace PamelloV6.API.Model.Audio
             _parentPlayer = parentPlayer;
             DiscordClient = discordClient;
             Guild = discordClient.GetGuild(guildId) ??
-                throw new Exception($"Attempted to create speaker in guild without specified discord client");
+                throw new PamelloException($"Attempted to create speaker in guild without specified discord client");
 
             DiscordClient.UserVoiceStateUpdated += UserVoiceStateUpdated;
         }

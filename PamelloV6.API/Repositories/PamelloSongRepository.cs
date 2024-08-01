@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Microsoft.EntityFrameworkCore;
+using PamelloV6.API.Exceptions;
 using PamelloV6.API.Model;
 using PamelloV6.API.Model.Events;
 using PamelloV6.API.Services;
@@ -62,7 +63,7 @@ namespace PamelloV6.API.Repositories
 
 			if (int.TryParse(songValue, out var songId)) {
                 var s = Get(songId);
-                if (s is null) throw new Exception($"Song with id \"{songId}\" not found in database");
+                if (s is null) throw new PamelloException($"Song with id \"{songId}\" not found in database");
 
                 song = s;
             }
@@ -74,14 +75,14 @@ namespace PamelloV6.API.Repositories
                     if (createIfUrlProvided) {
                         s = await Add(youtubeId);
                     }
-                    else throw new Exception($"Song with youtube id \"{youtubeId}\" not found in database");
+                    else throw new PamelloException($"Song with youtube id \"{youtubeId}\" not found in database");
                 }
 
                 song = s;
             }
             else {
                 var s = GetByName(songValue);
-                if (s is null) throw new Exception($"Song with name \"{songValue}\" not found in database");
+                if (s is null) throw new PamelloException($"Song with name \"{songValue}\" not found in database");
 
                 song = s;
             }
@@ -90,14 +91,14 @@ namespace PamelloV6.API.Repositories
         }
 
         public async Task<PamelloSong> Add(string youtubeId) {
-			if (_list.Any(song => song.YoutubeId == youtubeId)) throw new Exception("This song is already in database");
+			if (_list.Any(song => song.YoutubeId == youtubeId)) throw new PamelloException("This song is already in database");
 
 			YoutubeVideoInfo youtubeInfo;
 			try {
 				youtubeInfo = await _youtube.GetVideoInfo(youtubeId);
 			}
 			catch (Exception x) {
-				throw new Exception($"Error occured while attempting to get youtube video {youtubeId} info");
+				throw new PamelloException($"Error occured while attempting to get youtube video {youtubeId} info");
 			}
 
 			var entity = new SongEntity() {

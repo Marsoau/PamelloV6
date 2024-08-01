@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Dom;
 using PamelloV6.API.Downloads;
+using PamelloV6.API.Exceptions;
 using PamelloV6.API.Model.Events;
 using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
@@ -60,11 +61,11 @@ namespace PamelloV6.API.Model
 
 		public List<PamelloEpisode> Episodes {
 			get => Entity.Episodes.Select(episodesEntity => _episodes.Get(episodesEntity.Id)
-				?? throw new Exception("Attempted to get song that doesnt exist")).ToList();
+				?? throw new PamelloException("Attempted to get song that doesnt exist")).ToList();
 		}
 		public List<PamelloPlaylist> Playlists {
 			get => Entity.Playlists.Select(playlistEntity => _playlists.Get(playlistEntity.Id)
-				?? throw new Exception("Attempted to get song that doesnt exist")).ToList();
+				?? throw new PamelloException("Attempted to get song that doesnt exist")).ToList();
 		}
 
 		public bool IsDownloaded {

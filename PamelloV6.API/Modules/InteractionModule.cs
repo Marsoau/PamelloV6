@@ -280,11 +280,6 @@ namespace PamelloV6.Server.Modules
             [Summary("author", "New author")] string newAuthor
         ) => await SongEditAuthor(songValue, newAuthor);
 
-        [SlashCommand("delete", "Delete song from the database")]
-		public async Task SongDeleteHandler(
-			[Summary("song", "Song id or Youtube url")] string songValue
-        ) => await SongDelete(songValue);
-
 		[SlashCommand("search", "Search for songs in the database")]
 		public async Task SongSearchHandler(
 			[Summary("request", "Song name")] string request,

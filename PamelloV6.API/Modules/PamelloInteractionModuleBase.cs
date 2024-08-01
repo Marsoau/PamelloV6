@@ -6,6 +6,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json.Linq;
+using PamelloV6.API.Exceptions;
 using PamelloV6.API.Model;
 using PamelloV6.API.Model.Audio;
 using PamelloV6.API.Model.Interactions;
@@ -130,22 +131,15 @@ namespace PamelloV6.API.Modules
 			if (!int.TryParse(value, out id)) {
 				var player = _players.GetByName(value);
 				if (player is null) {
-					await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError($"Cant find player with name \"{value}\""));
-					return;
+					throw new PamelloException($"Cant find player with name \"{value}\"");
 				}
 
 				id = player.Id;
 			}
 
-			try {
-				Context.Commands.PlayerSelect(id);
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+            Context.Commands.PlayerSelect(id);
 
-			if (Context.User.SelectedPlayer is not null) {
+            if (Context.User.SelectedPlayer is not null) {
 				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Select player", $"Selected player \"{Context.User.SelectedPlayer.Name}\""));
 			}
 			else {
@@ -159,34 +153,21 @@ namespace PamelloV6.API.Modules
 
 			var newPlayer = _players.Get(newPlayerId);
 
-			if (newPlayer is not null) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Create player", $"Created{(
-					Context.User.SelectedPlayer?.Id == newPlayer.Id ? " and selected " : " "
-				)}new player \"{newPlayer.Name}\""));
-			}
-			else {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError($"Cant find newly created played by id {newPlayerId}"));
-			}
-		}
-		public async Task PlayerConnect() {
-			try {
-				await Context.Commands.PlayerConnect();
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+			if (newPlayer is null) {
+                throw new PamelloException($"Cant find newly created played by id {newPlayerId}");
+            }
 
-			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Connect player", "Selected player connected to the voice channel"));
+            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Create player", $"Created{(
+                Context.User.SelectedPlayer?.Id == newPlayer.Id ? " and selected " : " "
+            )}new player \"{newPlayer.Name}\""));
+        }
+		public async Task PlayerConnect() {
+            await Context.Commands.PlayerConnect();
+
+            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Connect player", "Selected player connected to the voice channel"));
 		}
         public async Task PlayerDisconnect() {
-            try {
-                await Context.Commands.PlayerDisconnect();
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            await Context.Commands.PlayerDisconnect();
 
             await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Connect player", "Selected player connected to the voice channel"));
         }
@@ -199,73 +180,43 @@ namespace PamelloV6.API.Modules
 		public async Task PlayerGoTo(int songPosition, bool returnBack = false) {
 			int newSongId;
 
-			try {
-				newSongId = Context.Commands.PlayerGoToSong(songPosition, returnBack);
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+            newSongId = Context.Commands.PlayerGoToSong(songPosition, returnBack);
 
-			var newSong = _songs.Get(newSongId);
+            var newSong = _songs.Get(newSongId);
 
 			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Go to song", $"Playing song \"{newSong?.Name}\""));
 		}
 		public async Task PlayerPrev() {
 			int newSongId;
 
-			try {
-				newSongId = Context.Commands.PlayerPrev();
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+            newSongId = Context.Commands.PlayerPrev();
 
-			var newSong = _songs.Get(newSongId);
+            var newSong = _songs.Get(newSongId);
 
 			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Player revious song", $"Playing song \"{newSong?.Name}\""));
 		}
 		public async Task PlayerNext() {
 			int newSongId;
 
-			try {
-				newSongId = Context.Commands.PlayerNext();
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+            newSongId = Context.Commands.PlayerNext();
 
-			var newSong = _songs.Get(newSongId);
+            var newSong = _songs.Get(newSongId);
 
 			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Player next song", $"Playing song \"{newSong?.Name}\""));
 		}
 		public async Task PlayerSkip() {
-			try {
-				Context.Commands.PlayerSkip();
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+            Context.Commands.PlayerSkip();
 
-			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Player skip current song", $"Skipped"));
+            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Player skip current song", $"Skipped"));
 		}
 
 		//queue
 		public async Task QueueInsertSong(string songValue, bool createIfUrlProvided, int? position = null) {
 			var song = await _songs.GetByValue(songValue, true, createIfUrlProvided);
 
-			try {
-				Context.Commands.PlayerQueueAddSong(song.Id);
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+            Context.Commands.PlayerQueueAddSong(song.Id);
 
-			await RespondWithEmbedAsync(
+            await RespondWithEmbedAsync(
 				PamelloEmbedBuilder.Info($"Added song to \"{Context.User.SelectedPlayer?.Name}\" queue", song.Name)
 					.WithThumbnailUrl(song.CoverUrl)
 					.Build()
@@ -280,68 +231,35 @@ namespace PamelloV6.API.Modules
 			await QueueInsertSong(songValue, false, position);
 		}
 		public async Task PlayerQueuePlaylistAdd(string playlistValue) {
-            try {
-                var playlist = _playlists.GetByValue(playlistValue);
-                Context.Commands.PlayerQueueAddPlaylist(playlist.Id);
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            var playlist = _playlists.GetByValue(playlistValue);
+            Context.Commands.PlayerQueueAddPlaylist(playlist.Id);
 
             await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Add playlist", $"Songs from playlist added to current queue"));
         }
 		public async Task PlayerQueueSongRemove(int position) {
-			int removedSongId;
+            var removedSongId = Context.Commands.PlayerQueueRemoveSong(position);
 
-			try {
-				removedSongId = Context.Commands.PlayerQueueRemoveSong(position);
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
-
-			var removedSong = _songs.Get(removedSongId);
+            var removedSong = _songs.Get(removedSongId);
 			if (removedSong is null) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError("Removed non existent song successfully?"));
-				return;
+				throw new PamelloException("Removed non existent song successfully?");
 			}
 
 			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Remove song", $"Song {removedSong.Name} removed"));
 		}
 		public async Task PlayerQueueSongMove(int fromPosition, int toPosition) {
-			try {
-				Context.Commands.PlayerQueueMove(fromPosition, toPosition);
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+            Context.Commands.PlayerQueueMove(fromPosition, toPosition);
 
-			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Move song", $"Moved song from position {fromPosition} to position {toPosition}"));
+            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Move song", $"Moved song from position {fromPosition} to position {toPosition}"));
 		}
 		public async Task PlayerQueueSongSwap(int inPosition, int withPosition) {
-			try {
-				Context.Commands.PlayerQueueSwap(inPosition, withPosition);
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+            Context.Commands.PlayerQueueSwap(inPosition, withPosition);
 
-			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Move song", $"Swapped song in position {inPosition} with position {withPosition}"));
+            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Move song", $"Swapped song in position {inPosition} with position {withPosition}"));
 		}
 		public async Task PlayerQueueSongRequestNext(int? position) {
-			try {
-				Context.Commands.PlayerQueueRequestNext(position);
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+            Context.Commands.PlayerQueueRequestNext(position);
 
-			if (position is not null) {
+            if (position is not null) {
 				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Request next", $"Song in position {position} requested to be next"));
 			}
 			else {
@@ -349,133 +267,63 @@ namespace PamelloV6.API.Modules
 			}
 		}
 		public async Task PlayerQueueRandom(bool state) {
-			try {
-				Context.Commands.PlayerQueueRandom(state);
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+            Context.Commands.PlayerQueueRandom(state);
 
-			var newState = Context.User.SelectedPlayer?.Queue.IsRandom;
+            var newState = Context.User.SelectedPlayer?.Queue.IsRandom
+                ?? throw new PamelloException("Queue was not found?");
 
-			if (newState is null) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError("Queue was not found?"));
-			}
-			else {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Queue random", $"Queue is{(newState.Value ? "" : " not")} random now"));
-			}
-		}
+            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Queue random", $"Queue is{(newState ? "" : " not")} random now"));
+        }
 		public async Task PlayerQueueReversed(bool state) {
-			try {
-				Context.Commands.PlayerQueueReversed(state);
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+            Context.Commands.PlayerQueueReversed(state);
 
-			var newState = Context.User.SelectedPlayer?.Queue.IsReversed;
+            var newState = Context.User.SelectedPlayer?.Queue.IsReversed
+                ?? throw new PamelloException("Queue was not found?");
 
-			if (newState is null) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError("Queue was not found?"));
-			}
-			else {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Queue reversed", $"Queue is{(newState.Value ? "" : " not")} reversed now"));
-			}
-		}
+            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Queue reversed", $"Queue is{(newState ? "" : " not")} reversed now"));
+        }
 		public async Task PlayerQueueNoLeftovers(bool state) {
-			try {
-				Context.Commands.PlayerQueueNoLeftovers(state);
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+            Context.Commands.PlayerQueueNoLeftovers(state);
 
-			var newState = Context.User.SelectedPlayer?.Queue.IsNoLeftovers;
+            var newState = Context.User.SelectedPlayer?.Queue.IsNoLeftovers
+                ?? throw new PamelloException("Queue was not found?");
 
-			if (newState is null) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError("Queue was not found?"));
-			}
-			else {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Queue no leftovers", $"Queue has{(newState.Value ? "" : " not")} no leftovers now"));
-			}
-		}
+            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Queue no leftovers", $"Queue has{(!newState ? "" : " no")} leftovers now"));
+        }
 		public async Task PlayerQueueShuffle() {
-			
-		}
-		public async Task PlayerQueueClear() {
-			try {
-				Context.Commands.PlayerQueueClear();
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
 
-			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Clear queue", "Queue cleared"));
+        }
+		public async Task PlayerQueueClear() {
+            Context.Commands.PlayerQueueClear();
+
+            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Clear queue", "Queue cleared"));
 		}
 
 		public async Task SongAdd(string url) {
-			try {
-				var youtubeId = _youtube.GetVideoIdFromUrl(url);
-				var song = await _songs.Add(youtubeId);
+            var youtubeId = _youtube.GetVideoIdFromUrl(url);
+            var song = await _songs.Add(youtubeId);
 
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Add new song", $"New song {song.Name} added to database"));
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
-		}
+            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Add new song", $"New song {song.Name} added to database"));
+        }
 		public async Task SongEditName(string songValue, string newName) {
-			try {
-				var song = await _songs.GetByValue(songValue);
-				Context.Commands.SongEditName(song.Id, newName);
+            var song = await _songs.GetByValue(songValue);
+            Context.Commands.SongEditName(song.Id, newName);
 
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Rename song", $"Song name changed to {song.Name}"));
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
-		}
+            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Rename song", $"Song name changed to {song.Name}"));
+        }
 		public async Task SongEditAuthor(string songValue, string newAuthor) {
-			try {
-				var song = await _songs.GetByValue(songValue);
-				Context.Commands.SongEditAuthor(song.Id, newAuthor);
+            var song = await _songs.GetByValue(songValue);
+            Context.Commands.SongEditAuthor(song.Id, newAuthor);
 
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Rename song", $"Song author changed to {song.Name}"));
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
-		}
-		public async Task SongDelete(string songValue) {
-			throw new NotImplementedException();
-		}
+            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Rename song", $"Song author changed to {song.Name}"));
+        }
 		public async Task SongSearch(string request, int page) {
-			try {
-                await SearchForPamelloEntity(_songs, request, page - 1);
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            await SearchForPamelloEntity(_songs, request, page - 1);
         }
 		public async Task SongInfo(string songValue) {
-			PamelloSong song;
-			try {
-				song = await _songs.GetByValue(songValue);
-			}
-			catch (Exception x) {
-				await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-				return;
-			}
+            var song = await _songs.GetByValue(songValue);
 
-			await RespondWithEmbedAsync(
+            await RespondWithEmbedAsync(
 				PamelloEmbedBuilder.Info(song.Name, song.Author)
 					.WithThumbnailUrl(song.CoverUrl)
 					.Build()
@@ -484,134 +332,61 @@ namespace PamelloV6.API.Modules
 
 		//song episodes
 		public async Task EpisodeAdd(string songValue, string episodeName, int start) {
-            try {
-                var song = await _songs.GetByValue(songValue);
-                Context.Commands.EpisodeAdd(song.Id, episodeName, start, false);
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
-		}
+            var song = await _songs.GetByValue(songValue);
+            Context.Commands.EpisodeAdd(song.Id, episodeName, start, false);
+        }
 		public async Task EpisodeRename(int episodeId, string newName) {
-            try {
-                Context.Commands.EpisodeRename(episodeId, newName);
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            Context.Commands.EpisodeRename(episodeId, newName);
         }
 		public async Task EpisodeDelete(int episodeId) {
-            try {
-                Context.Commands.EpisodeDelete(episodeId);
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            Context.Commands.EpisodeDelete(episodeId);
         }
 		public async Task EpisodeList(string songValue) {
-            try {
-				var song = await _songs.GetByValue(songValue);
-				var episodes = song.Episodes;
+            var song = await _songs.GetByValue(songValue);
+            var episodes = song.Episodes;
 
-                var pageContent = GeneratePageFromCollection(episodes);
+            var pageContent = GeneratePageFromCollection(episodes);
 
-                await RespondWithEmbedPageAsync($"Song [{song.Id}] episodes list",
-                    pageContent.Length == 0 ? "Empty" : pageContent
-                );
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            await RespondWithEmbedPageAsync($"Song [{song.Id}] episodes list",
+                pageContent.Length == 0 ? "Empty" : pageContent
+            );
         }
 
 		//playlist
 		public async Task PlaylistAdd(string playlistName) {
-            try {
-                Context.Commands.PlaylistAdd(playlistName, false);
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            Context.Commands.PlaylistAdd(playlistName, false);
         }
 		public async Task PlaylistRename(string playlistValue, string newName) {
-            try {
-                var playlist = _playlists.GetByValue(playlistValue);
-                Context.Commands.PlaylistRename(playlist.Id, newName);
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            var playlist = _playlists.GetByValue(playlistValue);
+            Context.Commands.PlaylistRename(playlist.Id, newName);
         }
         public async Task PlaylistAddSong(string playlistValue, string songValue) {
-            try {
-                var playlist = _playlists.GetByValue(playlistValue);
-                var song = await _songs.GetByValue(songValue);
-                Context.Commands.PlaylistAddSong(playlist.Id, song.Id);
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            var playlist = _playlists.GetByValue(playlistValue);
+            var song = await _songs.GetByValue(songValue);
+            Context.Commands.PlaylistAddSong(playlist.Id, song.Id);
         }
         public async Task PlaylistRemoveSong(string playlistValue, int songPosition) {
-            try {
-                var playlist = _playlists.GetByValue(playlistValue);
-                Context.Commands.PlaylistRemoveSong(playlist.Id, songPosition);
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            var playlist = _playlists.GetByValue(playlistValue);
+            Context.Commands.PlaylistRemoveSong(playlist.Id, songPosition);
         }
         public async Task PlaylistShowMine() {
-            try {
-                var playlists = Context.User.OwnedPlaylists;
+            var playlists = Context.User.OwnedPlaylists;
 
-                var pageContent = GeneratePageFromCollection(playlists);
+            var pageContent = GeneratePageFromCollection(playlists);
 
-                await RespondWithEmbedPageAsync("Player list",
-                    pageContent.Length == 0 ? "Empty" : pageContent
-                );
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            await RespondWithEmbedPageAsync("Player list",
+                pageContent.Length == 0 ? "Empty" : pageContent
+            );
         }
 		public async Task PlaylistDelete(string playlistValue) {
-            try {
-				var playlist = _playlists.GetByValue(playlistValue);
-                Context.Commands.EpisodeDelete(playlist.Id);
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            var playlist = _playlists.GetByValue(playlistValue);
+            Context.Commands.EpisodeDelete(playlist.Id);
         }
 		public async Task PlaylistSearch(string request, int page) {
-            try {
-                await SearchForPamelloEntity(_playlists, request, page - 1);
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            await SearchForPamelloEntity(_playlists, request, page - 1);
         }
 		public async Task PlaylistInfo(string playlistValue) {
-            PamelloPlaylist playlist;
-            try {
-                playlist = _playlists.GetByValue(playlistValue);
-            }
-            catch (Exception x) {
-                await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(x.Message));
-                return;
-            }
+            var playlist = _playlists.GetByValue(playlistValue);
 
             await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo(playlist.Name, $"Contains {playlist.Songs.Count} songs"));
         }

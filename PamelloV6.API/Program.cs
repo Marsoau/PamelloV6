@@ -81,7 +81,11 @@ namespace PamelloV6.API
             services.AddKeyedSingleton("Speaker1", new DiscordSocketClient(discordConfig));
 
             services.AddSingleton(services => new InteractionService(
-				services.GetRequiredService<DiscordSocketClient>()
+				services.GetRequiredService<DiscordSocketClient>(),
+				new InteractionServiceConfig() {
+					ThrowOnError = true,
+					DefaultRunMode = RunMode.Sync,
+				}
 			));
 			services.AddSingleton<InteractionHandler>();
 		}

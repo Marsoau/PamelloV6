@@ -1,4 +1,5 @@
-﻿using PamelloV6.API.Model.Audio;
+﻿using PamelloV6.API.Exceptions;
+using PamelloV6.API.Model.Audio;
 using PamelloV6.API.Model.Events;
 using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
@@ -40,7 +41,7 @@ namespace PamelloV6.API.Model
 		}
 
 		public PamelloSong Song {
-			get => _songs.Get(Entity.Song.Id) ?? throw new Exception("Attempted to get song that doesnt exist");
+			get => _songs.Get(Entity.Song.Id) ?? throw new PamelloException("Attempted to get song that doesnt exist");
 		}
 
 		public bool Skip {

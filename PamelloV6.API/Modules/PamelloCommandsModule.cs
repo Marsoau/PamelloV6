@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using PamelloV6.API.Attributes;
+using PamelloV6.API.Exceptions;
 using PamelloV6.API.Model;
 using PamelloV6.API.Model.Audio;
 using PamelloV6.API.Repositories;
@@ -27,13 +28,13 @@ namespace PamelloV6.API.Modules
 
         private PamelloUser? _user;
 		public PamelloUser User {
-			get => _user ?? throw new Exception("User required");
+			get => _user ?? throw new PamelloException("User required");
 			set => _user = value;
 		}
 
 		public PamelloPlayer selectedPlayer {
-			get => (_user ?? throw new Exception("User required"))
-				.SelectedPlayer ?? throw new Exception("Selected player required");
+			get => (_user ?? throw new PamelloException("User required"))
+				.SelectedPlayer ?? throw new PamelloException("Selected player required");
 		}
 
 		public PamelloCommandsModule(
@@ -361,7 +362,7 @@ namespace PamelloV6.API.Modules
 		private void RequireUser(bool mustBeAdmin = false) {
 			bool isAdministractor = User.IsAdministrator;
 			if (mustBeAdmin && !isAdministractor) {
-				throw new Exception("Administrator user required");
+				throw new PamelloException("Administrator user required");
 			}
 		}
 
