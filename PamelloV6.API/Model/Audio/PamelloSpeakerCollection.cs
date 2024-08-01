@@ -1,94 +1,107 @@
 ﻿using Discord.WebSocket;
+using PamelloV6.API.Model.Events;
+using PamelloV6.API.Services;
 using PamelloV6.Server.Services;
 
 namespace PamelloV6.API.Model.Audio
 {
-    public class PamelloSpeakerCollection
-    {
-        private readonly PamelloPlayer _parentPlayer;
-        private readonly DiscordClientService _clients;
+	public class PamelloSpeakerCollection
+	{
+		private readonly DiscordClientService _clients;
+		private readonly PamelloEventsService _events;
 
-        private readonly List<PamelloSpeaker> _speakers;
-        public IReadOnlyList<PamelloSpeaker> Speakers {
-            get => _speakers;
-        }
+		private readonly PamelloPlayer _parentPlayer;
+		private readonly List<PamelloSpeaker> _speakers;
+		public IReadOnlyList<PamelloSpeaker> Speakers {
+			get => _speakers;
+		}
 
-        public bool IsAnyConnected {
-            get {
-                foreach (var speaker in _speakers) {
-                    if (speaker.IsConnected) return true;
-                }
-                return false;
-            }
-        }
+		public bool IsAnyConnected {
+			get {
+				foreach (var speaker in _speakers) {
+					if (speaker.IsConnected) return true;
+				}
+				return false;
+			}
+		}
 
-        public PamelloSpeakerCollection(PamelloPlayer parentPlayer, IServiceProvider services) {
-            _parentPlayer = parentPlayer;
-            _clients = services.GetRequiredService<DiscordClientService>();
+		public PamelloSpeakerCollection(PamelloPlayer parentPlayer, IServiceProvider services) {
+			_clients = services.GetRequiredService<DiscordClientService>();
+			_events = services.GetRequiredService<PamelloEventsService>();
 
-            _speakers = new List<PamelloSpeaker>();
-        }
+			_parentPlayer = parentPlayer;
+			_speakers = new List<PamelloSpeaker>();
+		}
 
-        public async Task ConnectToUser(ulong userId) {
-            var user = _clients.MainDiscordClient.GetUser(userId);
-            var guilds = user.MutualGuilds;
+		public async Task ConnectToUser(ulong userId) {
+			var user = _clients.MainDiscordClient.GetUser(userId);
+			var guilds = user.MutualGuilds;
 
-            SocketGuildUser guildUser;
-            foreach (var guild in guilds) {
-                guildUser = guild.GetUser(userId);
-                if (guildUser.VoiceChannel is not null) {
-                    await Connect(guild.Id, guildUser.VoiceChannel.Id);
-                    return;
-                }
-            }
-        }
+			SocketGuildUser guildUser;
+			foreach (var guild in guilds) {
+				guildUser = guild.GetUser(userId);
+				if (guildUser.VoiceChannel is not null) {
+					await Connect(guild.Id, guildUser.VoiceChannel.Id);
+					return;
+				}
+			}
+		}
 
-        public async Task Connect(ulong guildId, ulong vcId) {
-            var freeClient = GetNonBusyDiscordClient(guildId);
+		public async Task Connect(ulong guildId, ulong vcId) {
+			var freeClient = GetNonBusyDiscordClient(guildId);
 
-            foreach (var speaker in _speakers) {
-                if (speaker.DiscordClientUserId == freeClient.CurrentUser.Id) {
-                    if (speaker.VoiceChannel is not null) throw new Exception($"Unexpected speaker discord client error");
-                    
-                    await speaker.Connect(vcId);
-                    return;
-                }
+			foreach (var speaker in _speakers) {
+				if (speaker.DiscordClientUserId == freeClient.CurrentUser.Id && speaker.Guild.Id == guildId) {
+					if (speaker.VoiceChannel is not null) throw new Exception($"Unexpected speaker discord client error");
+					
+					await speaker.Connect(vcId);
+					return;
+				}
 
-                if (speaker.VoiceChannel?.Id == vcId) {
-                    throw new Exception($"Player \"{_parentPlayer.Name}\" already connected to this voice channel");
-                }
-            }
+				if (speaker.VoiceChannel?.Id == vcId) {
+					throw new Exception($"Player \"{_parentPlayer.Name}\" already connected to this voice channel");
+				}
+			}
 
-            var newSpreaker = new PamelloSpeaker(_parentPlayer, freeClient, guildId);
-            _speakers.Add(newSpreaker);
+			var newSpreaker = new PamelloSpeaker(_parentPlayer, freeClient, guildId);
+			_speakers.Add(newSpreaker);
+            SendSpeakersUpdatedEvent();
 
-            newSpreaker.Disconected += async () => {
-                _speakers.Remove(newSpreaker);
-                Console.WriteLine($"Removed {newSpreaker}");
+            newSpreaker.Connected += async (speaker) => {
+                SendSpeakersUpdatedEvent();
+            };
+            newSpreaker.Disconnected += async (speaker) => {
+				_speakers.Remove(speaker);
+
+				SendSpeakersUpdatedEvent();
             };
 
-            await newSpreaker.Connect(vcId);
-        }
+			await newSpreaker.Connect(vcId);
+		}
+
+		private void SendSpeakersUpdatedEvent() => _events.SendToAllWithSelectedPlayer(_parentPlayer.Id,
+            PamelloEvent.PlayerSpeakersUpdated(Speakers.Select(speaker => speaker.GetDTO()))
+        );
 
         private DiscordSocketClient GetNonBusyDiscordClient(ulong guildId) {
-            SocketGuild? guild;
-            SocketVoiceChannel? vc;
+			SocketGuild? guild;
+			SocketVoiceChannel? vc;
 
-            foreach (var discordClient in _clients.DiscordClients) {
-                guild = discordClient.GetGuild(guildId);
-                if (guild is null) continue;
+			foreach (var discordClient in _clients.DiscordClients) {
+				guild = discordClient.GetGuild(guildId);
+				if (guild is null) continue;
 
-                vc = guild.GetUser(discordClient.CurrentUser.Id)?.VoiceChannel;
-                if (vc is null) return discordClient;
-            }
+				vc = guild.GetUser(discordClient.CurrentUser.Id)?.VoiceChannel;
+				if (vc is null) return discordClient;
+			}
 
-            throw new Exception($"No free speakers found in guild {guildId}");
-        }
+			throw new Exception($"No free speakers found in guild {guildId}");
+		}
 
-        public void PlayBytes(byte[] audioBytes) {
-            foreach (var speaker in _speakers) {
-                speaker.PlayBytes(audioBytes);
-            }
-        }
-    }
+		public void PlayBytes(byte[] audioBytes) {
+			foreach (var speaker in _speakers) {
+				speaker.PlayBytes(audioBytes);
+			}
+		}
+	}
 }

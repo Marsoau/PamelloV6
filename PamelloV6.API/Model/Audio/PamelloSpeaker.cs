@@ -3,6 +3,7 @@ using Discord.Audio;
 using Discord.WebSocket;
 using PamelloV6.API.Model.Events;
 using PamelloV6.API.Services;
+using PamelloV6.Core.DTO;
 
 namespace PamelloV6.API.Model.Audio
 {
@@ -28,8 +29,8 @@ namespace PamelloV6.API.Model.Audio
                 _audioOutput is not null;
 		}
 
-        public event Func<Task>? Connected;
-        public event Func<Task>? Disconected;
+        public event Func<PamelloSpeaker, Task>? Connected;
+        public event Func<PamelloSpeaker, Task>? Disconnected;
 
         public PamelloSpeaker(PamelloPlayer parentPlayer, DiscordSocketClient discordClient, ulong guildId) {
             _parentPlayer = parentPlayer;
@@ -49,6 +50,7 @@ namespace PamelloV6.API.Model.Audio
                 if (VoiceChannel is not null) {
                     SubscribeACEvents();
                 }
+                else Disconnected?.Invoke(this);
             }
         }
 
@@ -62,11 +64,10 @@ namespace PamelloV6.API.Model.Audio
 
         private async Task AudioClient_Connected() {
             _audioOutput = Guild.AudioClient.CreatePCMStream(AudioApplication.Mixed);
-            Connected?.Invoke();
+            Connected?.Invoke(this);
         }
         private async Task AudioClient_Disconnected(Exception arg) {
             _audioOutput = null;
-            Disconected?.Invoke();
         }
 
         public async Task Connect(ulong vcId) {
@@ -87,5 +88,11 @@ namespace PamelloV6.API.Model.Audio
                 _audioOutput = null;
             }
         }
-	}
+
+        public SpeakerDTO GetDTO() {
+            return new SpeakerDTO() {
+
+            };
+        }
+    }
 }

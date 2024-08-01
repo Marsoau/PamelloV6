@@ -7,6 +7,7 @@ namespace PamelloV6.API.Config
     public static class PamelloConfig
     {
         public static string BotToken;
+        public static string Speaker1Token;
         public static ulong TestGuildId;
 
         private static IConfigurationRoot config;

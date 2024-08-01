@@ -77,10 +77,10 @@ namespace PamelloV6.API
                 AlwaysDownloadUsers = true
             };
 
-			services.AddSingleton(services => new DiscordSocketClient(
-				discordConfig
-			));
-			services.AddSingleton(services => new InteractionService(
+            services.AddSingleton(new DiscordSocketClient(discordConfig));
+            services.AddKeyedSingleton("Speaker1", new DiscordSocketClient(discordConfig));
+
+            services.AddSingleton(services => new InteractionService(
 				services.GetRequiredService<DiscordSocketClient>()
 			));
 			services.AddSingleton<InteractionHandler>();
@@ -110,7 +110,9 @@ namespace PamelloV6.API
 
 		public async Task StartupDiscordServicesAsync(IServiceProvider services) {
 			var MainDiscordClient = services.GetRequiredService<DiscordSocketClient>();
-			var interactionService = services.GetRequiredService<InteractionService>();
+            var S1DiscordClient = services.GetRequiredKeyedService<DiscordSocketClient>("Speaker1");
+
+            var interactionService = services.GetRequiredService<InteractionService>();
 
 			await services.GetRequiredService<InteractionHandler>().InitializeAsync();
 
@@ -120,13 +122,14 @@ namespace PamelloV6.API
 
 			var discordReady = new TaskCompletionSource();
 			MainDiscordClient.Ready += async () => {
+                /*
 				var guild = MainDiscordClient.GetGuild(PamelloConfig.TestGuildId);
 
 				foreach (var command in await guild.GetApplicationCommandsAsync()) {
                     Console.WriteLine($"Deleting {command.Name} command");
                     //await command.DeleteAsync();
                 }
-
+				*/
                 Console.WriteLine($"Registering commands");
                 await interactionService.RegisterCommandsGloballyAsync();
 
@@ -136,7 +139,10 @@ namespace PamelloV6.API
 			await MainDiscordClient.LoginAsync(TokenType.Bot, PamelloConfig.BotToken);
 			await MainDiscordClient.StartAsync();
 
-			await discordReady.Task;
+            await S1DiscordClient.LoginAsync(TokenType.Bot, PamelloConfig.Speaker1Token);
+            await S1DiscordClient.StartAsync();
+
+            await discordReady.Task;
 		}
 
 		public async Task StartupPamelloServicesAsync(IServiceProvider services) {

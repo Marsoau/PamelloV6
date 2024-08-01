@@ -1,5 +1,6 @@
 ﻿using PamelloV6.API.Downloads;
 using PamelloV6.API.Model.Audio;
+using PamelloV6.Core.DTO;
 using System.Collections;
 
 namespace PamelloV6.API.Model.Events
@@ -55,17 +56,10 @@ namespace PamelloV6.API.Model.Events
                 Header = "PlayerTotalTimeUpdated",
                 Data = newSeconds
             };
-        public static PamelloEvent PlayerSpeakerConnected(string speakerGuildName, string speakerVCName)
+        public static PamelloEvent PlayerSpeakersUpdated(IEnumerable<SpeakerDTO> newSpeakers)
             => new PamelloEvent() {
                 Header = "PlayerSpeakerConnected",
-                Data = new {
-                    speakerGuildName,
-                    speakerVCName
-                }
-            };
-        public static PamelloEvent PlayerSpeakerDisconnected()
-            => new PamelloEvent() {
-                Header = "PlayerSpeakerDisconnected"
+                Data = newSpeakers
             };
 
         //Player Queue events

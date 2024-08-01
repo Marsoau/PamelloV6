@@ -17,9 +17,10 @@ namespace PamelloV6.Server.Services
 		}
 
 		public DiscordClientService(IServiceProvider services) {
-			DiscordClients = new DiscordSocketClient[1];
+			DiscordClients = new DiscordSocketClient[2];
 
-			DiscordClients[0] = services.GetRequiredService<DiscordSocketClient>();
-		}
+            DiscordClients[0] = services.GetRequiredService<DiscordSocketClient>();
+            DiscordClients[1] = services.GetRequiredKeyedService<DiscordSocketClient>("Speaker1");
+        }
 	}
 }
