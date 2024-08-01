@@ -9,6 +9,9 @@ using System.Reflection;
 using PamelloV6.API.Extensions;
 using PamelloV6.API.Model.Interactions.Builders;
 using PamelloV6.API.Exceptions;
+using Discord;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.VisualBasic;
 
 namespace PamelloV6.Server.Handlers
 {
@@ -36,10 +39,11 @@ namespace PamelloV6.Server.Handlers
 		public async Task InitializeAsync() {
 			await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
 
-			_client.InteractionCreated += _client_InteractionCreated;
-		}
+			_client.InteractionCreated += InteractionCreated;
+            _commands.SlashCommandExecuted += SlashCommandExecuted;
+        }
 
-		private async Task _client_InteractionCreated(SocketInteraction interaction) {
+        private async Task InteractionCreated(SocketInteraction interaction) {
 			try {
 				await HandleInteraction(interaction);
 			}
@@ -67,18 +71,21 @@ namespace PamelloV6.Server.Handlers
 				_services
 			);
 
-			var executionResult = await _commands.ExecuteCommandAsync(context, _services);
+			await _commands.ExecuteCommandAsync(context, _services);
+        }
 
-            if (!executionResult.IsSuccess) {
-				if (executionResult is ExecuteResult result &&
-					result.Exception?.InnerException is PamelloException pamelloException
-				) {
+        private async Task SlashCommandExecuted(SlashCommandInfo commandInfo, IInteractionContext context, Discord.Interactions.IResult result) {
+            SocketInteraction interaction = context.Interaction as SocketInteraction ?? throw new Exception("tf");
+
+            if (!result.IsSuccess && result is ExecuteResult executionResult) {
+                if (executionResult.Exception?.InnerException is PamelloException pamelloException) {
                     await interaction.RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(pamelloException.Message));
                 }
                 else {
                     await interaction.RespondWithEmbedAsync(PamelloEmbedBuilder.BuildException("Unidentified error occured"));
+                    throw executionResult.Exception ?? new Exception("Unknown exception");
                 }
             }
         }
-	}
+    }
 }

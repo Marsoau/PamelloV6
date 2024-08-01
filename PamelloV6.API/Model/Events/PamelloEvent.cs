@@ -255,5 +255,8 @@ namespace PamelloV6.API.Model.Events
                     newState
                 }
             };
+
+
+        public override string ToString() => Header;
     }
 }

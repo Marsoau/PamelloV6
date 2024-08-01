@@ -53,7 +53,7 @@ namespace PamelloV6.API.Model.Audio
                     Queue.Current is null ||
                     !Speakers.IsAnyConnected
                 ) {
-                    Console.WriteLine($"Waiting:\tIsPaused: {IsPaused}\n\tQueue.Current is null: {Queue.Current is null}\n\t!Speakers.IsAnyConnected: {!Speakers.IsAnyConnected}");
+                    //Console.WriteLine($"Waiting:\tIsPaused: {IsPaused}\n\tQueue.Current is null: {Queue.Current is null}\n\t!Speakers.IsAnyConnected: {!Speakers.IsAnyConnected}");
                     await Task.Delay(1000);
                     continue;
                 }

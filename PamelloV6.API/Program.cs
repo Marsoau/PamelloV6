@@ -83,8 +83,8 @@ namespace PamelloV6.API
             services.AddSingleton(services => new InteractionService(
 				services.GetRequiredService<DiscordSocketClient>(),
 				new InteractionServiceConfig() {
-					ThrowOnError = true,
-					DefaultRunMode = RunMode.Sync,
+					//DefaultRunMode = RunMode.Sync,
+					//ThrowOnError = true,
 				}
 			));
 			services.AddSingleton<InteractionHandler>();

@@ -24,16 +24,19 @@ namespace PamelloV6.API.Services
         }
 
         public void SendToAll(PamelloEvent pamelloEvent) {
+            Console.WriteLine($"[Event To All] {pamelloEvent}");
             foreach (var listener in _listeners) {
                 listener.SendEvent(pamelloEvent);
             }
         }
         public void SendToOne(int userId, PamelloEvent pamelloEvent) {
+            Console.WriteLine($"[Event To One | userId: {userId}] {pamelloEvent}");
             foreach (var listener in _listeners) {
                 if (listener.User.Id == userId) listener.SendEvent(pamelloEvent);
             }
         }
         public void SendToAllWithSelectedPlayer(int selectedPlayerId, PamelloEvent pamelloEvent) {
+            Console.WriteLine($"[Event To Selected Player | playerId: {selectedPlayerId}] {pamelloEvent}");
             foreach (var listener in _listeners) {
                 if (listener.User.SelectedPlayer?.Id == selectedPlayerId) listener.SendEvent(pamelloEvent);
             }

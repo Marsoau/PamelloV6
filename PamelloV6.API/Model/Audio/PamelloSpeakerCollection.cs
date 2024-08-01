@@ -18,12 +18,7 @@ namespace PamelloV6.API.Model.Audio
 		}
 
 		public bool IsAnyConnected {
-			get {
-				foreach (var speaker in _speakers) {
-					if (speaker.IsConnected) return true;
-				}
-				return false;
-			}
+			get => _speakers.Any(s => s.IsConnected);
 		}
 
 		public PamelloSpeakerCollection(PamelloPlayer parentPlayer, IServiceProvider services) {
