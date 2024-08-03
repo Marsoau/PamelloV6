@@ -2,6 +2,8 @@
 	display: grid;
 	grid-template-columns: 1fr auto;
 
+    height: 32px;
+
     font-size: 16px;
 	font-weight: 500;
 
@@ -23,11 +25,13 @@
 
     .queue-song-next-decorator {
         display: none;
+        flex-direction: column;
+        justify-content: center;
     
         color: #E0E0E0;
         background-color: #646464;
     
-        padding: 0px 4px 0px 4px;
+        padding: 0px 7px;
         margin: 4px;
         margin-right: 0px;
         
@@ -35,10 +39,14 @@
         font-weight: 500;
     }
     .queue-song-title {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
         flex-grow: 1;
 
         font-size: 17px;
-        padding: 3px 4px;
+        padding: 3px 6px;
     }
 }
 

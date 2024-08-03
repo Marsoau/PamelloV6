@@ -2,10 +2,10 @@
     @if (selectionMode) {
         <div class="player-selection-container">
             <button class="default-button" (click)="PlayerCreateClick()">Delete</button>
-            <select class="default-select player-select" (change)="SelectionChanged()">
+            <select class="default-select player-select" (change)="SelectionChanged()" [(ngModel)]="selectValue" [value]="GetSelectValue()">
                 <option class="default-option option-none" value="none">None</option>
                 @for (player of availablePlayers; track availablePlayers) {
-                    <option class="default-option" [value]="player.id" [selected]="api.authorizedUser!.selectedPlayerId == player.id">{{player.name}}</option>
+                    <option class="default-option" [value]="player.id">{{player.name}}</option>
                 }
             </select>
             <button class="default-button" (click)="selectionMode = false">Create</button>
@@ -14,7 +14,7 @@
     @else {
         <div class="player-creation-container">
             <button class="default-button" (click)="selectionMode = true">Cancel</button>
-            <input class="default-input" id="player-creation-name-input" placeholder="Player name"/>
+            <input class="default-input" id="player-creation-name-input" placeholder="Player name" [(ngModel)]="inputValue"/>
             <button class="default-button" (click)="PlayerCreateClick()">Create</button>
         </div>
     }

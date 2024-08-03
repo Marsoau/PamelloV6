@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { PamelloEpisode, PamelloPlaylist, PamelloSong, PamelloV6API } from '../../services/pamelloV6API.service';
 import { MiniSongComponent } from "../mini-song/mini-song.component";
 import { MiniPlaylistComponent } from "../mini-playlist/mini-playlist.component";
 import { PageComponent } from "../page/page.component";
@@ -8,6 +7,10 @@ import { MiniEpisodeComponent } from "../mini-episode/mini-episode.component";
 import { ReorderListComponent } from "../reorder-list/reorder-list.component";
 import { ReorderItemComponent } from "../reorder-item/reorder-item.component";
 import { FormsModule } from '@angular/forms';
+import { IPamelloSong, PamelloSong } from '../../services/api/model/PamelloSong';
+import { IPamelloEpisode, PamelloEpisode } from '../../services/api/model/PamelloEpisode';
+import { IPamelloPlaylist, PamelloPlaylist } from '../../services/api/model/PamelloPlaylist';
+import { PamelloV6API } from '../../services/api/pamelloV6API.service';
 
 @Component({
 	selector: 'app-inspector',
@@ -19,12 +22,12 @@ import { FormsModule } from '@angular/forms';
 export class InspectorComponent {
 	public displayStyle: "Song" | "Playlist";
 
-	public songs: PamelloSong[];
-	public episodes: PamelloEpisode[];
-	public playlists: PamelloPlaylist[];
+	public songs: IPamelloSong[];
+	public episodes: IPamelloEpisode[];
+	public playlists: IPamelloPlaylist[];
 
-	public inspectedSong: PamelloSong | null;
-	public inspectedPlaylist: PamelloPlaylist | null;
+	public inspectedSong: IPamelloSong | null;
+	public inspectedPlaylist: IPamelloPlaylist | null;
 
 	public newEpisodeNameInput: string;
 	public newPlaylistNameInput: string;
@@ -50,9 +53,11 @@ export class InspectorComponent {
 	public async InspectSongId(songId: number) {
 		this.InspectSong(await this.api.data.GetSong(songId));
 	}
-	public InspectSong(song: PamelloSong) {
+	public InspectSong(song: IPamelloSong | null) {
 		this.displayStyle = "Song";
 		this.inspectedSong = song;
+		
+		console.log(`inspecting song "${song?.title}"`);
 
 		this.LoadEpisodes();
 		this.LoadPlaylists();
@@ -61,11 +66,11 @@ export class InspectorComponent {
 	public async InspectPlaylistId(playlistId: number) {
 		this.InspectPlaylist(await this.api.data.GetPlaylist(playlistId));
 	}
-	public InspectPlaylist(playlist: PamelloPlaylist) {
+	public InspectPlaylist(playlist: IPamelloPlaylist | null) {
 		this.displayStyle = "Playlist";
 		this.inspectedPlaylist = playlist;
 		
-		console.log(`inspecting ${playlist.name}`);
+		console.log(`inspecting playlist "${playlist?.name}"`);
 
 		this.LoadSongs();
 	}
@@ -80,7 +85,7 @@ export class InspectorComponent {
 		for (let i = 0; i < this.inspectedSong.playlistIds.length; i++) {
 			this.playlists.push(defaultPlaylist);
 			this.api.data.GetPlaylist(this.inspectedSong.playlistIds[i]).then(playlist => {
-				this.playlists[i] = playlist;
+				if (playlist) this.playlists[i] = playlist;
 			})
 		}
 	}
@@ -94,7 +99,7 @@ export class InspectorComponent {
 		for (let i = 0; i < this.inspectedSong.episodeIds.length; i++) {
 			this.episodes.push(defaultEpisode);
 			this.api.data.GetEpisode(this.inspectedSong.episodeIds[i]).then(episode => {
-				this.episodes[i] = episode;
+				if (episode) this.episodes[i] = episode;
 			})
 		}
 	}
@@ -108,7 +113,7 @@ export class InspectorComponent {
 		for (let i = 0; i < this.inspectedPlaylist.songIds.length; i++) {
 			this.songs.push(defaultSong);
 			this.api.data.GetSong(this.inspectedPlaylist.songIds[i]).then(song => {
-				this.songs[i] = song;
+				if (song) this.songs[i] = song;
 			})
 		}
 	}

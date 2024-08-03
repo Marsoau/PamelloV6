@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { PamelloSong, PamelloV6API } from '../../services/pamelloV6API.service';
 import { CommonModule } from '@angular/common';
+import { PamelloV6API } from '../../services/api/pamelloV6API.service';
+import { IPamelloSong } from '../../services/api/model/PamelloSong';
 
 @Component({
 	selector: 'app-queue-song',
@@ -10,7 +11,7 @@ import { CommonModule } from '@angular/common';
 	styleUrl: './queue-song.component.scss'
 })
 export class QueueSongComponent {
-	@Input() public song: PamelloSong | null = null;
+	@Input() public song: IPamelloSong | null = null;
 	@Input() public position!: number;
 
 	@Input() public isNext: boolean = false;

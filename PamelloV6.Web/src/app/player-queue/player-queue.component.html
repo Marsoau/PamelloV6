@@ -1,8 +1,8 @@
 <div class="queue-list-container">
-    <app-reorder-list (added)="songAdded($event)">
-        @for (song of songs; track songs) {
+    <app-reorder-list> <!--(added)="songAdded($event)"-->
+        @for (song of api.selectedPlayerQueueSongs; track $index) {
             <app-reorder-item key="{{$index}}" (moved)="songMoved($event)" (swapped)="songSwapped($event)">
-                <app-queue-song [song]="song" [position]="$index" [isCurrent]="position == $index" [isNext]="nextPosition == $index" />
+                <app-queue-song [song]="song" [position]="$index" [isCurrent]="api.selectedPlayer?.queuePosition == $index" [isNext]="api.selectedPlayer?.nextPositionRequest == $index" />
             </app-reorder-item>
         
             <!--
@@ -37,9 +37,9 @@
 <div class="gray-separator"></div>
 <div class="queue-controls-container">
     <div class="queue-controls-subcontainer-left">
-        <button class="default-button {{isRandom ? 'green-button' : ''}}" (click)="RandomClick()">Random</button>
-        <button class="default-button {{isReversed ? 'green-button' : ''}}" (click)="ReversedClick()">Reversed</button>
-        <button class="default-button {{isNoLeftovers ? 'green-button' : ''}}" (click)="NoLeftoversClick()">No Leftovers</button>
+        <button class="default-button {{api.selectedPlayer?.queueIsRandom ? 'green-button' : ''}}" (click)="RandomClick()">Random</button>
+        <button class="default-button {{api.selectedPlayer?.queueIsReversed ? 'green-button' : ''}}" (click)="ReversedClick()">Reversed</button>
+        <button class="default-button {{api.selectedPlayer?.queueIsNoLeftovers ? 'green-button' : ''}}" (click)="NoLeftoversClick()">No Leftovers</button>
     </div>
     <div class="queue-controls-subcontainer-right">
         <button class="default-button">Shuffle</button>

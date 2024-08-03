@@ -5,7 +5,7 @@
     </div>
 </div>
 <div class="song-buttons-container">
-    @if (api.authorizedUser?.selectedPlayerId != null) {
+    @if (api.user?.selectedPlayerId != null) {
         <button class="default-button mini-button" (click)="Add()">Add</button>
     }
     @if (displayRemoveButton) {

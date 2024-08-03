@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { PamelloSong, PamelloV6API } from '../../services/pamelloV6API.service';
+import { IPamelloSong } from '../../services/api/model/PamelloSong';
+import { PamelloV6API } from '../../services/api/pamelloV6API.service';
 
 @Component({
 	selector: 'app-mini-song',
@@ -9,10 +10,10 @@ import { PamelloSong, PamelloV6API } from '../../services/pamelloV6API.service';
 	styleUrl: './mini-song.component.scss'
 })
 export class MiniSongComponent {
-	@Output() public selected: EventEmitter<PamelloSong> = new EventEmitter<PamelloSong>();
-	@Output() public removeClick: EventEmitter<PamelloSong> = new EventEmitter<PamelloSong>();
+	@Output() public selected: EventEmitter<IPamelloSong> = new EventEmitter<IPamelloSong>();
+	@Output() public removeClick: EventEmitter<IPamelloSong> = new EventEmitter<IPamelloSong>();
 
-	@Input() public song: PamelloSong | null = null;
+	@Input() public song: IPamelloSong | null = null;
 	@Input() public displayRemoveButton: boolean = false;
 
 	constructor(public readonly api: PamelloV6API) {}

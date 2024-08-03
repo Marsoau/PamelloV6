@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { PamelloPlaylist, PamelloV6API } from '../../services/pamelloV6API.service';
+import { IPamelloPlaylist } from '../../services/api/model/PamelloPlaylist';
+import { PamelloV6API } from '../../services/api/pamelloV6API.service';
 
 @Component({
 	selector: 'app-mini-playlist',
@@ -9,10 +10,10 @@ import { PamelloPlaylist, PamelloV6API } from '../../services/pamelloV6API.servi
 	styleUrl: './mini-playlist.component.scss'
 })
 export class MiniPlaylistComponent {
-	@Output() public selected: EventEmitter<PamelloPlaylist> = new EventEmitter<PamelloPlaylist>();
-	@Output() public removeClick: EventEmitter<PamelloPlaylist> = new EventEmitter<PamelloPlaylist>();
+	@Output() public selected: EventEmitter<IPamelloPlaylist> = new EventEmitter<IPamelloPlaylist>();
+	@Output() public removeClick: EventEmitter<IPamelloPlaylist> = new EventEmitter<IPamelloPlaylist>();
 
-	@Input() public playlist: PamelloPlaylist | null = null;
+	@Input() public playlist: IPamelloPlaylist | null = null;
 	@Input() public displayRemoveButton: boolean = false;
 
 	constructor(public readonly api: PamelloV6API) {}

@@ -1,30 +1,33 @@
 <div class="main-container">
     <div class="main-subcontainer main-subcontainer-left">
-        @if (api.authorizedUser != null) {
+        @if (api.isConnected) {
             <app-player-selection class="controller-item"/>
         } @else {
             <app-reqire-authorization/>
         }
         
-        @if (api.authorizedUser != null) {
+        @if (api.isConnected) {
             <app-player-controls class="controller-item"/>
         } @else {
             <app-reqire-authorization/>
         }
-        @if (api.authorizedUser != null) {
-            <app-player-speakers class="controller-item"/>
+        @if (api.isConnected) {
+            <app-multipage [pages]="['Speakers', 'Episodes']" [selectedPage]="0">
+                <div page-0>Speakers page</div>
+                <div page-1>Episodes page</div>
+            </app-multipage>
         } @else {
             <app-reqire-authorization/>
         }
         <app-user-authorization class="controller-item"/>
     </div>
     <div class="main-subcontainer main-subcontainer-right">
-        @if (api.authorizedUser != null) {
+        @if (api.isConnected) {
             <app-player-queue class="controller-item"/>
         } @else {
             <app-reqire-authorization/>
         }
-        @if (api.authorizedUser != null) {
+        @if (api.isConnected) {
             <app-song-addition class="controller-item"/>
         } @else {
             <app-reqire-authorization/>

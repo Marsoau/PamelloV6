@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { PamelloEpisode, PamelloV6API } from '../../services/pamelloV6API.service';
 import { StringTimePipe } from '../string-time.pipe';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IPamelloEpisode } from '../../services/api/model/PamelloEpisode';
+import { PamelloV6API } from '../../services/api/pamelloV6API.service';
 
 @Component({
 	selector: 'app-mini-episode',
@@ -12,7 +13,7 @@ import { FormsModule } from '@angular/forms';
 	styleUrl: './mini-episode.component.scss'
 })
 export class MiniEpisodeComponent {
-	@Input() public episode: PamelloEpisode | null = null;
+	@Input() public episode: IPamelloEpisode | null = null;
 	@Input() public displayRemoveButton: boolean = false;
 
 	public nameInputValue: string = "";

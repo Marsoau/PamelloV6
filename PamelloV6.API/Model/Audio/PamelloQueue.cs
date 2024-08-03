@@ -24,7 +24,7 @@ namespace PamelloV6.API.Model.Audio
 
                 _events.SendToAllWithSelectedPlayer(
 					_parentPlayer.Id,
-					PamelloEvent.PlauerQueuePositionUpdated(Position)
+					PamelloEvent.PlayerQueuePositionUpdated(Position)
                 );
             }
         }
@@ -93,7 +93,7 @@ namespace PamelloV6.API.Model.Audio
 
 				_events.SendToAllWithSelectedPlayer(
                     _parentPlayer.Id,
-                    PamelloEvent.PlauerQueueSongUpdated(Current?.Song.Id)
+                    PamelloEvent.PlayerQueueSongUpdated(Current?.Song.Id)
                 );
 
 				if (_current is not null) {
@@ -149,7 +149,7 @@ namespace PamelloV6.API.Model.Audio
         private void SendQueueUpdatedEvent() {
 			_events.SendToAllWithSelectedPlayer(
 				_parentPlayer.Id,
-				PamelloEvent.PlauerQueueListUpdated(
+				PamelloEvent.PlayerQueueListUpdated(
 					SongAudios.Select(audio => audio.Song.Id)
 				)
 			);

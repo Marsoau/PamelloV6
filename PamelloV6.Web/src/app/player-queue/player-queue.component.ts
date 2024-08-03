@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { PamelloSong, PamelloV6API } from '../../services/pamelloV6API.service';
 import { CommonModule } from '@angular/common';
 import { ReorderListComponent } from "../reorder-list/reorder-list.component";
 import { ReorderEvent, ReorderItemComponent } from "../reorder-item/reorder-item.component";
 import { QueueSongComponent } from "../queue-song/queue-song.component";
+import { PamelloV6API } from '../../services/api/pamelloV6API.service';
 
 @Component({
 	selector: 'app-player-queue',
@@ -13,109 +13,30 @@ import { QueueSongComponent } from "../queue-song/queue-song.component";
 	styleUrl: './player-queue.component.scss'
 })
 export class PlayerQueueComponent {
-	private readonly api: PamelloV6API;
-
-	public songs: PamelloSong[];
-	public position: number;
-	public nextPosition: number | null;
-
-	public isRandom: boolean;
-	public isReversed: boolean;
-	public isNoLeftovers: boolean;
+	public readonly api: PamelloV6API;
 
 	public dragPosition: number | null;
-
 	public zoneOver: number | null;
 
 	constructor(api: PamelloV6API) {
 		this.api = api;
 
-		this.songs = [];
-		this.position = 0;
-		this.nextPosition = null;
-
-		this.isRandom = false;
-		this.isReversed = false;
-		this.isNoLeftovers = false;
-
 		this.dragPosition = null;
-
 		this.zoneOver = null;
-
-		this.SubscribeToEvents();
-		this.Update();
-	}
-
-	private SubscribeToEvents() {
-		this.api.events.UserPlayerSelected = (newPlayerId: number) => {
-			this.Update();
-		}
-		this.api.events.PlauerQueueListUpdated = (newSongsIds: number[]) => {
-			this.LoadSongsFromIds(newSongsIds);
-		}
-		this.api.events.PlauerQueuePositionUpdated = (newPosition: number) => {
-			this.position = newPosition;
-		}
-		this.api.events.PlayerQueueNextPositionUpdated = (newNextPosition: number | null) => {
-			this.nextPosition = newNextPosition;
-		}
-
-		this.api.events.PlayerQueueIsRandomUpdated = (newState: boolean) => {
-			this.isRandom = newState;
-		}
-		this.api.events.PlayerQueueIsReversedUpdated = (newState: boolean) => {
-			this.isReversed = newState;
-		}
-		this.api.events.PlayerQueueIsNoLeftoversUpdated = (newState: boolean) => {
-			this.isNoLeftovers = newState;
-		}
-	}
-
-	private Update() {
-		if (this.api.authorizedUser!.selectedPlayerId != null) {
-			this.api.data.GetPlayer(this.api.authorizedUser!.selectedPlayerId).then(player => {
-				this.position = player.queuePosition;
-				this.nextPosition = player.nextPositionRequest;
-				this.LoadSongsFromIds(player.queueSongIds);
-
-				this.isRandom = player.queueIsRandom;
-				this.isReversed = player.queueIsReversed;
-				this.isNoLeftovers = player.queueIsNoLeftovers;
-			})
-		}
-		else {
-			this.songs = [];
-			this.position = 0;
-		}
-	}
-
-	private LoadSongsFromIds(songsIds: number[]) {
-		this.songs = [];
-
-		let defaultSong = new PamelloSong();
-		defaultSong.title = "Loadfing...";
-
-		for (let i = 0; i < songsIds.length; i++) {
-			this.songs.push(defaultSong);
-			this.api.data.GetSong(songsIds[i]).then(song => {
-				this.songs[i] = song;
-			})
-		}
 	}
 
 	public SongClick(songPosition: number) {
-		if (songPosition == this.position) return;
+		if (!this.api.selectedPlayer || songPosition == this.api.selectedPlayer.queuePosition) return;
 
 		this.api.commands.PlayerGoToSong(songPosition, false);
 	}
 	public NextClick(songPosition: number) {
-		if (songPosition == this.position) return;
+		if (!this.api.selectedPlayer || songPosition == this.api.selectedPlayer.queuePosition) return;
 
-		if (songPosition == this.nextPosition) {
+		if (songPosition == this.api.selectedPlayer.queuePosition) {
 			this.api.commands.PlayerQueueRequestNext(null);
 		}
 		else {
-			console.log("asd");
 			this.api.commands.PlayerQueueRequestNext(songPosition);
 		}
 	}
@@ -124,13 +45,16 @@ export class PlayerQueueComponent {
 	}
 
 	public RandomClick() {
-		this.api.commands.PlayerQueueRandom(!this.isRandom);
+		if (!this.api.selectedPlayer) return;
+		this.api.commands.PlayerQueueRandom(!this.api.selectedPlayer.queueIsRandom);
 	}
 	public ReversedClick() {
-		this.api.commands.PlayerQueueReversed(!this.isReversed);
+		if (!this.api.selectedPlayer) return;
+		this.api.commands.PlayerQueueReversed(!this.api.selectedPlayer.queueIsReversed);
 	}
 	public NoLeftoversClick() {
-		this.api.commands.PlayerQueueNoLeftovers(!this.isNoLeftovers);
+		if (!this.api.selectedPlayer) return;
+		this.api.commands.PlayerQueueNoLeftovers(!this.api.selectedPlayer.queueIsNoLeftovers);
 	}
 
 	public ShuffleClick() {
@@ -140,9 +64,6 @@ export class PlayerQueueComponent {
 		this.api.commands.PlayerQueueClear();
 	}
 
-	songAdded(event: string) {
-
-	}
 	songMoved(event: ReorderEvent) {
 		let fromPosition = parseInt(event.firstKey);
 		let toPosition = parseInt(event.secondKey);

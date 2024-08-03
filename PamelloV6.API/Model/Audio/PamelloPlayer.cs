@@ -2,6 +2,7 @@
 using Discord.WebSocket;
 using PamelloV6.API.Model.Events;
 using PamelloV6.Core.DTO;
+using PamelloV6.Core.Enumerators;
 
 namespace PamelloV6.API.Model.Audio
 {
@@ -29,7 +30,19 @@ namespace PamelloV6.API.Model.Audio
             set {
                 _isPaused = value;
 
-                _events.SendToAllWithSelectedPlayer(Id, PamelloEvent.PlayerPauseUpdated(IsPaused));
+                _events.SendToAllWithSelectedPlayer(Id, PamelloEvent.PlayerStateUpdated(State));
+            }
+        }
+
+        public PamelloPlayerState State {
+            get {
+                if (Queue.Current is null) {
+                    return PamelloPlayerState.AwaitingSong;
+                }
+                if (!Speakers.IsAnyConnected) {
+                    return PamelloPlayerState.AwaitingSpeaker;
+                }
+                return IsPaused ? PamelloPlayerState.Paused : PamelloPlayerState.Playing;
             }
         }
 
@@ -48,14 +61,25 @@ namespace PamelloV6.API.Model.Audio
         public async Task MusicLoop() {
             byte[]? audioBytes;
 
+            bool wasHeld = false;
             while (true) {
                 if (IsPaused ||
                     Queue.Current is null ||
                     !Speakers.IsAnyConnected
                 ) {
-                    //Console.WriteLine($"Waiting:\tIsPaused: {IsPaused}\n\tQueue.Current is null: {Queue.Current is null}\n\t!Speakers.IsAnyConnected: {!Speakers.IsAnyConnected}");
+                    if (!wasHeld) {
+                        wasHeld = true;
+
+                        _events.SendToAllWithSelectedPlayer(Id, PamelloEvent.PlayerStateUpdated(State));
+                    }
+
                     await Task.Delay(1000);
                     continue;
+                }
+                if (wasHeld) {
+                    wasHeld = false;
+
+                    _events.SendToAllWithSelectedPlayer(Id, PamelloEvent.PlayerStateUpdated(State));
                 }
 
                 if (!Queue.Current.IsInitialized) {
@@ -81,8 +105,7 @@ namespace PamelloV6.API.Model.Audio
                 Id = Id,
                 Name = Name,
 
-                IsPaused = IsPaused,
-
+                State = State,
                 Speakers = Speakers.Speakers.Select(speaker => speaker.GetDTO()),
 
                 CurrentSongTimePassed = Queue.Current?.Position.TotalSeconds ?? 0,

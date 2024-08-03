@@ -1,6 +1,7 @@
 ﻿using PamelloV6.API.Downloads;
 using PamelloV6.API.Model.Audio;
 using PamelloV6.Core.DTO;
+using PamelloV6.Core.Enumerators;
 using System.Collections;
 
 namespace PamelloV6.API.Model.Events
@@ -41,9 +42,9 @@ namespace PamelloV6.API.Model.Events
                 },
             };
 
-        public static PamelloEvent PlayerPauseUpdated(bool newState)
+        public static PamelloEvent PlayerStateUpdated(PamelloPlayerState newState)
             => new PamelloEvent() {
-                Header = "PlayerPauseUpdated",
+                Header = "PlayerStateUpdated",
                 Data = newState
             };
         public static PamelloEvent PlayerCurrentTimeUpdated(int newSeconds)
@@ -58,24 +59,24 @@ namespace PamelloV6.API.Model.Events
             };
         public static PamelloEvent PlayerSpeakersUpdated(IEnumerable<SpeakerDTO> newSpeakers)
             => new PamelloEvent() {
-                Header = "PlayerSpeakerConnected",
+                Header = "PlayerSpeakersUpdated",
                 Data = newSpeakers
             };
 
         //Player Queue events
-        public static PamelloEvent PlauerQueuePositionUpdated(int newPosition)
+        public static PamelloEvent PlayerQueuePositionUpdated(int newPosition)
             => new PamelloEvent() {
-                Header = "PlauerQueuePositionUpdated",
+                Header = "PlayerQueuePositionUpdated",
                 Data = newPosition
             };
-        public static PamelloEvent PlauerQueueSongUpdated(int? newSongId)
+        public static PamelloEvent PlayerQueueSongUpdated(int? newSongId)
             => new PamelloEvent() {
-                Header = "PlauerQueueSongUpdated",
+                Header = "PlayerQueueSongUpdated",
                 Data = newSongId
             };
-        public static PamelloEvent PlauerQueueListUpdated(IEnumerable<int> songsIds)
+        public static PamelloEvent PlayerQueueListUpdated(IEnumerable<int> songsIds)
             => new PamelloEvent() {
-                Header = "PlauerQueueListUpdated",
+                Header = "PlayerQueueListUpdated",
                 Data = songsIds
             };
         public static PamelloEvent PlayerQueueIsRandomUpdated(bool newState)

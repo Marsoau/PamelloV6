@@ -1,13 +1,15 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { PamelloPlaylist, PamelloSong, PamelloV6API, SearchResult } from '../../services/pamelloV6API.service';
 import { MiniSongComponent } from "../mini-song/mini-song.component";
 import { CommonModule } from '@angular/common';
 import { MiniPlaylistComponent } from "../mini-playlist/mini-playlist.component";
+import { PamelloV6API } from '../../services/api/pamelloV6API.service';
+import { IPamelloSong } from '../../services/api/model/PamelloSong';
+import { IPamelloPlaylist } from '../../services/api/model/PamelloPlaylist';
+import { SearchResult } from '../../services/api/pamelloV6DataAPI';
 
 @Component({
 	selector: 'app-search',
 	standalone: true,
-	providers: [PamelloV6API],
 	imports: [MiniSongComponent, CommonModule, MiniPlaylistComponent],
 	templateUrl: './search.component.html',
 	styleUrl: './search.component.scss'
@@ -15,25 +17,25 @@ import { MiniPlaylistComponent } from "../mini-playlist/mini-playlist.component"
 export class SearchComponent {
 	private readonly api: PamelloV6API;
 
-	@Output() public selectedSongChanged: EventEmitter<PamelloSong> = new EventEmitter<PamelloSong>();
-	@Output() public selectedPlaylistChanged: EventEmitter<PamelloPlaylist> = new EventEmitter<PamelloPlaylist>();
+	@Output() public selectedSongChanged: EventEmitter<IPamelloSong> = new EventEmitter<IPamelloSong>();
+	@Output() public selectedPlaylistChanged: EventEmitter<IPamelloPlaylist> = new EventEmitter<IPamelloPlaylist>();
 
 	public currentCategoryLabel: "Songs" | "Playlists" | "Youtube";
 
-	public songsResults: Search<PamelloSong>;
-	public playlistResults: Search<PamelloPlaylist>;
-	public youtubeResults: Search<any>;
+	public songsResults: SearchResult<IPamelloSong>;
+	public playlistResults: SearchResult<IPamelloPlaylist>;
+	public youtubeResults: SearchResult<any>;
 
-	public currentResults: Search<any>;
+	public currentResults: SearchResult<any>;
 
 	public q: string = "";
 
 	public constructor(api: PamelloV6API) {
 		this.api = api;
 
-		this.songsResults = new Search<PamelloSong>();
-		this.playlistResults = new Search<PamelloPlaylist>();
-		this.youtubeResults = new Search<any>();
+		this.songsResults = new SearchResultObject<IPamelloSong>();
+		this.playlistResults = new SearchResultObject<IPamelloPlaylist>();
+		this.youtubeResults = new SearchResultObject<any>();
 
 		this.currentCategoryLabel = "Songs";
 		this.currentResults = this.songsResults;
@@ -84,7 +86,7 @@ export class SearchComponent {
 		}
 	}
 	public async NextPage() {
-		if (this.currentResults.page >= this.currentResults.pageCount - 1) return;
+		if (this.currentResults.page >= this.currentResults.pagesCount - 1) return;
 
 		if (this.currentCategoryLabel == "Songs") {
 			await this.SearchSongs(this.songsResults.page + 1, this.songsResults.query);
@@ -105,25 +107,40 @@ export class SearchComponent {
 
 	public async SearchSongs(page: number, q: string | null) {
 		let result = await this.api.data.SearchSongs(page, 30, q ?? "");
+		if (result == null) {
+			this.songsResults = new SearchResultObject<IPamelloSong>();
+			return;
+		}
 
 		this.songsResults.page = result.page;
-		this.songsResults.pageCount = result.pagesCount;
+		this.songsResults.pagesCount = result.pagesCount;
 		this.songsResults.results = result.results;
 		this.songsResults.query = result.query;
 	}
 	public async SearchPlaylists(page: number, q: string | null) {
 		let result = await this.api.data.SearchPlaylists(page, 30, q ?? "");
+		if (result == null) {
+			this.playlistResults = new SearchResultObject<IPamelloPlaylist>();
+			return;
+		}
 
 		this.playlistResults.page = result.page;
-		this.playlistResults.pageCount = result.pagesCount;
+		this.playlistResults.pagesCount = result.pagesCount;
 		this.playlistResults.results = result.results;
 		this.playlistResults.query = result.query;
 	}
 }
 
-class Search<T> {
-	public page: number = 0;
-	public pageCount: number = 0;
-	public results: T[] = [];
-	public query: string = "";
+class SearchResultObject<T> implements SearchResult<T> {
+	page: number;
+	pagesCount: number;
+	results: T[];
+	query: string;
+
+	constructor() {
+		this.page = 0;
+		this.pagesCount = 0;
+		this.results = [];
+		this.query = "";
+	}
 }

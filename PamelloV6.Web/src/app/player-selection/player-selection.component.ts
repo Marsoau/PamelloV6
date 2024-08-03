@@ -1,22 +1,29 @@
 import { Component } from '@angular/core';
-import { PamelloPlayer, PamelloV6API } from '../../services/pamelloV6API.service';
+import { PamelloV6API } from '../../services/api/pamelloV6API.service';
+import { IPamelloPlayer } from '../../services/api/model/PamelloPlayer';
+import { SearchResult } from '../../services/api/pamelloV6DataAPI';
+import { FormsModule } from '@angular/forms';
 
 @Component({
 	selector: 'app-player-selection',
 	standalone: true,
-	imports: [],
+	imports: [FormsModule],
 	templateUrl: './player-selection.component.html',
 	styleUrl: './player-selection.component.scss'
 })
 export class PlayerSelectionComponent {
 	api: PamelloV6API;
 
+	inputValue: string;
+	selectValue: string;
 	selectionMode: boolean;
-	availablePlayers: PamelloPlayer[];
+	availablePlayers: IPamelloPlayer[];
 
 	constructor(api: PamelloV6API) {
 		this.api = api;
 
+		this.inputValue = "";
+		this.selectValue = "";
 		this.selectionMode = true;
 		this.availablePlayers = [];
 
@@ -26,56 +33,56 @@ export class PlayerSelectionComponent {
 	
 			this.availablePlayers.push(player);
 		};
-		this.api.events.UserPlayerSelected = async (selectedPlayerId: number) => {
-			this.UpdatePlayerSelectOption();
-		}
 	}
 
 	ngAfterViewInit() {
-		let selectElement = document.getElementsByClassName("player-select")[0] as HTMLSelectElement;
-		console.log(`seitusedyuikgj 1: ${selectElement.options.length}`);
+		this.LoadAwailablePlayers();
+	}
 
-		this.api.data.SearchPlayers(0, 100).then((searchResult) => {
-			this.availablePlayers = searchResult.results;
-			console.log(`seitusedyuikgj 2: ${selectElement.options.length}`);
-			this.UpdatePlayerSelectOption();
-		});
+	public GetSelectValue() {
+		if (this.selectValue != (this.api.selectedPlayer?.id ?? "none").toString()) {
+			this.selectValue = (this.api.selectedPlayer?.id ?? "none").toString();
+		}
+		return this.selectValue;
+	}
+
+	public async LoadAwailablePlayers() {
+		let searchResult = await this.api.data.SearchPlayers(0, 100);
+		if (!searchResult) return;
+
+		this.availablePlayers = searchResult.results;
+		this.UpdatePlayerSelectOption();
 	}
 
 	public async PlayerCreateClick() {
-		let inputElement = document.getElementById("player-creation-name-input") as HTMLInputElement;
-		if (inputElement.value.length == 0) return;
+		console.log(this.inputValue);
+		return;
+		if (this.inputValue.length == 0) return;
 
-		let newPlayerId = await this.api.commands.PlayerCreate(inputElement.value) as number | null;
+		let newPlayerId = await this.api.commands.PlayerCreate(this.inputValue) as number | null;
 		console.log(`new player id ${newPlayerId} test`);
 		this.selectionMode = true;
 		this.api.commands.PlayerSelect(newPlayerId);
 	}
 	public SelectionChanged() {
-		let selectElement = document.getElementsByClassName("player-select")[0] as HTMLSelectElement;
-		let selectedValue = selectElement.value;
-
-		this.UpdatePlayerSelectOption();
-
 		let valueNumber;
-		if (selectedValue == "none") {
+		if (this.selectValue == "none") {
 			valueNumber = null;
 		}
 		else {
-			valueNumber = parseInt(selectedValue);
+			valueNumber = parseInt(this.selectValue);
 		}
+
+		this.UpdatePlayerSelectOption();
 	
 		this.api.commands.PlayerSelect(valueNumber);
 	}
 	public UpdatePlayerSelectOption() {
-		this.api.authorizedUser!.selectedPlayerId = this.api.authorizedUser!.selectedPlayerId;
-		let selectElement = document.getElementsByClassName("player-select")[0] as HTMLSelectElement;
-
-		if (this.api.authorizedUser?.selectedPlayerId == null) {
-			selectElement.value = "none";
+		if (!this.api.selectedPlayer) {
+			this.selectValue = "none";
 		}
 		else {
-			selectElement.value = this.api.authorizedUser.selectedPlayerId.toString();
+			this.selectValue = this.api.selectedPlayer.id.toString();
 		}
 	}
 }

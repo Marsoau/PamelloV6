@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PamelloV6.Core.Enumerators;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,10 +12,8 @@ namespace PamelloV6.Core.DTO
 		public int Id { get; set; }
 		public string Name { get; set; }
 
+        public PamelloPlayerState State { get; set; }
         public IEnumerable<SpeakerDTO> Speakers { get; set; }
-
-
-        public bool IsPaused { get; set; }
 		
 		public int CurrentSongTimePassed { get; set; }
 		public int CurrentSongTimeTotal { get; set; }
@@ -27,7 +26,5 @@ namespace PamelloV6.Core.DTO
 		public bool QueueIsRandom { get; set; }
 		public bool QueueIsReversed { get; set; }
 		public bool QueueIsNoLeftovers { get; set; }
-
-
 	}
 }
