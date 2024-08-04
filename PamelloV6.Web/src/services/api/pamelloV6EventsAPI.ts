@@ -49,7 +49,7 @@ export class PamelloV6EventsAPI {
             handler(JSON.parse(message.data));
         });
 
-        console.log(`Added event listener for [${event}] event`);
+        //console.log(`Added event listener for [${event}] event`);
     }
 
     private SubscribeDefault() {
@@ -65,6 +65,10 @@ export class PamelloV6EventsAPI {
         this.PlayerNameUpdated = (newName: string) => {
             if (!this._api.selectedPlayer) return;
             this._api.selectedPlayer.name = newName;
+        }
+        this.PlayerPauseUpdated = (newState: boolean) => {
+            if (!this._api.selectedPlayer) return;
+            this._api.selectedPlayer.isPaused = newState;
         }
         this.PlayerStateUpdated = (newState: PamelloPlayerState) => {
             if (!this._api.selectedPlayer) return;
@@ -129,6 +133,9 @@ export class PamelloV6EventsAPI {
     }
     public set PlayerNameUpdated(handler: any) {
         this.AddEventListener("PlayerNameUpdated", handler);
+    }
+    public set PlayerPauseUpdated(handler: any) {
+        this.AddEventListener("PlayerPauseUpdated", handler);
     }
     public set PlayerStateUpdated(handler: any) {
         this.AddEventListener("PlayerStateUpdated", handler);

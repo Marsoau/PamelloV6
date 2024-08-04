@@ -73,9 +73,22 @@ namespace PamelloV6.API.Model.Audio
             };
 
 			await newSpreaker.Connect(vcId);
-		}
+        }
 
-		private void SendSpeakersUpdatedEvent() => _events.SendToAllWithSelectedPlayer(_parentPlayer.Id,
+        public async Task Disconnect(int speakerPosition) {
+			if (speakerPosition < 0 || speakerPosition >= _speakers.Count) {
+				throw new PamelloException("Invalid speaker position");
+			}
+
+			var speaker = _speakers[speakerPosition];
+
+			await speaker.Disconnect();
+			_speakers.Remove(speaker);
+
+			SendSpeakersUpdatedEvent();
+        }
+
+        private void SendSpeakersUpdatedEvent() => _events.SendToAllWithSelectedPlayer(_parentPlayer.Id,
             PamelloEvent.PlayerSpeakersUpdated(Speakers.Select(speaker => speaker.GetDTO()))
         );
 

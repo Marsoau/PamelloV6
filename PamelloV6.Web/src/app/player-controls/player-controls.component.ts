@@ -32,11 +32,12 @@ export class PlayerControlsComponent {
 	}
 
 	public PPClick() {
-		console.log("pp:", this.api.selectedPlayer?.state);
-		if (this.api.selectedPlayer?.state == PamelloPlayerState.Paused) {
+		if (!this.api.selectedPlayer) return;
+
+		if (this.api.selectedPlayer.isPaused) {
 			this.api.commands.PlayerResume();
 		}
-		else if (this.api.selectedPlayer?.state == PamelloPlayerState.Playing) {
+		else {
 			this.api.commands.PlayerPause();
 		}
 	}

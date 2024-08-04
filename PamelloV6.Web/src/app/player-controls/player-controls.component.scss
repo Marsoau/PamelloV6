@@ -8,67 +8,66 @@
     
     .player-controls-cell {
         background-color: #F8F8F8;
-    }
-}
 
-.player-controls-cell-cover {
-    display: grid;
+        &-cover {
+            display: grid;
 
-    img {
-        width: 164px;
-        height: 164px;
+            img {
+                width: 164px;
+                height: 164px;
 
-        margin: 4px;
-        
-        object-fit: cover;
-    }
-}
-
-.player-controls-cell-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    padding: 1px 4px;
-    padding-top: 0px;
-
-    .player-song-info-container {
-        display: flex;
-        flex-direction: column;
-
-        color: #484848;
-        .player-song-title {
-            font-size: 21px;
-            font-weight: 500;
-        
-            text-overflow: ellipsis;
+                margin: 4px;
+                
+                object-fit: cover;
+            }
         }
-        .player-song-author {
-	        font-size: 14px;
+        &-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            padding: 1px 4px;
+            padding-top: 0px;
+
+            .player-song-info-container {
+                display: flex;
+                flex-direction: column;
+
+                color: #484848;
+                .player-song-title {
+                    font-size: 21px;
+                    font-weight: 500;
+                
+                    text-overflow: ellipsis;
+                }
+                .player-song-author {
+                    font-size: 14px;
+                }
+            }
+            .player-time-container {
+                color: #484848;
+
+                font-weight: 500;
+                .player-time {
+                    margin-right: 4px;
+                }
+                .player-duration {
+                    color: #808080;
+                }
+            }
+        }
+        &-buttons {
+            display: grid;
+            grid-template-columns: auto auto auto;
+
+            padding: 4px;
+            .pp-button {
+                margin: 0px 4px;
+            }
+        }
+        &-rewind {
+            display: grid;
+            padding: 4px;
         }
     }
-    .player-time-container {
-        color: #484848;
-        .player-time {
-            margin-right: 4px;
-        }
-        .player-duration {
-            color: #808080;
-        }
-    }
-}
-
-.player-controls-cell-buttons {
-    display: grid;
-    grid-template-columns: auto auto auto;
-
-    padding: 4px;
-    .pp-button {
-        margin: 0px 4px;
-    }
-}
-
-.player-controls-cell-rewind {
-    display: grid;
-    padding: 4px;
 }

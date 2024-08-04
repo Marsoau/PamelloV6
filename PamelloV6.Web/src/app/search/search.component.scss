@@ -9,13 +9,16 @@
 
     app-mini-song, app-mini-playlist {
         margin: 2px;
-        margin-bottom: 0px;
     }
 }
 
 .search-controls-container {
     display: grid;
     grid-template-columns: auto 2px 1fr 2px auto 2px auto;
+
+    input {
+        min-width: 56px;
+    }
 
     .pages-controls-container {
         display: grid;

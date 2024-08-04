@@ -83,10 +83,10 @@ namespace PamelloV6.API.Modules
             await selectedPlayer.Speakers.ConnectToUser(User.DiscordUser.Id);
         }
         [PamelloCommand]
-        public async Task PlayerDisconnect() {
+        public async Task PlayerDisconnect(int speakerPosition) {
             RequireUser();
 
-            //await selectedPlayer.Speaker.Disconnect();
+            await selectedPlayer.Speakers.Disconnect(speakerPosition);
         }
         [PamelloCommand]
         public void PlayerRename(string newName) {

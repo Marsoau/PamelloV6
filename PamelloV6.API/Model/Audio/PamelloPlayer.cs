@@ -30,19 +30,17 @@ namespace PamelloV6.API.Model.Audio
             set {
                 _isPaused = value;
 
-                _events.SendToAllWithSelectedPlayer(Id, PamelloEvent.PlayerStateUpdated(State));
+                _events.SendToAllWithSelectedPlayer(Id, PamelloEvent.PlayerPauseUpdated(IsPaused));
             }
         }
 
+        private PamelloPlayerState _state;
         public PamelloPlayerState State {
-            get {
-                if (Queue.Current is null) {
-                    return PamelloPlayerState.AwaitingSong;
-                }
-                if (!Speakers.IsAnyConnected) {
-                    return PamelloPlayerState.AwaitingSpeaker;
-                }
-                return IsPaused ? PamelloPlayerState.Paused : PamelloPlayerState.Playing;
+            get => _state;
+            set {
+                _state = value;
+
+                _events.SendToAllWithSelectedPlayer(Id, PamelloEvent.PlayerStateUpdated(State));
             }
         }
 
@@ -61,31 +59,37 @@ namespace PamelloV6.API.Model.Audio
         public async Task MusicLoop() {
             byte[]? audioBytes;
 
-            bool wasHeld = false;
             while (true) {
-                if (IsPaused ||
-                    Queue.Current is null ||
-                    !Speakers.IsAnyConnected
-                ) {
-                    if (!wasHeld) {
-                        wasHeld = true;
-
-                        _events.SendToAllWithSelectedPlayer(Id, PamelloEvent.PlayerStateUpdated(State));
+                if (IsPaused) {
+                    await Task.Delay(1000);
+                    continue;
+                }
+                if (Queue.Current is null) {
+                    if (State != PamelloPlayerState.AwaitingSong) {
+                        State = PamelloPlayerState.AwaitingSong;
                     }
 
                     await Task.Delay(1000);
                     continue;
                 }
-                if (wasHeld) {
-                    wasHeld = false;
+                if (!Speakers.IsAnyConnected) {
+                    if (State != PamelloPlayerState.AwaitingSpeaker) {
+                        State = PamelloPlayerState.AwaitingSpeaker;
+                    }
 
-                    _events.SendToAllWithSelectedPlayer(Id, PamelloEvent.PlayerStateUpdated(State));
+                    await Task.Delay(1000);
+                    continue;
                 }
 
                 if (!Queue.Current.IsInitialized) {
+                    State = PamelloPlayerState.AwainingSongAudio;
                     Console.WriteLine($"Started initialization of {Queue.Current.Song.Name}");
                     await Queue.Current.TryInitialize();
                     Console.WriteLine($"Initialzed {Queue.Current.Song.Name}");
+                }
+
+                if (State != PamelloPlayerState.Ready) {
+                    State = PamelloPlayerState.Ready;
                 }
 
                 audioBytes = Queue.Current?.NextBytes();
@@ -105,6 +109,7 @@ namespace PamelloV6.API.Model.Audio
                 Id = Id,
                 Name = Name,
 
+                IsPaused = IsPaused,
                 State = State,
                 Speakers = Speakers.Speakers.Select(speaker => speaker.GetDTO()),
 

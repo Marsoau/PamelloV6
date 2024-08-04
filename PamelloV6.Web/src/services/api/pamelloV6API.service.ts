@@ -7,6 +7,7 @@ import { HttpClient } from "@angular/common/http";
 import { PamelloV6Http } from "./pamelloV6Http";
 import { IPamelloPlayer } from "./model/PamelloPlayer";
 import { IPamelloSong } from "./model/PamelloSong";
+import { IPamelloEpisode } from "./model/PamelloEpisode";
 
 @Injectable({
     providedIn: 'root',
@@ -15,6 +16,7 @@ export class PamelloV6API {
     public user: IPamelloUser | null;
     public selectedPlayer: IPamelloPlayer | null;
     public selectedPlayerSong: IPamelloSong | null;
+    public selectedPlayerSongEpisodes: IPamelloEpisode[] | null;
     public selectedPlayerQueueSongs: IPamelloSong[];
 
     public readonly http: PamelloV6Http;
@@ -28,6 +30,7 @@ export class PamelloV6API {
         this.user = null;
         this.selectedPlayer = null;
         this.selectedPlayerSong = null;
+        this.selectedPlayerSongEpisodes = null;
         this.selectedPlayerQueueSongs = [];
 
         this.http = new PamelloV6Http(this, _http);
@@ -114,6 +117,7 @@ export class PamelloV6API {
         this.user = null;
         this.selectedPlayer = null;
         this.selectedPlayerSong = null;
+        this.selectedPlayerSongEpisodes = null;
         this.selectedPlayerQueueSongs = [];
     }
 
@@ -136,10 +140,10 @@ export class PamelloV6API {
             return;
         }
 
-        console.log(`Loaded selected player "${this.selectedPlayer.name}"`);
-
         this.LoadSelectedPlayerSong();
         this.LoadSelectedPlayerQueueSongs();
+
+        console.log(`Loaded selected player "${this.selectedPlayer.name}"`);
     }
 
     public async LoadSelectedPlayerQueueSongs() {
@@ -160,6 +164,18 @@ export class PamelloV6API {
 		else if (this.selectedPlayerSong?.id != this.selectedPlayer.currentSongId) {
 			this.selectedPlayerSong = await this.data.GetSong(this.selectedPlayer.currentSongId);
 		}
+        this.LoadSelectedPlayerSongEpisodes();
+    }
+
+    public async LoadSelectedPlayerSongEpisodes() {
+        this.selectedPlayerSongEpisodes = [];
+
+        if (!this.selectedPlayerSong?.episodeIds) return;
+
+        for (let episodeId of this.selectedPlayerSong.episodeIds) {
+            let episode = await this.data.GetEpisode(episodeId);
+            if (episode) this.selectedPlayerSongEpisodes.push(episode);
+        }
     }
 }
 

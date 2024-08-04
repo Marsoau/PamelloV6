@@ -55,8 +55,6 @@ export class PlayerSelectionComponent {
 	}
 
 	public async PlayerCreateClick() {
-		console.log(this.inputValue);
-		return;
 		if (this.inputValue.length == 0) return;
 
 		let newPlayerId = await this.api.commands.PlayerCreate(this.inputValue) as number | null;

@@ -63,9 +63,6 @@ namespace PamelloV6.Server.Modules
         public async Task ConnectHander()
             => await Connect();
         [SlashCommand("disconnect", "Disconnect player from voice channel")]
-        public async Task DisconnectHander()
-            => await Disconnect();
-        [SlashCommand("get-code", "Get authorization code")]
         public async Task GetCodeHander()
             => await GetCode();
 

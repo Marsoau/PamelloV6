@@ -13,8 +13,8 @@
         }
         @if (api.isConnected) {
             <app-multipage [pages]="['Speakers', 'Episodes']" [selectedPage]="0">
-                <div page-0>Speakers page</div>
-                <div page-1>Episodes page</div>
+                <app-player-speakers-controls page-0/>
+                <app-player-episodes page-1/>
             </app-multipage>
         } @else {
             <app-reqire-authorization/>

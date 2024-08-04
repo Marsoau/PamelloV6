@@ -112,9 +112,6 @@ namespace PamelloV6.API.Modules
 			}
             await PlayerConnect();
         }
-        public async Task Disconnect() {
-            await PlayerDisconnect();
-        }
         public async Task GetCode() {
 			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Authroization code", _authorization.GetCode(Context.User.DiscordUser.Id).ToString()));
         }
@@ -166,11 +163,6 @@ namespace PamelloV6.API.Modules
 
             await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Connect player", "Selected player connected to the voice channel"));
 		}
-        public async Task PlayerDisconnect() {
-            await Context.Commands.PlayerDisconnect();
-
-            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Connect player", "Selected player connected to the voice channel"));
-        }
         public async Task PlayerDelete(string value) {
 			await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Delete player", "This command is unavailable yet"));
 		}

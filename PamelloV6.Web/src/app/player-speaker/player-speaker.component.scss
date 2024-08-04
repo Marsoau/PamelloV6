@@ -1,0 +1,40 @@
+:host {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+
+    background-color: #F4F4F4;
+}
+
+.speaker-guild, .speaker-vc, .speaker-button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.speaker-guild {
+    max-width: 120px;
+
+    background-color: #D0D0D0;
+    color: #646464;
+
+    text-align: center;
+    font-weight: 500;
+
+    padding: 0px 4px;
+}
+
+.speaker-vc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    color: #808080;
+    
+    font-weight: 500;
+
+    padding: 0px 4px;
+}
+
+button {
+    margin: 2px;
+}

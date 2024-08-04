@@ -42,6 +42,11 @@ namespace PamelloV6.API.Model.Events
                 },
             };
 
+        public static PamelloEvent PlayerPauseUpdated(bool newState)
+            => new PamelloEvent() {
+                Header = "PlayerPauseUpdated",
+                Data = newState
+            };
         public static PamelloEvent PlayerStateUpdated(PamelloPlayerState newState)
             => new PamelloEvent() {
                 Header = "PlayerStateUpdated",

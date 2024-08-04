@@ -78,7 +78,9 @@ namespace PamelloV6.API.Model.Audio
             await VoiceChannel.ConnectAsync();
         }
         public async Task Disconnect() {
+            if (VoiceChannel is null) return;
 
+            await VoiceChannel.DisconnectAsync();
         }
 
         public void PlayBytes(byte[] audioBytes) {
@@ -92,7 +94,8 @@ namespace PamelloV6.API.Model.Audio
 
         public SpeakerDTO GetDTO() {
             return new SpeakerDTO() {
-
+                VCName = VoiceChannel?.Name ?? "",
+                GuildName = Guild?.Name ?? "",
             };
         }
     }

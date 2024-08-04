@@ -3,6 +3,7 @@ import { IPamelloSpeaker } from "./PamelloSpeaker";
 export class PamelloPlayer implements IPamelloPlayer {
     id!: number;
     name!: string;
+    isPaused!: boolean;
     state!: PamelloPlayerState;
     speakers!: IPamelloSpeaker[];
     currentSongTimePassed!: number;
@@ -19,6 +20,7 @@ export class PamelloPlayer implements IPamelloPlayer {
 export interface IPamelloPlayer {
     id: number;
     name: string;
+    isPaused: boolean;
     state: PamelloPlayerState;
     speakers: IPamelloSpeaker[];
     currentSongTimePassed: number;
@@ -33,8 +35,8 @@ export interface IPamelloPlayer {
 }
 
 export enum PamelloPlayerState {
+    Ready,
     AwaitingSong,
     AwaitingSpeaker,
-    Paused,
-    Playing,
+    AwainingSongAudio,
 }

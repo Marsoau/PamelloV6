@@ -17,8 +17,8 @@ export class PamelloV6CommandsAPI {
 	public async PlayerConnect() {
 		return await this._api.http.InvokeCommand(`PlayerConnect`);
 	}
-	public async PlayerDisconnect() {
-		return await this._api.http.InvokeCommand(`PlayerDisconnect`);
+	public async PlayerDisconnect(speakerPosition: number) {
+		return await this._api.http.InvokeCommand(`PlayerDisconnect&speakerPosition=${speakerPosition}`);
 	}
 	public async PlayerRename(newName: string) {
 		return await this._api.http.InvokeCommand(`PlayerRename&newName=${newName}`);
@@ -72,7 +72,7 @@ export class PamelloV6CommandsAPI {
 		return await this._api.http.InvokeCommand(`PlayerQueueRemoveSong&songPosition=${songPosition}`) as number;
 	}
 	public async PlayerQueueRequestNext(position: number | null) {
-		return await this._api.http.InvokeCommand(`PlayerQueueRequestNext&position=${position}`);
+		return await this._api.http.InvokeCommand(`PlayerQueueRequestNext&position=${position ?? ''}`);
 	}
 	public async PlayerQueueSwap(inPosition: number, withPosition: number) {
 		return await this._api.http.InvokeCommand(`PlayerQueueSwap&inPosition=${inPosition}&withPosition=${withPosition}`);

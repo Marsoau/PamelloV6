@@ -43,7 +43,7 @@ export class SearchComponent {
 		this.SearchSongs(0, "");
 		this.SearchPlaylists(0, "");
 
-		this.SwitchCategory("Playlists");
+		this.SwitchCategory("Songs");
 	}
 
 	public SwitchCategory(category: "Songs" | "Playlists" | "Youtube" | null = null) {

@@ -1,0 +1,16 @@
+:host {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+
+    background-color: white;
+}
+
+.episodes-list {
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    app-mini-episode {
+        margin: 2px;
+    }
+}

@@ -3,7 +3,9 @@
         <input type="text" name="episode-name-input" [(ngModel)]="nameInputValue"/>
     }
     @else {
-        <div class="episode-title">{{episode?.name}}</div>
+        <div class="episode-title" (click)="Select()" [ngStyle]="{
+            'cursor': selected.length ? 'pointer' : 'default'
+        }">{{episode?.name}}</div>
     }
     <button class="default-button mini-button edit-title-button" (click)="NameEdit()">{{isNameEdit ? 'Save' : 'Edit'}}</button>
 </div>

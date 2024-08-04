@@ -12,6 +12,7 @@ namespace PamelloV6.Core.DTO
 		public int Id { get; set; }
 		public string Name { get; set; }
 
+		public bool IsPaused { get; set; }
         public PamelloPlayerState State { get; set; }
         public IEnumerable<SpeakerDTO> Speakers { get; set; }
 		

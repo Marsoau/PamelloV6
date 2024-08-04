@@ -1,0 +1,5 @@
+<div class="episodes-list">
+    @for (episode of api.selectedPlayerSongEpisodes; track $index) {
+        <app-mini-episode [episode]="episode" [displayRemoveButton]="true" (selected)="EpisodeSelected($index)"/>
+    }
+</div>

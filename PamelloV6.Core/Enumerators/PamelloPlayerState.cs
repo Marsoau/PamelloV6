@@ -8,9 +8,9 @@ namespace PamelloV6.Core.Enumerators
 {
     public enum PamelloPlayerState
     {
+        Ready,
         AwaitingSong,
         AwaitingSpeaker,
-        Paused,
-        Playing,
+        AwainingSongAudio,
     }
 }

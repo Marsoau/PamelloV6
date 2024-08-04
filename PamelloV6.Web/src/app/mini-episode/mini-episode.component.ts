@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { StringTimePipe } from '../string-time.pipe';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +13,9 @@ import { PamelloV6API } from '../../services/api/pamelloV6API.service';
 	styleUrl: './mini-episode.component.scss'
 })
 export class MiniEpisodeComponent {
+	@Output() public selected: EventEmitter<IPamelloEpisode> = new EventEmitter<IPamelloEpisode>();
+	@Output() public removeClick: EventEmitter<IPamelloEpisode> = new EventEmitter<IPamelloEpisode>();
+
 	@Input() public episode: IPamelloEpisode | null = null;
 	@Input() public displayRemoveButton: boolean = false;
 
@@ -79,5 +82,10 @@ export class MiniEpisodeComponent {
 	}
 	public Remove() {
 		
+	}
+
+	public Select() {
+		if (!this.episode) return;
+		this.selected.emit(this.episode)
 	}
 }

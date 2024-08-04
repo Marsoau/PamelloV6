@@ -27,7 +27,12 @@ export class QueueSongComponent {
 		this.api.commands.PlayerGoToSong(this.position, false);
 	}
 	public NextClick() {
-		this.api.commands.PlayerQueueRequestNext(this.position);
+		if (this.isNext) {
+			this.api.commands.PlayerQueueRequestNext(null);
+		}
+		else {
+			this.api.commands.PlayerQueueRequestNext(this.position);
+		}
 	}
 	public RemoveClick() {
 		this.api.commands.PlayerQueueRemoveSong(this.position);

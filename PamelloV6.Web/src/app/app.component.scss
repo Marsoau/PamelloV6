@@ -1,5 +1,6 @@
 .main-container {
-    height: 100%;
+    height: 100vh;
+    width: 100vw;
 
     display: grid;
     grid-template-columns: 480px 1fr;
@@ -12,7 +13,7 @@
 .main-subcontainer {
     display: grid;
     &-left {
-        grid-template-rows: auto auto 1fr auto;
+        grid-template-rows: auto auto minmax(0, 1fr) auto;
     }
     &-right {
         grid-template-rows: 1fr auto;
