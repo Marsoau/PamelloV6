@@ -12,7 +12,7 @@ namespace PamelloV6.API.Model
 	{
 		internal readonly EpisodeEntity Entity;
 
-		public override int Id {
+        public override int Id {
 			get => Entity.Id;
 		}
 

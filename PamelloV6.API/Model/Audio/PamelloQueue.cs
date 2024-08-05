@@ -125,7 +125,11 @@ namespace PamelloV6.API.Model.Audio
 			_events = services.GetRequiredService<PamelloEventsService>();
             _songs = services.GetRequiredService<PamelloSongRepository>();
 
-			SongAudios = new List<PamelloAudio>();
+            _isRandom = false;
+            _isReversed = false;
+            _isNoLeftovers = true;
+
+            SongAudios = new List<PamelloAudio>();
 		}
 
         public PamelloSong? AddSong(PamelloSong song) {
@@ -195,7 +199,7 @@ namespace PamelloV6.API.Model.Audio
 
 			song = SongAudios[songPosition].Song;
 			
-			SongAudios.RemoveAt(songPosition);
+            SongAudios.RemoveAt(songPosition);
 			if (Position == songPosition) GoToNextSong();
 			else if (songPosition < Position) Position--;
 

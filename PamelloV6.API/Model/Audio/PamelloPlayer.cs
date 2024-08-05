@@ -104,7 +104,7 @@ namespace PamelloV6.API.Model.Audio
                 }
                 catch (Exception x) {
                     Console.WriteLine($"PlayBytes Catch: {x}");
-                    Queue.GoToNextSong();
+                    Queue.Clear();
                 }
             }
         }

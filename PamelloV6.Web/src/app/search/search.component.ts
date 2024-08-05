@@ -147,7 +147,9 @@ export class SearchComponent {
 	}
 
 	public RemovePlaylist(playlist: IPamelloPlaylist) {
-		this.api.commands.PlaylistDelete(playlist.id);
+		if (confirm(`Delete playlist "${playlist.name}" from the database?`)) {
+			this.api.commands.PlaylistDelete(playlist.id);
+		}
 	}
 }
 
