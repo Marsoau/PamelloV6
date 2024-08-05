@@ -21,6 +21,9 @@ namespace PamelloV6.API.Model.Interactions.Builders
         public static Embed BuildException(string message) {
             return Exception(message).Build();
         }
+        public static Embed BuildWait() {
+            return Wait().Build();
+        }
         public static EmbedBuilder Info(string header, string message) {
             return new EmbedBuilder() {
                 Title = header,
@@ -41,6 +44,13 @@ namespace PamelloV6.API.Model.Interactions.Builders
                 Description = message,
             }
             .WithColor(0x00FF3030);
+        }
+        public static EmbedBuilder Wait() {
+            return new EmbedBuilder() {
+                Title = "Wait",
+                Description = "Processing...",
+            }
+            .WithColor(0x00303030);
         }
     }
 }

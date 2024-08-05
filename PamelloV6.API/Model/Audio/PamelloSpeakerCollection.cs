@@ -41,6 +41,8 @@ namespace PamelloV6.API.Model.Audio
 					return;
 				}
 			}
+
+			throw new PamelloException("User is not connected to the voice channel");
 		}
 
 		public async Task Connect(ulong guildId, ulong vcId) {

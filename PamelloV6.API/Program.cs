@@ -135,7 +135,7 @@ namespace PamelloV6.API
                 }
 				*/
                 Console.WriteLine($"Registering commands");
-                await interactionService.RegisterCommandsGloballyAsync();
+                await interactionService.RegisterCommandsGloballyAsync(true);
 
                 discordReady.SetResult();
 			};

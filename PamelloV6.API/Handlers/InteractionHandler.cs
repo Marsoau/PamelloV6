@@ -56,7 +56,7 @@ namespace PamelloV6.Server.Handlers
 		}
 
 		private async Task HandleInteraction(SocketInteraction interaction) {
-			await interaction.DeferAsync(true);
+			await interaction.RespondAsync(embed: PamelloEmbedBuilder.BuildWait(), ephemeral: true);
 
 			var pamelloUser = _users.Get(interaction.User.Id);
 			if (pamelloUser is null) {
@@ -75,15 +75,20 @@ namespace PamelloV6.Server.Handlers
         }
 
         private async Task SlashCommandExecuted(SlashCommandInfo commandInfo, IInteractionContext context, Discord.Interactions.IResult result) {
-            SocketInteraction interaction = context.Interaction as SocketInteraction ?? throw new Exception("tf");
+			SocketInteraction interaction = context.Interaction as SocketInteraction ?? throw new Exception("tf");
 
-            if (!result.IsSuccess && result is ExecuteResult executionResult) {
+			if (!result.IsSuccess && result is ExecuteResult executionResult) {
                 if (executionResult.Exception?.InnerException is PamelloException pamelloException) {
-                    await interaction.RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(pamelloException.Message));
+                    if (context is SocketPamelloInteractionContext pamelloContext && pamelloContext.lastFollowupResponce is not null) {
+                        await pamelloContext.lastFollowupResponce.ModifyAsync(message =>
+							message.Embed = PamelloEmbedBuilder.BuildError(pamelloException.Message)
+                        );
+                    }
+                    else await interaction.RespondWithEmbedAsync(PamelloEmbedBuilder.BuildError(pamelloException.Message));
                 }
                 else {
                     await interaction.RespondWithEmbedAsync(PamelloEmbedBuilder.BuildException("Unidentified error occured"));
-                    throw executionResult.Exception ?? new Exception("Unknown exception");
+                    Console.WriteLine(executionResult.Exception?.InnerException);
                 }
             }
         }

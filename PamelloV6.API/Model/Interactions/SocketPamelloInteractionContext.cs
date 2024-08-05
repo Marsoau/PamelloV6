@@ -1,4 +1,5 @@
 ﻿using Discord.Interactions;
+using Discord.Rest;
 using Discord.WebSocket;
 using PamelloV6.API.Modules;
 using PamelloV6.Server.Model;
@@ -9,6 +10,8 @@ namespace PamelloV6.API.Model.Interactions
     {
         public readonly PamelloUser User;
         public readonly PamelloCommandsModule Commands;
+
+        public RestFollowupMessage? lastFollowupResponce;
 
         public readonly IServiceProvider Services;
 

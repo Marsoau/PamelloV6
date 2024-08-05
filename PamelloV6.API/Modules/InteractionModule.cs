@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Audio;
 using Discord.Interactions;
+using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IIS;
@@ -58,11 +59,17 @@ namespace PamelloV6.Server.Modules
         public async Task AddHandler(
             [Summary("song", "Song id, (exact) name, or youtube url")] string songValue
         ) => await Add(songValue);
+        
+        [SlashCommand("add-playlist", "Add playlist to selected player queue")]
+        public async Task AddPlaylistHandler(
+            [Summary("playlist", "Playlist id or (exact) name")] string playlistValue
+        ) => await AddPlaylist(playlistValue);
 
         [SlashCommand("connect", "Connect player to your voice channel")]
         public async Task ConnectHander()
             => await Connect();
-        [SlashCommand("disconnect", "Disconnect player from voice channel")]
+        
+        [SlashCommand("get-code", "Get authorization code")]
         public async Task GetCodeHander()
             => await GetCode();
 
@@ -79,7 +86,7 @@ namespace PamelloV6.Server.Modules
             sw.Flush();
             sw.Close();
 
-            await RespondWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Problem reported", problemDescription));
+            await ModifyWithEmbedAsync(PamelloEmbedBuilder.BuildInfo("Problem reported", problemDescription));
         }
 	}
 
