@@ -86,15 +86,15 @@ export class PamelloV6API {
         
         this.events.Connect(() => {}, () => {
             if (onerror) onerror("Failed to connect");
-            this.Disonnect();
+            this.Disonnect(false);
         });
 
         return true;
     }
-    public Disonnect() {
+    public Disonnect(resetToken: boolean = true) {
         this.events.Disconnect();
 
-        this.ResetAuthorizedUserData(true);
+        this.ResetAuthorizedUserData(resetToken);
     }
 
     private async UpdateAuthorizedUserData() {

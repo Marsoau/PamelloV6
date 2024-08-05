@@ -28,7 +28,6 @@ export class PamelloV6EventsAPI {
 
             console.log(`Failed to connect to events`)
             
-            if (this.eventSource?.readyState == 1) return;
             if (onfail) onfail();
         });
         this.eventSource.addEventListener("open", () => {
