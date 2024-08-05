@@ -257,24 +257,26 @@ namespace PamelloV6.API.Model.Audio
 		public PamelloSong? GoToNextSong() {
 			if (SongAudios.Count == 0) return null;
 
-            if (IsNoLeftovers) {
-                SongAudios.RemoveAt(Position);
-                SendQueueUpdatedEvent();
-            }
-
             int nextPosition;
 
 			if (NextPositionRequest is not null) {
 				nextPosition = NextPositionRequest.Value;
 				NextPositionRequest = null;
 			}
-			else if (IsRandom) nextPosition = Random.Shared.Next(0, SongAudios.Count - 1);
+			else if (IsRandom && SongAudios.Count > 1) do {
+                nextPosition = Random.Shared.Next(0, SongAudios.Count);
+            } while (Position == nextPosition);
 			else if (IsReversed) nextPosition = Position - 1;
 			else nextPosition = Position + 1;
 
-            nextPosition = NormalizeQueuePosition(nextPosition);
+			if (IsNoLeftovers && Current is not null) {
+                SongAudios.RemoveAt(Position);
+				if (nextPosition > Position) nextPosition--;
 
-            if (IsNoLeftovers && nextPosition > Position) nextPosition--;
+				SendQueueUpdatedEvent();
+            }
+
+            nextPosition = NormalizeQueuePosition(nextPosition);
 
 			if (SongAudios.Count == 0) {
 				Current = null;
@@ -288,6 +290,8 @@ namespace PamelloV6.API.Model.Audio
 		}
 
 		private int NormalizeQueuePosition(int position, bool includeLastEmpty = false) {
+			if (SongAudios.Count == 0) return 0;
+
 			position %= SongAudios.Count + (includeLastEmpty ? 1 : 0);
 			if (position < 0) position += SongAudios.Count;
 
