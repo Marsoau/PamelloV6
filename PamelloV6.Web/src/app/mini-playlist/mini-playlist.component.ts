@@ -24,10 +24,12 @@ export class MiniPlaylistComponent {
 	}
 	public Add() {
 		if (!this.playlist) return;
-		//this.api.commands.PlayerQueueAddPlaylist(this.playlist.id);
+		this.api.commands.PlayerQueueAddPlaylist(this.playlist.id);
 	}
 	public Remove() {
+		console.log(this.playlist)
 		if (!this.playlist) return;
+
 		this.removeClick.emit(this.playlist);
 	}
 }

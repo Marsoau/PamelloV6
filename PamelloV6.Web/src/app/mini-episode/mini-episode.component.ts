@@ -81,7 +81,9 @@ export class MiniEpisodeComponent {
 		this.api.commands.EpisodeChangeSkipState(this.episode.id, !this.episode.skip);
 	}
 	public Remove() {
-		
+		debugger;
+		if (!this.episode) return;
+		this.api.commands.EpisodeDelete(this.episode.id);
 	}
 
 	public Select() {

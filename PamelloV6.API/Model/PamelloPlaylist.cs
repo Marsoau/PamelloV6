@@ -10,7 +10,7 @@ namespace PamelloV6.API.Model
 {
 	public class PamelloPlaylist : PamelloEntity
 	{
-		private protected readonly PlaylistEntity Entity;
+		internal readonly PlaylistEntity Entity;
 
 		public override int Id {
 			get => Entity.Id;
@@ -27,8 +27,8 @@ namespace PamelloV6.API.Model
 				);
             }
 		}
-		public PamelloUser Owner {
-			get => _users.Get(Entity.Owner.Id) ?? throw new PamelloException("Attempted to get user that doesnt exist");
+		public PamelloUser? Owner {
+			get => _users.Get(Entity.Owner.Id);
 		}
 		public bool IsProtected {
 			get => Entity.IsProtected;
@@ -57,25 +57,24 @@ namespace PamelloV6.API.Model
 			Entity.Songs.Add(song.Entity);
             Save();
 
-            _events.SendToAll(
-                PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
-            );
+			song.SendPlaylistsUpdatedEvent();
+			SendSongsUpdatedEvent();
         }
 		public void AddSongs(IEnumerable<PamelloSong> songs) {
 			Entity.Songs.AddRange(songs.Select(song => song.Entity));
 			Save();
 
-            _events.SendToAll(
-                PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
-            );
+			foreach (var song in songs) {
+                song.SendPlaylistsUpdatedEvent();
+            }
+            SendSongsUpdatedEvent();
         }
         public void InsertSong(int position, PamelloSong song) {
             Entity.Songs.Insert(position, song.Entity);
             Save();
 
-            _events.SendToAll(
-                PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
-            );
+            song.SendPlaylistsUpdatedEvent();
+            SendSongsUpdatedEvent();
         }
         public void MoveSong(int fromPosition, int toPosition) {
 			if (toPosition > fromPosition) toPosition--;
@@ -86,25 +85,35 @@ namespace PamelloV6.API.Model
 
             Save();
 
-            _events.SendToAll(
-                PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
-            );
+            SendSongsUpdatedEvent();
         }
-        public void SwapSong(int fromPosition, int withPosition) {
-			var buffer = Entity.Songs[fromPosition];
-            Entity.Songs[fromPosition] = Entity.Songs[withPosition];
+        public void SwapSong(int inPosition, int withPosition) {
+			var buffer = Entity.Songs[inPosition];
+            Entity.Songs[inPosition] = Entity.Songs[withPosition];
 			Entity.Songs[withPosition] = buffer;
 			
             Save();
 
-            _events.SendToAll(
-                PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
-            );
+            SendSongsUpdatedEvent();
         }
-        public void RemoveSong(int position) {
-			Entity.Songs.RemoveAt(position);
-			Save();
+        public void RemoveSong(PamelloSong song) {
+            Entity.Songs.RemoveAll(s => s.Id == song.Id);
+            Save();
 
+            song.SendPlaylistsUpdatedEvent();
+            SendSongsUpdatedEvent();
+        }
+        public void RemoveSongAt(int songPosition) {
+            var song = Songs[songPosition];
+
+            Entity.Songs.RemoveAt(songPosition);
+            Save();
+
+            song.SendPlaylistsUpdatedEvent();
+            SendSongsUpdatedEvent();
+        }
+
+        public void SendSongsUpdatedEvent() {
             _events.SendToAll(
                 PamelloEvent.PlaylistSongsUpdated(Id, Songs.Select(song => song.Id))
             );
@@ -114,7 +123,7 @@ namespace PamelloV6.API.Model
 			return new PlaylistDTO() {
 				Id = Id,
 				Name = Name,
-				OwnerId = Owner.Id,
+				OwnerId = Owner?.Id ?? Entity.Owner.Id,
 				IsProtected = IsProtected,
 
 				SongIds = Entity.Songs.Select(song => song.Id).ToList(),

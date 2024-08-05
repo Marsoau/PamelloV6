@@ -75,7 +75,21 @@ namespace PamelloV6.API.Repositories
             return playlist;
 		}
 
-        public override void Delete(int id) => throw new NotImplementedException();
+        public override void Delete(int id) {
+            var playlist = GetRequired(id);
+            var playlistEntity = playlist.Entity;
+
+            var songs = playlist.Songs;
+
+            _list.Remove(playlist);
+            _database.Playlists.Remove(playlistEntity);
+
+            _database.SaveChanges();
+
+            songs.ForEach(song => song.SendPlaylistsUpdatedEvent());
+
+            _events.SendToAll(PamelloEvent.PlaylistDeleted(playlist.Id));
+        }
 
         public void LoadAll() {
 			foreach (var playlist in _databasePlaylists) {

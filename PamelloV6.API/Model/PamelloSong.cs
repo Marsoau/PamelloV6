@@ -118,11 +118,9 @@ namespace PamelloV6.API.Model
 		public PamelloEpisode CreateEpisode(string name, int start, bool skip = false) {
 			var episode = _episodes.Add(name, start, skip, this);
 
-            _events.SendToAll(
-				PamelloEvent.SongEpisodesUpdated(Id, Episodes.Select(episode => episode.Id))
-			);
+            SendEpisodesUpdatedEvent();
 
-			return episode;
+            return episode;
         }
 
         public void MoveEpisode(int fromPosition, int toPosition) {
@@ -133,10 +131,7 @@ namespace PamelloV6.API.Model
             Entity.Episodes.Insert(toPosition, episode);
 
             Save();
-
-            _events.SendToAll(
-                PamelloEvent.SongEpisodesUpdated(Id, Episodes.Select(episode => episode.Id))
-            );
+            SendEpisodesUpdatedEvent();
         }
         public void SwapEpisode(int fromPosition, int withPosition) {
             var buffer = Entity.Episodes[fromPosition];
@@ -144,9 +139,17 @@ namespace PamelloV6.API.Model
             Entity.Episodes[withPosition] = buffer;
 
             Save();
+			SendEpisodesUpdatedEvent();
+        }
 
+        public void SendEpisodesUpdatedEvent() {
             _events.SendToAll(
                 PamelloEvent.SongEpisodesUpdated(Id, Episodes.Select(episode => episode.Id))
+            );
+        }
+        public void SendPlaylistsUpdatedEvent() {
+            _events.SendToAll(
+                PamelloEvent.SongPlaylistsUpdated(Id, Playlists.Select(playlist => playlist.Id))
             );
         }
 

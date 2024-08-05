@@ -128,18 +128,44 @@ namespace PamelloV6.API.Model.Audio
 			SongAudios = new List<PamelloAudio>();
 		}
 
-		public PamelloSong? AddSong(PamelloSong song) {
+        public PamelloSong? AddSong(PamelloSong song) {
             return InsertSong(SongAudios.Count, song);
-		}
+        }
+        public void AddPlaylist(PamelloPlaylist playlist) {
+            InsertPlaylist(SongAudios.Count, playlist);
+        }
 
-		public PamelloSong? InsertSong(int position, PamelloSong song) {
+        public void InsertPlaylist(int position, PamelloPlaylist playlist) {
+			var insertPosition = NormalizeQueuePosition(position, true);
+
+            var queueWasEmpty = SongAudios.Count == 0;
+            var positionMustBeMoved = insertPosition <= Position;
+
+            var playlistSongs = playlist.Songs;
+            foreach (var song in playlistSongs) {
+				SongAudios.Insert(insertPosition++, new PamelloAudio(song));
+            }
+
+			if (queueWasEmpty) {
+				Current = SongAudios.FirstOrDefault();
+            }
+			else if (positionMustBeMoved) {
+				Position += playlistSongs.Count;
+            }
+
+            SendQueueUpdatedEvent();
+        }
+
+        public PamelloSong? InsertSong(int position, PamelloSong song) {
 			var songAudio = new PamelloAudio(song);
-			SongAudios.Insert(position, songAudio);
+
+            var insertPosition = NormalizeQueuePosition(position, true);
+            SongAudios.Insert(insertPosition, songAudio);
 
 			if (SongAudios.Count == 1) {
 				Current = SongAudios.FirstOrDefault();
 			}
-			else if (position <= Position) Position++;
+			else if (insertPosition <= Position) Position++;
 
 			SendQueueUpdatedEvent();
 
@@ -261,8 +287,8 @@ namespace PamelloV6.API.Model.Audio
 			return Current.Song;
 		}
 
-		private int NormalizeQueuePosition(int position) {
-			position %= SongAudios.Count;
+		private int NormalizeQueuePosition(int position, bool includeLastEmpty = false) {
+			position %= SongAudios.Count + (includeLastEmpty ? 1 : 0);
 			if (position < 0) position += SongAudios.Count;
 
 			return position;

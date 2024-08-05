@@ -12,10 +12,11 @@ namespace PamelloV6.API.Model.Audio
 
 		public AudioTime Position { get; private set; }
         public AudioTime Duration { get; private set; }
-		public PamelloEpisode? CurrentEpisode { get; private set; }
-		public PamelloEpisode? NextEpisode { get; private set; }
 
-		public bool IsInitialized {
+        public int? nextBreakPoint { get; private set; }
+        public int? nextJumpPoint { get; private set; }
+
+        public bool IsInitialized {
 			get => Song.IsDownloaded && _audioStream is not null;
 		}
 
@@ -42,23 +43,9 @@ namespace PamelloV6.API.Model.Audio
 			Position.TimeValue = _audioStream.Position;
 			Duration.TimeValue = _audioStream.Length;
 
-			var firstEpisode = Song.Episodes.FirstOrDefault();
-			if (firstEpisode is null) {
-				CurrentEpisode = null;
-				NextEpisode = null;
-			}
-			else if (firstEpisode.Start.TotalSeconds == 0) {
-				CurrentEpisode = firstEpisode;
-				NextEpisode = GetNextEpisode();
-			}
-			else {
-				CurrentEpisode = null;
-				NextEpisode = firstEpisode;
-			}
+            UpdatePlaybackPoints();
 
-			Console.WriteLine($"Starting from {CurrentEpisode?.ToString() ?? "Start"} and {NextEpisode?.ToString() ?? "End"}");
-
-			Console.WriteLine(Duration);
+			Console.WriteLine($"Duration: {Duration}");
 
             return true;
         }
@@ -67,43 +54,55 @@ namespace PamelloV6.API.Model.Audio
 			_audioStream?.Dispose();
 			_audioStream = null;
 
-			CurrentEpisode = null;
-			NextEpisode = null;
+            nextBreakPoint = null;
+            nextJumpPoint = null;
 
-			Position.TimeValue = 0;
+            Position.TimeValue = 0;
 			Duration.TimeValue = 0;
 		}
 
-		public PamelloEpisode? GetNextEpisode() {
-			if (CurrentEpisode is null) return null;
+        public void UpdatePlaybackPoints(bool excludeCurrent = false) {
+            int? closestBreakPoint = null;
+            int? closestJumpPoint = null;
 
-			PamelloEpisode? closestEpisode = null;
-			foreach (var episode in Song.Episodes) {
-				if ((episode.Start.TotalSeconds > CurrentEpisode.Start.TotalSeconds)
-					&& (
-						(closestEpisode is null)
-						||
-						(episode.Start.TotalSeconds < closestEpisode.Start.TotalSeconds)
-					)
+            foreach (var episode in Song.Episodes) {
+				if (
+					(excludeCurrent) ?
+					(episode.Start.TotalSeconds > Position.TotalSeconds) :
+					(episode.Start.TotalSeconds >= Position.TotalSeconds)
 				) {
-					closestEpisode = episode;
+					if (episode.Skip) {
+                        if (closestBreakPoint is null || episode.Start.TotalSeconds < closestBreakPoint) {
+                            closestBreakPoint = episode.Start.TotalSeconds;
+                        }
+                    }
+					else if (episode.Start.TotalSeconds > closestBreakPoint) {
+                        if (closestJumpPoint is null || episode.Start.TotalSeconds < closestJumpPoint) {
+                            closestJumpPoint = episode.Start.TotalSeconds;
+                        }
+                    }
 				}
 			}
 
-			return closestEpisode;
-		}
+            nextBreakPoint = closestBreakPoint;
+            nextJumpPoint = closestJumpPoint;
+
+            Console.WriteLine($"Updated playback points: [{nextBreakPoint}] | [{nextJumpPoint}]");
+        }
 
 		public byte[]? NextBytes() {
 			if (_audioStream is null) return null;
 
-			while (
-				(Position.TotalSeconds >= NextEpisode?.Start.TotalSeconds)
-				||
-				(CurrentEpisode?.Skip ?? false)
-			) {
-                Console.WriteLine($"Switching from {CurrentEpisode?.ToString() ?? "Start"} to {NextEpisode?.ToString() ?? "End"}");
-                SwitchToNextEpisode();
-			}
+			if (Position.TotalSeconds == nextBreakPoint) {
+                if (nextJumpPoint is null) {
+                    _audioStream.Position = _audioStream.Length - 1;
+                    Position.TimeValue = _audioStream.Position;
+
+                    return null;
+                }
+
+				RewindTo(new AudioTime(nextJumpPoint.Value));
+            }
 
 			int[] ints = [_audioStream.ReadByte(), _audioStream.ReadByte()];
 
@@ -114,24 +113,13 @@ namespace PamelloV6.API.Model.Audio
 
 			return null;
 		}
-		public void SwitchToNextEpisode() {
-			if (_audioStream is null) return;
-
-			CurrentEpisode = NextEpisode;
-			NextEpisode = GetNextEpisode();
-
-			if (CurrentEpisode is not null) _audioStream.Position = CurrentEpisode.Start.TimeValue;
-			else _audioStream.Position = _audioStream.Length - 1;
-
-			Position.TimeValue = _audioStream.Position;
-		}
 		public void RewindTo(AudioTime time) {
-			if (time.TimeValue > Duration.TimeValue) return;
+			if (_audioStream is null || time.TimeValue > _audioStream.Length - 1) return;
 
-			Position.TimeValue = time.TimeValue;
-			if (_audioStream is not null) {
-                _audioStream.Position = time.TimeValue;
-            }
+            _audioStream.Position = time.TimeValue;
+            Position.TimeValue = time.TimeValue;
+
+			UpdatePlaybackPoints(true);
         }
         public void RewindToEpisode(int episodePosition) {
 			var episode = Song.Episodes[episodePosition];
@@ -158,7 +146,7 @@ namespace PamelloV6.API.Model.Audio
 
 			var memoryStream = new MemoryStream();
 
-			ffmpegStream.CopyTo(memoryStream);
+			await ffmpegStream.CopyToAsync(memoryStream);
 			memoryStream.Position = 0;
 
 			return memoryStream;

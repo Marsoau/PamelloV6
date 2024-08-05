@@ -30,6 +30,8 @@ export class SearchComponent {
 
 	public q: string = "";
 
+	public pageSize: number = 25;
+
 	public constructor(api: PamelloV6API) {
 		this.api = api;
 
@@ -40,10 +42,24 @@ export class SearchComponent {
 		this.currentCategoryLabel = "Songs";
 		this.currentResults = this.songsResults;
 
+		this.SubscribeToEvents();
+
 		this.SearchSongs(0, "");
 		this.SearchPlaylists(0, "");
 
 		this.SwitchCategory("Songs");
+	}
+
+	public SubscribeToEvents() {
+		this.api.events.SongCreated = () => {
+			this.SearchSongs(this.songsResults.page, this.songsResults.query);
+		}
+		this.api.events.PlaylistCreated = () => {
+			this.SearchPlaylists(this.playlistResults.page, this.playlistResults.query);
+		}
+		this.api.events.PlaylistDeleted = () => {
+			this.SearchPlaylists(this.playlistResults.page, this.playlistResults.query);
+		}
 	}
 
 	public SwitchCategory(category: "Songs" | "Playlists" | "Youtube" | null = null) {
@@ -106,7 +122,7 @@ export class SearchComponent {
 	}
 
 	public async SearchSongs(page: number, q: string | null) {
-		let result = await this.api.data.SearchSongs(page, 30, q ?? "");
+		let result = await this.api.data.SearchSongs(page, this.pageSize, q ?? "");
 		if (result == null) {
 			this.songsResults = new SearchResultObject<IPamelloSong>();
 			return;
@@ -118,7 +134,7 @@ export class SearchComponent {
 		this.songsResults.query = result.query;
 	}
 	public async SearchPlaylists(page: number, q: string | null) {
-		let result = await this.api.data.SearchPlaylists(page, 30, q ?? "");
+		let result = await this.api.data.SearchPlaylists(page, this.pageSize, q ?? "");
 		if (result == null) {
 			this.playlistResults = new SearchResultObject<IPamelloPlaylist>();
 			return;
@@ -128,6 +144,10 @@ export class SearchComponent {
 		this.playlistResults.pagesCount = result.pagesCount;
 		this.playlistResults.results = result.results;
 		this.playlistResults.query = result.query;
+	}
+
+	public RemovePlaylist(playlist: IPamelloPlaylist) {
+		this.api.commands.PlaylistDelete(playlist.id);
 	}
 }
 

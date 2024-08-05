@@ -31,7 +31,7 @@
         <app-reorder-list>
             @for (song of songs; track $index) {
                 <app-reorder-item key="{{$index}}" [dropZoneHeight]="2">
-                    <app-mini-song [song]="song" [displayRemoveButton]="true" (selected)="InspectSong($event)"/>
+                    <app-mini-song [song]="song" [displayRemoveButton]="true" (selected)="InspectSong($event)" (removeClick)="RemovePlaylistSongAt($index)"/>
                 </app-reorder-item>
             }
         </app-reorder-list>
@@ -58,8 +58,8 @@
                 <div class="gray-separator"></div>
                 <app-reorder-list>
                     @for (playlist of playlists; track $index) {
-                        <app-reorder-item key="{{$index}}" [dropZoneHeight]="2">
-                            <app-mini-playlist [playlist]="playlist" [displayRemoveButton]="true" (selected)="this.InspectPlaylist($event)"/>
+                        <app-reorder-item key="{{$index}}" (moved)="MovePlaylistSong($event)" (swapped)="SwapPlaylistSong($event)" [dropZoneHeight]="2">
+                            <app-mini-playlist [playlist]="playlist" [displayRemoveButton]="true" (selected)="this.InspectPlaylist($event)" (removeClick)="SongRemovePlaylist($event)"/>
                         </app-reorder-item>
                     }
                 </app-reorder-list>

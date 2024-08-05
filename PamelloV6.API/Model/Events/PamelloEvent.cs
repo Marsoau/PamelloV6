@@ -152,6 +152,11 @@ namespace PamelloV6.API.Model.Events
                 Header = "PlaylistCreated",
                 Data = playlistId
             };
+        public static PamelloEvent PlaylistDeleted(int playlistId)
+            => new PamelloEvent() {
+                Header = "PlaylistDeleted",
+                Data = playlistId
+            };
         public static PamelloEvent PlaylistNameUpdated(int playlistId, string newName)
             => new PamelloEvent() {
                 Header = "PlaylistNameUpdated",
@@ -218,6 +223,14 @@ namespace PamelloV6.API.Model.Events
                 Data = new {
                     songId,
                     newEpisodesIds
+                }
+            };
+        public static PamelloEvent SongPlaylistsUpdated(int songId, IEnumerable<int> newPlaylistsIds)
+            => new PamelloEvent() {
+                Header = "SongPlaylistsUpdated",
+                Data = new {
+                    songId,
+                    newPlaylistsIds
                 }
             };
         public static PamelloEvent SongDownloadStarted(int songId)

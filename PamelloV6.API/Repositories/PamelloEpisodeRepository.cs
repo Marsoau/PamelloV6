@@ -47,7 +47,19 @@ namespace PamelloV6.API.Repositories
             return episode;
 		}
 
-		public override void Delete(int id) => throw new NotImplementedException();
+		public override void Delete(int id) {
+			var episode = GetRequired(id);
+            var episodeEntity = episode.Entity;
+
+			var song = episode.Song;
+
+			_list.Remove(episode);
+			_database.Episodes.Remove(episodeEntity);
+
+			_database.SaveChanges();
+
+			song.SendEpisodesUpdatedEvent();
+        }
 
 		public void LoadAll() {
 			foreach (var episode in _databaseEpisodes) {

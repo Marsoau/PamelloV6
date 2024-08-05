@@ -24,10 +24,11 @@ export class PamelloV6EventsAPI {
         this.eventSource = new EventSource(`${PamelloConfig.BaseUrl}/Events?as=${this._api.token}`);
         this.eventSource.addEventListener("error", (event) => {
             if (this.eventSource?.readyState == 2) return;
+            this.Disconnect();
 
             console.log(`Failed to connect to events`)
             
-            this.Disconnect();
+            if (this.eventSource?.readyState == 1) return;
             if (onfail) onfail();
         });
         this.eventSource.addEventListener("open", () => {
@@ -118,6 +119,12 @@ export class PamelloV6EventsAPI {
             if (!this._api.selectedPlayer) return;
             this._api.selectedPlayer.speakers = newSpeakers;
         }
+		this.SongEpisodesUpdated = (data: any) => {
+			if (!this._api.selectedPlayerSong || this._api.selectedPlayerSong.id != data.songId) return;
+			this._api.selectedPlayerSong.episodeIds = data.newEpisodesIds;
+
+			this._api.LoadSelectedPlayerSongEpisodes();
+		}
 
         console.log("Subscribe to default events end");
     }
@@ -191,6 +198,9 @@ export class PamelloV6EventsAPI {
     public set PlaylistCreated(handler: any) {
         this.AddEventListener("PlaylistCreated", handler);
     }
+    public set PlaylistDeleted(handler: any) {
+        this.AddEventListener("PlaylistDeleted", handler);
+    }
     public set PlaylistNameUpdated(handler: any) {
         this.AddEventListener("PlaylistNameUpdated", handler);
     }
@@ -217,6 +227,9 @@ export class PamelloV6EventsAPI {
     }
     public set SongEpisodesUpdated(handler: any) {
         this.AddEventListener("SongEpisodesUpdated", handler);
+    }
+    public set SongPlaylistsUpdated(handler: any) {
+        this.AddEventListener("SongPlaylistsUpdated", handler);
     }
     public set SongDownloadStarted(handler: any) {
         this.AddEventListener("SongDownloadStarted", handler);

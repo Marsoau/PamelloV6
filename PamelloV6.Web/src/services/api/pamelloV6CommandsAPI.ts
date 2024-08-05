@@ -104,6 +104,9 @@ export class PamelloV6CommandsAPI {
 	public async PlaylistChangeProtection(playlistId: number, protection: boolean) {
 		return await this._api.http.InvokeCommand(`PlaylistChangeProtection&playlistId=${playlistId}&protection=${protection}`);
 	}
+	public async PlaylistDelete(playlistId: number) {
+		return await this._api.http.InvokeCommand(`PlaylistDelete&playlistId=${playlistId}`);
+	}
 	public async PlaylistAddSong(playlistId: number, songId: number) {
 		return await this._api.http.InvokeCommand(`PlaylistAddSong&playlistId=${playlistId}&songId=${songId}`);
 	}
@@ -113,11 +116,14 @@ export class PamelloV6CommandsAPI {
 	public async PlaylistMoveSong(playlistId: number, fromPosition: number, toPosition: number) {
 		return await this._api.http.InvokeCommand(`PlaylistMoveSong&playlistId=${playlistId}&fromPosition=${fromPosition}&toPosition=${toPosition}`);
 	}
-	public async PlaylistSwapSong(playlistId: number, fromPosition: number, withPosition: number) {
-		return await this._api.http.InvokeCommand(`PlaylistSwapSong&playlistId=${playlistId}&fromPosition=${fromPosition}&withPosition=${withPosition}`);
+	public async PlaylistSwapSong(playlistId: number, inPosition: number, withPosition: number) {
+		return await this._api.http.InvokeCommand(`PlaylistSwapSong&playlistId=${playlistId}&fromPosition=${inPosition}&withPosition=${withPosition}`);
 	}
-	public async PlaylistRemoveSong(playlistId: number, position: number) {
-		return await this._api.http.InvokeCommand(`PlaylistRemoveSong&playlistId=${playlistId}&position=${position}`);
+	public async PlaylistRemoveSong(playlistId: number, songId: number) {
+		return await this._api.http.InvokeCommand(`PlaylistRemoveSong&playlistId=${playlistId}&songId=${songId}`);
+	}
+	public async PlaylistRemoveSongAt(playlistId: number, songPosition: number) {
+		return await this._api.http.InvokeCommand(`PlaylistRemoveSongAt&playlistId=${playlistId}&songPosition=${songPosition}`);
 	}
 	public async EpisodeAdd(songId: number, episodeName: string, startSeconds: number, skip: boolean) {
 		return await this._api.http.InvokeCommand(`EpisodeAdd&songId=${songId}&episodeName=${episodeName}&startSeconds=${startSeconds}&skip=${skip}`) as number;
@@ -130,5 +136,8 @@ export class PamelloV6CommandsAPI {
 	}
 	public async EpisodeChangeSkipState(episodeId: number, newState: boolean) {
 		return await this._api.http.InvokeCommand(`EpisodeChangeSkipState&episodeId=${episodeId}&newState=${newState}`);
+	}
+	public async EpisodeDelete(episodeId: number) {
+		return await this._api.http.InvokeCommand(`EpisodeDelete&episodeId=${episodeId}`);
 	}
 }

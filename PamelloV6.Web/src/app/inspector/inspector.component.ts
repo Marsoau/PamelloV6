@@ -5,7 +5,7 @@ import { PageComponent } from "../page/page.component";
 import { MultipageComponent } from "../multipage/multipage.component";
 import { MiniEpisodeComponent } from "../mini-episode/mini-episode.component";
 import { ReorderListComponent } from "../reorder-list/reorder-list.component";
-import { ReorderItemComponent } from "../reorder-item/reorder-item.component";
+import { ReorderEvent, ReorderItemComponent } from "../reorder-item/reorder-item.component";
 import { FormsModule } from '@angular/forms';
 import { IPamelloSong, PamelloSong } from '../../services/api/model/PamelloSong';
 import { IPamelloEpisode, PamelloEpisode } from '../../services/api/model/PamelloEpisode';
@@ -47,7 +47,42 @@ export class InspectorComponent {
 		this.newEpisodeNameInput = "";
 		this.newPlaylistNameInput = "";
 
-		this.InspectSongId(2);
+		this.SubscribeToEvents();
+		this.InspectSongId(1);
+	}
+
+	public SubscribeToEvents() {
+		this.api.events.PlaylistDeleted = (playlistId: number) => {
+			if (this.inspectedPlaylist?.id == playlistId) {
+				this.InspectPlaylist(null);
+			}
+		}
+
+		this.api.events.SongPlaylistsUpdated = (data: any) => {
+			if (!this.inspectedSong || this.inspectedSong.id != data.songId) return;
+			this.inspectedSong.playlistIds = data.newPlaylistsIds;
+
+			console.log(data);
+
+			this.LoadPlaylists();
+		}
+		this.api.events.SongEpisodesUpdated = (data: any) => {
+			if (!this.inspectedSong || this.inspectedSong.id != data.songId) return;
+			this.inspectedSong.episodeIds = data.newEpisodesIds;
+
+			console.log(data);
+
+			this.LoadEpisodes();
+		}
+
+		this.api.events.PlaylistSongsUpdated = (data: any) => {
+			if (!this.inspectedPlaylist || this.inspectedPlaylist.id != data.playlistId) return;
+			this.inspectedPlaylist.songIds = data.newPlaylistSongsIds;
+
+			console.log(data);
+
+			this.LoadSongs();
+		}
 	}
 
 	public async InspectSongId(songId: number) {
@@ -122,11 +157,45 @@ export class InspectorComponent {
 		if (!this.inspectedSong) return;
 
 		this.api.commands.EpisodeAdd(this.inspectedSong.id, this.newEpisodeNameInput, 0, false);
+
+		this.newEpisodeNameInput = "";
 	}
 	public async AddPlaylistToSong() {
 		if (!this.inspectedSong) return;
 
 		let newPlaylistId = await this.api.commands.PlaylistAdd(this.newPlaylistNameInput, false);
 		this.api.commands.PlaylistAddSong(newPlaylistId, this.inspectedSong.id);
+
+		this.newPlaylistNameInput = "";
+	}
+
+	public MovePlaylistSong(event: ReorderEvent) {
+		console.log("mmmmaaaaaavee");
+		if (!this.inspectedPlaylist) return;
+
+		let fromPosition = parseInt(event.firstKey);
+		let toPosition = parseInt(event.secondKey);
+
+		this.api.commands.PlaylistMoveSong(this.inspectedPlaylist.id, fromPosition, toPosition);
+	}
+	public SwapPlaylistSong(event: ReorderEvent) {
+		console.log("swaaaaaa");
+		if (!this.inspectedPlaylist) return;
+
+		let inPosition = parseInt(event.firstKey);
+		let withPosition = parseInt(event.secondKey);
+
+		this.api.commands.PlaylistSwapSong(this.inspectedPlaylist.id, inPosition, withPosition);
+	}
+
+	public SongRemovePlaylist(playlist: IPamelloPlaylist) {
+		if (!this.inspectedSong) return;
+
+		this.api.commands.PlaylistRemoveSong(playlist.id, this.inspectedSong.id);
+	}
+	public RemovePlaylistSongAt(songPosition: number) {
+		if (!this.inspectedPlaylist) return;
+
+		this.api.commands.PlaylistRemoveSongAt(this.inspectedPlaylist.id, songPosition);
 	}
 }

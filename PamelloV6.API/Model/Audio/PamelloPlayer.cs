@@ -84,7 +84,11 @@ namespace PamelloV6.API.Model.Audio
                 if (!Queue.Current.IsInitialized) {
                     State = PamelloPlayerState.AwainingSongAudio;
                     Console.WriteLine($"Started initialization of {Queue.Current.Song.Name}");
-                    await Queue.Current.TryInitialize();
+                    if (!await Queue.Current.TryInitialize()) {
+                        Console.WriteLine($"Failed to initialize {Queue.Current.Song.Name}");
+                        Queue.RemoveSong(Queue.Position);
+                        continue;
+                    }
                     Console.WriteLine($"Initialzed {Queue.Current.Song.Name}");
                 }
 
@@ -99,7 +103,8 @@ namespace PamelloV6.API.Model.Audio
                     else Queue.GoToNextSong();
                 }
                 catch (Exception x) {
-                    Console.WriteLine("Catch");
+                    Console.WriteLine("PlayBytes Catch");
+                    Queue.GoToNextSong();
                 }
             }
         }

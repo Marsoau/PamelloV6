@@ -19,7 +19,7 @@
     }
 </div>
 <div class="episode-checkbox-container">
-    <button class="default-button mini-button edit-time-button">Remove</button>
+    <button class="default-button mini-button edit-time-button" (click)="Remove()">Remove</button>
     <div class="episode-checkbox" [ngClass]="{
         'episode-checkbox-active': !episode?.skip
     }" (click)="SwitchSkip()"></div>

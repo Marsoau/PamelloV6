@@ -183,12 +183,8 @@ namespace PamelloV6.API.Modules
         public void PlayerQueueAddPlaylist(int playlistId) {
 			RequireUser();
 
-			var playlist = _playlists.GetRequired(playlistId);
-            var songs = playlist.Songs;
-
-            foreach (var song in songs) {
-                selectedPlayer.Queue.AddSong(song);
-            }
+            var playlist = _playlists.GetRequired(playlistId);
+            selectedPlayer.Queue.AddPlaylist(playlist);
         }
         [PamelloCommand]
         public void PlayerQueueInsertSong(int queuePosition, int songId) {
@@ -258,7 +254,6 @@ namespace PamelloV6.API.Modules
 
             song.SwapEpisode(fromPosition, withPosition);
         }
-        public void SongDelete(int songId) => throw new NotImplementedException();
 
         [PamelloCommand]
         public int PlaylistAdd(string playlistName, bool isProtected) {
@@ -279,8 +274,13 @@ namespace PamelloV6.API.Modules
 
 			var playlist = _playlists.GetRequired(playlistId);
 			playlist.IsProtected = protection;
-		}
-		public void PlaylistDelete(int playlistId) => throw new NotImplementedException();
+        }
+        [PamelloCommand]
+        public void PlaylistDelete(int playlistId) {
+            RequireUser();
+
+            _playlists.Delete(playlistId);
+        }
 
         [PamelloCommand]
         public void PlaylistAddSong(int playlistId, int songId) {
@@ -309,21 +309,30 @@ namespace PamelloV6.API.Modules
             playlist.MoveSong(fromPosition, toPosition);
         }
         [PamelloCommand]
-        public void PlaylistSwapSong(int playlistId, int fromPosition, int withPosition) {
+        public void PlaylistSwapSong(int playlistId, int inPosition, int withPosition) {
             RequireUser();
 
             var playlist = _playlists.GetRequired(playlistId);
 
-            playlist.SwapSong(fromPosition, withPosition);
+            playlist.SwapSong(inPosition, withPosition);
         }
         [PamelloCommand]
-        public void PlaylistRemoveSong(int playlistId, int position) {
-			RequireUser();
+        public void PlaylistRemoveSong(int playlistId, int songId) {
+            RequireUser();
 
-			var playlist = _playlists.GetRequired(playlistId);
+            var playlist = _playlists.GetRequired(playlistId);
+            var song = _songs.GetRequired(songId);
 
-			playlist.RemoveSong(position);
-		}
+            playlist.RemoveSong(song);
+        }
+        [PamelloCommand]
+        public void PlaylistRemoveSongAt(int playlistId, int songPosition) {
+            RequireUser();
+
+            var playlist = _playlists.GetRequired(playlistId);
+
+            playlist.RemoveSongAt(songPosition);
+        }
 
         [PamelloCommand]
         public int EpisodeAdd(int songId, string episodeName, int startSeconds, bool skip) {
@@ -357,7 +366,12 @@ namespace PamelloV6.API.Modules
 
             episode.Skip = newState;
         }
-        public void EpisodeDelete(int episodeId) => throw new NotImplementedException();
+        [PamelloCommand]
+        public void EpisodeDelete(int episodeId) {
+            RequireUser();
+
+            _episodes.Delete(episodeId);
+        }
 
 		private void RequireUser(bool mustBeAdmin = false) {
 			bool isAdministractor = User.IsAdministrator;
