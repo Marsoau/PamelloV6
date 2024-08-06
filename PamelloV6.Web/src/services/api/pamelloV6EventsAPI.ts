@@ -97,6 +97,8 @@ export class PamelloV6EventsAPI {
         this.PlayerQueueListUpdated = (newSongIds: number[]) => {
             if (!this._api.selectedPlayer) return;
             this._api.selectedPlayer.queueSongIds = newSongIds;
+            console.log("new queue");
+            console.log(newSongIds);
 
             this._api.LoadSelectedPlayerQueueSongs();
         }

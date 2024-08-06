@@ -22,7 +22,7 @@ export class MiniPlaylistComponent {
 		if (!this.playlist) return;
 		this.selected.emit(this.playlist);
 	}
-	public Add() {
+	public AddToQueue() {
 		if (!this.playlist) return;
 		this.api.commands.PlayerQueueAddPlaylist(this.playlist.id);
 	}

@@ -199,11 +199,12 @@ namespace PamelloV6.API.Model.Audio
 
 			song = SongAudios[songPosition].Song;
 			
-            SongAudios.RemoveAt(songPosition);
-			if (Position == songPosition) GoToNextSong();
-			else if (songPosition < Position) Position--;
-
-            SendQueueUpdatedEvent();
+			if (Position == songPosition) GoToNextSong(true);
+			else {
+                SongAudios.RemoveAt(songPosition);
+                if (songPosition < Position) Position--;
+                SendQueueUpdatedEvent();
+            }
 
             return song;
 		}
@@ -258,7 +259,7 @@ namespace PamelloV6.API.Model.Audio
 
 			return Current.Song;
 		}
-		public PamelloSong? GoToNextSong() {
+		public PamelloSong? GoToNextSong(bool forceRemoveCurrentSong = false) {
 			if (SongAudios.Count == 0) return null;
 
             int nextPosition;
@@ -273,7 +274,7 @@ namespace PamelloV6.API.Model.Audio
 			else if (IsReversed) nextPosition = Position - 1;
 			else nextPosition = Position + 1;
 
-			if (IsNoLeftovers && Current is not null) {
+			if (forceRemoveCurrentSong || IsNoLeftovers && Current is not null) {
                 SongAudios.RemoveAt(Position);
 				if (nextPosition > Position) nextPosition--;
 

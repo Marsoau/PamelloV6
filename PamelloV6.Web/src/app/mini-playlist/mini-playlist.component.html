@@ -3,7 +3,7 @@
 </div>
 <div class="playlist-buttons-container">
     @if (api.user?.selectedPlayerId != null) {
-        <button class="default-button mini-button" (click)="Add()">Add</button>
+        <button class="default-button mini-button" (click)="AddToQueue()">Add To Queue</button>
     }
     @if (displayRemoveButton) {
         <button class="default-button mini-button" (click)="Remove()">Remove</button>

@@ -12,15 +12,21 @@ import { PamelloV6API } from '../../services/api/pamelloV6API.service';
 export class MiniSongComponent {
 	@Output() public selected: EventEmitter<IPamelloSong> = new EventEmitter<IPamelloSong>();
 	@Output() public removeClick: EventEmitter<IPamelloSong> = new EventEmitter<IPamelloSong>();
+	@Output() public addToPlaylistClick: EventEmitter<IPamelloSong> = new EventEmitter<IPamelloSong>();
 
 	@Input() public song: IPamelloSong | null = null;
+	@Input() public displayAddToPlaylistButton: boolean = false;
 	@Input() public displayRemoveButton: boolean = false;
 
 	constructor(public readonly api: PamelloV6API) {}
 
-	public Add() {
+	public AddToQueue() {
 		if (!this.song) return;
-		this.api.commands.PlayerQueueAddSong(this.song?.id);
+		this.api.commands.PlayerQueueAddSong(this.song.id);
+	}
+	public AddToPlaylist() {
+		if (!this.song) return;
+		this.addToPlaylistClick.emit(this.song);
 	}
 	public Remove() {
 		if (!this.song) return;

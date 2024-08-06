@@ -77,7 +77,7 @@ export class InspectorComponent {
 
 		this.api.events.PlaylistSongsUpdated = (data: any) => {
 			if (!this.inspectedPlaylist || this.inspectedPlaylist.id != data.playlistId) return;
-			this.inspectedPlaylist.songIds = data.newPlaylistSongsIds;
+			this.inspectedPlaylist.songIds = data.newSongsIds;
 
 			console.log(data);
 
@@ -167,6 +167,12 @@ export class InspectorComponent {
 		this.api.commands.PlaylistAddSong(newPlaylistId, this.inspectedSong.id);
 
 		this.newPlaylistNameInput = "";
+	}
+	public AddSongToPlaylist(song: IPamelloSong) {
+		debugger;
+		if (!this.inspectedPlaylist || this.displayStyle != "Playlist") return;
+
+		this.api.commands.PlaylistAddSong(this.inspectedPlaylist.id, song.id);
 	}
 
 	public MovePlaylistSong(event: ReorderEvent) {

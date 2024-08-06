@@ -1,7 +1,7 @@
 <div class="search-results-list-container">
     @for (result of currentResults.results; track $index) {
         @if (currentCategoryLabel == "Songs") {
-            <app-mini-song [song]="result" (selected)="selectedSongChanged.emit($event)"/>
+            <app-mini-song [song]="result" [displayAddToPlaylistButton]="displayAddToPlaylistButton" (selected)="selectedSongChanged.emit($event)" (addToPlaylistClick)="addSongToPlaylistClick.emit($event)"/>
         }
         @if (currentCategoryLabel == "Playlists") {
             <app-mini-playlist [playlist]="result" (selected)="selectedPlaylistChanged.emit($event)" [displayRemoveButton]="true" (removeClick)="RemovePlaylist($event)"/>

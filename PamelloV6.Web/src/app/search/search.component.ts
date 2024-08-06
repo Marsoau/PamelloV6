@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MiniSongComponent } from "../mini-song/mini-song.component";
 import { CommonModule } from '@angular/common';
 import { MiniPlaylistComponent } from "../mini-playlist/mini-playlist.component";
@@ -19,6 +19,9 @@ export class SearchComponent {
 
 	@Output() public selectedSongChanged: EventEmitter<IPamelloSong> = new EventEmitter<IPamelloSong>();
 	@Output() public selectedPlaylistChanged: EventEmitter<IPamelloPlaylist> = new EventEmitter<IPamelloPlaylist>();
+	@Output() public addSongToPlaylistClick: EventEmitter<IPamelloSong> = new EventEmitter<IPamelloSong>();
+
+	@Input() public displayAddToPlaylistButton: boolean = false;
 
 	public currentCategoryLabel: "Songs" | "Playlists" | "Youtube";
 
@@ -47,7 +50,7 @@ export class SearchComponent {
 		this.SearchSongs(0, "");
 		this.SearchPlaylists(0, "");
 
-		this.SwitchCategory("Songs");
+		this.SwitchCategory("Playlists");
 	}
 
 	public SubscribeToEvents() {
