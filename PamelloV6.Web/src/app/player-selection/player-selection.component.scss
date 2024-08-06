@@ -8,10 +8,73 @@
     grid-template-columns: auto 1fr auto;
 }
 
-.player-select, #player-creation-name-input {
-    background-color: #F0F0F0;
+.select-player-container {
+    position: relative;
 
-    .option-none {
-        background-color: #E0E0E0;
+    .selected-player {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        height: 100%;
+    
+        background-color: #F0F0F0;
+        color: #484848;
+    
+        font-size: 16px;
+        font-weight: 500;
+    
+        padding-left: 4px;
+
+        cursor: default;
+
+        &:hover {
+            background-color: #F8F8F8;
+        }
+    }
+    .available-players {
+        position:absolute;
+        background-color: #FFFFFF;
+
+        width: 100%;
+
+        cursor: default;
+
+        .no-players-text {
+            font-size: 16px;
+            font-weight: 500;
+
+            color: #484848;
+            background-color: #D0D0D0;
+
+            padding: 3px;
+
+            text-align: center;
+        }
+
+        .player-option {
+            font-size: 16px;
+            font-weight: 500;
+
+            margin: 4px;
+            padding: 2px 4px;
+
+            color: #484848;
+            background-color: #F0F0F0;
+
+            &:hover {
+                background-color: #F8F8F8;
+            }
+
+            &.player-selected {
+                color: #E0E0E0;
+                background-color: #646464;
+            
+                &:hover {
+                    color: #EAEAEA;
+                    background-color: #727272;
+                }
+            }
+        }
     }
 }

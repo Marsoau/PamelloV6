@@ -1,13 +1,31 @@
 <div class="player-selection-wrapper">
     @if (selectionMode) {
         <div class="player-selection-container">
-            <button class="default-button" (click)="PlayerCreateClick()">Delete</button>
+            <button class="default-button" [disabled]="api.selectedPlayer == null" (click)="PlayerDelete(api.selectedPlayer?.id ?? null)">Delete</button>
+            <div class="select-player-container">
+                <div class="selected-player" (click)="displaySelect = !displaySelect">{{api.selectedPlayer?.name ?? 'None'}}</div>
+                <div class="available-players" [ngStyle]="{
+                    'display': displaySelect ? 'block' : 'none'
+                }">
+                    @if (availablePlayers.length == 0) {
+                        <div class="no-players-text">No players are created yet</div>
+                    }
+                    @for (player of availablePlayers; track $index) {
+                        <div class="player-option" [ngClass]="{
+                            'player-selected': player.id == api.selectedPlayer?.id
+                        }" (click)="SelectPlayer(player.id)">{{player.name}}</div>
+                    }
+                </div>
+            </div>
+            
+            <!--
             <select class="default-select player-select" (change)="SelectionChanged()" [(ngModel)]="selectValue" [value]="GetSelectValue()">
                 <option class="default-option option-none" value="none">None</option>
                 @for (player of availablePlayers; track availablePlayers) {
                     <option class="default-option" [value]="player.id">{{player.name}}</option>
                 }
             </select>
+            -->
             <button class="default-button" (click)="selectionMode = false">Create</button>
         </div>
     }
@@ -15,7 +33,7 @@
         <div class="player-creation-container">
             <button class="default-button" (click)="selectionMode = true">Cancel</button>
             <input class="default-input" id="player-creation-name-input" placeholder="Player name" [(ngModel)]="inputValue"/>
-            <button class="default-button" (click)="PlayerCreateClick()">Create</button>
+            <button class="default-button" (click)="PlayerCreate()">Create</button>
         </div>
     }
 </div>
