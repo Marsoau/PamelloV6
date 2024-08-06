@@ -137,7 +137,6 @@ namespace PamelloV6.API.Model.Audio
             var speaker = _speakers[speakerPosition];
 
             await speaker.Disconnect();
-            _speakers.Remove(speaker);
         }
 
         private void SendSpeakersUpdatedEvent() => _events.SendToAllWithSelectedPlayer(_parentPlayer.Id,
