@@ -36,14 +36,14 @@ namespace PamelloV6.API.Model.Audio
         public PamelloSpeaker(PamelloPlayer parentPlayer, DiscordSocketClient discordClient, ulong guildId) {
             _parentPlayer = parentPlayer;
             DiscordClient = discordClient;
-            Guild = discordClient.GetGuild(guildId) ??
+            Guild = DiscordClient.GetGuild(guildId) ??
                 throw new PamelloException($"Attempted to create speaker in guild without specified discord client");
 
             DiscordClient.UserVoiceStateUpdated += UserVoiceStateUpdated;
         }
 
         private async Task UserVoiceStateUpdated(SocketUser user, SocketVoiceState fromVC, SocketVoiceState toVC) {
-            if (user.Id == DiscordClient.CurrentUser.Id) {
+            if (user.Id == DiscordClient.CurrentUser.Id && (fromVC.VoiceChannel ?? toVC.VoiceChannel)?.Guild.Id == Guild.Id) {
                 Console.WriteLine($"Player \"{_parentPlayer.Name}\" speaker in {Guild.Name} guild: {fromVC} -> {toVC}");
 
                 VoiceChannel = toVC.VoiceChannel;
@@ -81,6 +81,7 @@ namespace PamelloV6.API.Model.Audio
             if (VoiceChannel is null) return;
 
             await VoiceChannel.DisconnectAsync();
+            Disconnected?.Invoke(this);
         }
 
         public void PlayBytes(byte[] audioBytes) {

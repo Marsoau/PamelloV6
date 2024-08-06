@@ -80,7 +80,7 @@ namespace PamelloV6.API.Modules
         public async Task PlayerConnect() {
             RequireUser();
 
-            await selectedPlayer.Speakers.ConnectToUser(User.DiscordUser.Id);
+            await selectedPlayer.Speakers.ConnectSpeakerToUserVc(User);
         }
         [PamelloCommand]
         public async Task PlayerDisconnect(int speakerPosition) {

@@ -2,6 +2,7 @@
 using PamelloV6.API.Exceptions;
 using PamelloV6.API.Model.Events;
 using PamelloV6.API.Services;
+using PamelloV6.Server.Model;
 using PamelloV6.Server.Services;
 
 namespace PamelloV6.API.Model.Audio
@@ -29,6 +30,7 @@ namespace PamelloV6.API.Model.Audio
 			_speakers = new List<PamelloSpeaker>();
 		}
 
+        /*
 		public async Task ConnectToUser(ulong userId) {
 			var user = _clients.MainDiscordClient.GetUser(userId);
 			var guilds = user.MutualGuilds;
@@ -63,7 +65,6 @@ namespace PamelloV6.API.Model.Audio
 
 			var newSpreaker = new PamelloSpeaker(_parentPlayer, freeClient, guildId);
 			_speakers.Add(newSpreaker);
-            SendSpeakersUpdatedEvent();
 
             newSpreaker.Connected += async (speaker) => {
                 SendSpeakersUpdatedEvent();
@@ -77,33 +78,80 @@ namespace PamelloV6.API.Model.Audio
 			await newSpreaker.Connect(vcId);
         }
 
+		*/
+
+        public async Task ConnectSpeakerToUserVc(PamelloUser user) {
+            var mutualGuilds = _clients.MainDiscordClient.GetUser(user.DiscordUser.Id).MutualGuilds ?? [];
+
+            SocketGuildUser guildUser;
+            foreach (var guild in mutualGuilds) {
+                guildUser = guild.GetUser(user.DiscordUser.Id);
+                if (guildUser.VoiceChannel is not null) {
+                    await ConnectSpeakerToVc(guild.Id, guildUser.VoiceChannel.Id);
+                    return;
+                }
+            }
+
+            throw new PamelloException("User is not connected to the voice channel");
+        }
+        public async Task ConnectSpeakerToVc(ulong guildId, ulong vcId) {
+            var freeClient = GetFreeDiscordClient(guildId);
+
+			await ConnectSpeakerClientToVc(freeClient, guildId, vcId);
+        }
+
+        public async Task ConnectSpeakerClientToVc(DiscordSocketClient speakerClient, ulong guildId, ulong vcId) {
+            foreach (var speaker in _speakers) {
+                if (speaker.DiscordClientUserId == speakerClient.CurrentUser.Id && speaker.Guild.Id == guildId) {
+                    if (speaker.VoiceChannel is not null) throw new PamelloException($"Unexpected speaker discord client error");
+
+                    await speaker.Connect(vcId);
+                    return;
+                }
+
+                if (speaker.VoiceChannel?.Id == vcId) {
+                    throw new PamelloException($"Player \"{_parentPlayer.Name}\" already connected to this voice channel");
+                }
+            }
+
+            var newSpreaker = new PamelloSpeaker(_parentPlayer, speakerClient, guildId);
+            _speakers.Add(newSpreaker);
+
+            newSpreaker.Connected += async (speaker) => {
+                SendSpeakersUpdatedEvent();
+            };
+            newSpreaker.Disconnected += async (speaker) => {
+                _speakers.Remove(speaker);
+
+                SendSpeakersUpdatedEvent();
+            };
+
+            await newSpreaker.Connect(vcId);
+        }
+
         public async Task Disconnect(int speakerPosition) {
-			if (speakerPosition < 0 || speakerPosition >= _speakers.Count) {
-				throw new PamelloException("Invalid speaker position");
-			}
+            if (speakerPosition < 0 || speakerPosition >= _speakers.Count) {
+                throw new PamelloException("Invalid speaker position");
+            }
 
-			var speaker = _speakers[speakerPosition];
+            var speaker = _speakers[speakerPosition];
 
-			await speaker.Disconnect();
-			_speakers.Remove(speaker);
-
-			SendSpeakersUpdatedEvent();
+            await speaker.Disconnect();
+            _speakers.Remove(speaker);
         }
 
         private void SendSpeakersUpdatedEvent() => _events.SendToAllWithSelectedPlayer(_parentPlayer.Id,
             PamelloEvent.PlayerSpeakersUpdated(Speakers.Select(speaker => speaker.GetDTO()))
         );
 
-        private DiscordSocketClient GetNonBusyDiscordClient(ulong guildId) {
+        private DiscordSocketClient GetFreeDiscordClient(ulong guildId) {
 			SocketGuild? guild;
-			SocketVoiceChannel? vc;
 
 			foreach (var discordClient in _clients.DiscordClients) {
 				guild = discordClient.GetGuild(guildId);
 				if (guild is null) continue;
 
-				vc = guild.GetUser(discordClient.CurrentUser.Id)?.VoiceChannel;
-				if (vc is null) return discordClient;
+				if (guild.AudioClient is null) return discordClient;
 			}
 
 			throw new PamelloException($"No free speakers found in guild {guildId}");
