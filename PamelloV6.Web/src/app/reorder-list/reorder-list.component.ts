@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 
 @Component({
 	selector: 'app-reorder-list',
@@ -10,7 +10,22 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class ReorderListComponent {
 	@Output() public added = new EventEmitter<string>();
-	public displayAdd: boolean = false;
+
+	public additionMode: boolean = false;
+
+	AdditionAreaDragEnter(event: DragEvent) {
+		this.additionMode = true;
+
+		event.preventDefault();
+	}
+	AdditionAreaDragLeave(event: DragEvent) {
+		this.additionMode = false;
+		console.log("dragleave list");
+	}
+	AdditionAreaDragDrop(event: DragEvent) {
+		this.additionMode = false;
+		console.log("dragdrop list");
+	}
 
 	DragOverAdd(event: DragEvent) {
 		event.preventDefault();

@@ -1,6 +1,6 @@
 :host {
     display: grid;
-    grid-template-rows: auto 2px 1fr;
+    grid-template-rows: auto 2px minmax(0, 1fr);
 }
 
 .inspector-header-container {
@@ -59,32 +59,34 @@
 
 .inspector-list-container {
     display: grid;
-
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr);
-
-    .inspector-list-page-container {
-        display: grid;
-        grid-template-rows: auto 2px 1fr;
-
-        .inspector-list-addition {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            grid-gap: 2px;
-
-            margin: 2px;
-            padding: 2px;
-
-            background-color: #F0F0F0;
-        }
-
-        .inspector-list {
-            overflow-y: scroll;
-            overflow-x: hidden;
     
-            app-mini-episode {
-                margin: 2px;
-            }
-        }
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    grid-template-rows: auto minmax(0, 1fr);
+}
+
+.inspector-list-page-container {
+    display: grid;
+    grid-template-rows: auto 2px 1fr;
+
+    .inspector-list-addition {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-gap: 2px;
+
+        margin: 2px;
+        padding: 2px;
+
+        background-color: #F0F0F0;
+    }
+}
+
+.inspector-list {
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    &-item {
+        margin: 2px;
     }
 }

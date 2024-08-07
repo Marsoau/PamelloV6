@@ -60,20 +60,23 @@ namespace PamelloV6.API.Model
 			song.SendPlaylistsUpdatedEvent();
 			SendSongsUpdatedEvent();
         }
-		public void AddSongs(IEnumerable<PamelloSong> songs) {
-			Entity.Songs.AddRange(songs.Select(song => song.Entity));
-			Save();
-
-			foreach (var song in songs) {
-                song.SendPlaylistsUpdatedEvent();
-            }
-            SendSongsUpdatedEvent();
-        }
         public void InsertSong(int position, PamelloSong song) {
             Entity.Songs.Insert(position, song.Entity);
             Save();
 
             song.SendPlaylistsUpdatedEvent();
+            SendSongsUpdatedEvent();
+        }
+        public void AddSongs(IEnumerable<PamelloSong> songs) {
+			InsertSongs(Songs.Count, songs);
+        }
+        public void InsertSongs(int position, IEnumerable<PamelloSong> songs) {
+            Entity.Songs.InsertRange(position, songs.Select(song => song.Entity));
+            Save();
+
+            foreach (var song in songs) {
+                song.SendPlaylistsUpdatedEvent();
+            }
             SendSongsUpdatedEvent();
         }
         public void MoveSong(int fromPosition, int toPosition) {

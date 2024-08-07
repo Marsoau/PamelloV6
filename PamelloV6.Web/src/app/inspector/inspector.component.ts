@@ -48,7 +48,7 @@ export class InspectorComponent {
 		this.newPlaylistNameInput = "";
 
 		this.SubscribeToEvents();
-		this.InspectSongId(1);
+		this.InspectPlaylistId(21);
 	}
 
 	public SubscribeToEvents() {
@@ -169,29 +169,26 @@ export class InspectorComponent {
 		this.newPlaylistNameInput = "";
 	}
 	public AddSongToPlaylist(song: IPamelloSong) {
-		debugger;
 		if (!this.inspectedPlaylist || this.displayStyle != "Playlist") return;
 
 		this.api.commands.PlaylistAddSong(this.inspectedPlaylist.id, song.id);
 	}
 
-	public MovePlaylistSong(event: ReorderEvent) {
-		console.log("mmmmaaaaaavee");
+	public PlaylistSongsReorder(event: ReorderEvent) {
+		console.log(event);
 		if (!this.inspectedPlaylist) return;
 
-		let fromPosition = parseInt(event.firstKey);
-		let toPosition = parseInt(event.secondKey);
+		if (event.senderName == "song") {
+			if (event.senderSourceName == "playlist" && event.senderSourceId == this.inspectedPlaylist.id) {
+				//this.api.commands.PlaylistMoveSong(this.inspectedPlaylist.id, event.senderIndex, event.targetIndex);
+				return;
+			}
 
-		this.api.commands.PlaylistMoveSong(this.inspectedPlaylist.id, fromPosition, toPosition);
-	}
-	public SwapPlaylistSong(event: ReorderEvent) {
-		console.log("swaaaaaa");
-		if (!this.inspectedPlaylist) return;
-
-		let inPosition = parseInt(event.firstKey);
-		let withPosition = parseInt(event.secondKey);
-
-		this.api.commands.PlaylistSwapSong(this.inspectedPlaylist.id, inPosition, withPosition);
+			this.api.commands.PlaylistInsertSong(this.inspectedPlaylist.id, event.targetIndex, event.senderId);
+		}
+		else if (event.senderName == "playlist") {
+			this.api.commands.PlaylistInsertPlaylistSongs(this.inspectedPlaylist.id, event.targetIndex, event.senderId);
+		}
 	}
 
 	public SongRemovePlaylist(playlist: IPamelloPlaylist) {
@@ -203,5 +200,16 @@ export class InspectorComponent {
 		if (!this.inspectedPlaylist) return;
 
 		this.api.commands.PlaylistRemoveSongAt(this.inspectedPlaylist.id, songPosition);
+	}
+
+	public InspectedObjectReorder(event: ReorderEvent) {
+		if (!event.senderId) return;
+
+		if (event.senderName == "playlist") {
+			this.InspectPlaylistId(event.senderId);
+		}
+		if (event.senderName == "song") {
+			this.InspectSongId(event.senderId);
+		}
 	}
 }

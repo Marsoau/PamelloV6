@@ -180,18 +180,25 @@ namespace PamelloV6.API.Modules
 			selectedPlayer.Queue.AddSong(song);
         }
         [PamelloCommand]
-        public void PlayerQueueAddPlaylist(int playlistId) {
-			RequireUser();
-
-            var playlist = _playlists.GetRequired(playlistId);
-            selectedPlayer.Queue.AddPlaylist(playlist);
-        }
-        [PamelloCommand]
         public void PlayerQueueInsertSong(int queuePosition, int songId) {
 			RequireUser();
 
             var song = _songs.GetRequired(songId);
             selectedPlayer.Queue.InsertSong(queuePosition, song);
+        }
+        [PamelloCommand]
+        public void PlayerQueueAddPlaylist(int playlistId) {
+            RequireUser();
+
+            var playlist = _playlists.GetRequired(playlistId);
+            selectedPlayer.Queue.AddPlaylist(playlist);
+        }
+        [PamelloCommand]
+        public void PlayerQueueInsertPlaylist(int queuePosition, int playlistId) {
+            RequireUser();
+
+            var playlist = _playlists.GetRequired(playlistId);
+            selectedPlayer.Queue.InsertPlaylist(queuePosition, playlist);
         }
         [PamelloCommand]
         public int PlayerQueueRemoveSong(int songPosition) {
@@ -292,13 +299,31 @@ namespace PamelloV6.API.Modules
             playlist.AddSong(song);
         }
         [PamelloCommand]
-        public void PlaylistInsertSong(int playlistId, int songId, int position) {
+        public void PlaylistInsertSong(int playlistId, int position, int songId) {
             RequireUser();
 
             var playlist = _playlists.GetRequired(playlistId);
             var song = _songs.GetRequired(songId);
 
             playlist.InsertSong(position, song);
+        }
+        [PamelloCommand]
+        public void PlaylistAddPlaylistSongs(int toPlaylistId, int fromPlaylistId) {
+            RequireUser();
+
+            var toPlaylist = _playlists.GetRequired(toPlaylistId);
+            var fromPlaylist = _playlists.GetRequired(fromPlaylistId);
+
+            toPlaylist.AddSongs(fromPlaylist.Songs);
+        }
+        [PamelloCommand]
+        public void PlaylistInsertPlaylistSongs(int toPlaylistId, int position, int fromPlaylistId) {
+            RequireUser();
+
+            var toPlaylist = _playlists.GetRequired(toPlaylistId);
+            var fromPlaylist = _playlists.GetRequired(fromPlaylistId);
+
+            toPlaylist.InsertSongs(position, fromPlaylist.Songs);
         }
         [PamelloCommand]
         public void PlaylistMoveSong(int playlistId, int fromPosition, int toPosition) {

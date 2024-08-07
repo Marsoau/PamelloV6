@@ -3,7 +3,7 @@
     width: 100vw;
 
     display: grid;
-    grid-template-columns: 480px 1fr;
+    grid-template-columns: 480px minmax(0, 1fr);
 
     grid-gap: 2px;
     
@@ -16,7 +16,7 @@
         grid-template-rows: auto auto minmax(0, 1fr) auto;
     }
     &-right {
-        grid-template-rows: 1fr auto;
+        grid-template-rows: minmax(0, 1fr) auto;
     }
 
     grid-gap: 2px;

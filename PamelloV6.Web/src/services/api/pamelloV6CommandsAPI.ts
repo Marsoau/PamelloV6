@@ -62,11 +62,14 @@ export class PamelloV6CommandsAPI {
 	public async PlayerQueueAddSong(songId: number) {
 		return await this._api.http.InvokeCommand(`PlayerQueueAddSong&songId=${songId}`);
 	}
+	public async PlayerQueueInsertSong(queuePosition: number, songId: number) {
+		return await this._api.http.InvokeCommand(`PlayerQueueInsertSong&queuePosition=${queuePosition}&songId=${songId}`);
+	}
 	public async PlayerQueueAddPlaylist(playlistId: number) {
 		return await this._api.http.InvokeCommand(`PlayerQueueAddPlaylist&playlistId=${playlistId}`);
 	}
-	public async PlayerQueueInsertSong(queuePosition: number, songId: number) {
-		return await this._api.http.InvokeCommand(`PlayerQueueInsertSong&queuePosition=${queuePosition}&songId=${songId}`);
+	public async PlayerQueueInsertPlaylist(queuePosition: number, playlistId: number) {
+		return await this._api.http.InvokeCommand(`PlayerQueueInsertPlaylist&queuePosition=${queuePosition}&playlistId=${playlistId}`);
 	}
 	public async PlayerQueueRemoveSong(songPosition: number) {
 		return await this._api.http.InvokeCommand(`PlayerQueueRemoveSong&songPosition=${songPosition}`) as number;
@@ -110,8 +113,14 @@ export class PamelloV6CommandsAPI {
 	public async PlaylistAddSong(playlistId: number, songId: number) {
 		return await this._api.http.InvokeCommand(`PlaylistAddSong&playlistId=${playlistId}&songId=${songId}`);
 	}
-	public async PlaylistInsertSong(playlistId: number, songId: number, position: number) {
-		return await this._api.http.InvokeCommand(`PlaylistInsertSong&playlistId=${playlistId}&songId=${songId}&position=${position}`);
+	public async PlaylistInsertSong(playlistId: number, position: number, songId: number) {
+		return await this._api.http.InvokeCommand(`PlaylistInsertSong&playlistId=${playlistId}&position=${position}&songId=${songId}`);
+	}
+	public async PlaylistAddPlaylistSongs(toPlaylistId: number, fromPlaylistId: number) {
+		return await this._api.http.InvokeCommand(`PlaylistAddPlaylistSongs&toPlaylistId=${toPlaylistId}&fromPlaylistId=${fromPlaylistId}`);
+	}
+	public async PlaylistInsertPlaylistSongs(toPlaylistId: number, position: number, fromPlaylistId: number) {
+		return await this._api.http.InvokeCommand(`PlaylistInsertPlaylistSongs&toPlaylistId=${toPlaylistId}&position=${position}&fromPlaylistId=${fromPlaylistId}`);
 	}
 	public async PlaylistMoveSong(playlistId: number, fromPosition: number, toPosition: number) {
 		return await this._api.http.InvokeCommand(`PlaylistMoveSong&playlistId=${playlistId}&fromPosition=${fromPosition}&toPosition=${toPosition}`);

@@ -1,6 +1,7 @@
 :host {
     display: grid;
-    grid-template-rows: 1fr 2px auto;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) 2px auto;
 }
 
 .queue-controls-container {
@@ -21,8 +22,12 @@
 
 .queue-list-container {
     display: grid;
-}
+    grid-template-rows: auto 1fr;
 
-app-reorder-item {
-    margin: 8px 0px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    .song-item {
+        margin: 4px;
+    }
 }

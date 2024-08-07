@@ -1,22 +1,19 @@
-<div class="song-drop-zone"
-	[ngClass]="{
-		'song-drop-zone-over': isOverDropZone
-	}"
-	(dragover)="DragZoneOver($event)"
-	(dragleave)="DragZoneLeave($event)"
-	(drop)="DragZoneDrop($event)"
->
-	<div class="song-drop-zone-decorator" [ngStyle]="{
-		'height': dropZoneHeight + 'px'
-	}"></div>
-</div>
-<div class="reorder-item-container" draggable="true"
-	[ngStyle]="{
-		'margin': '0px ' + dropZoneHeight + 'px'
-	}"
-	(dragstart)="DragStart($event)"
-	(dragover)="DragOver($event)"
-	(drop)="DragDrop($event)"
->
-	<ng-content></ng-content>
+<div class="reorder-item-container">
+	<div class="reorder-item-container" [draggable]="isDragable" (dragstart)="DragStart($event)">
+		<ng-content></ng-content>
+	</div>
+	<div class="drop-zones-container" [ngStyle]="{
+		'background-color': (!doDisplayDropZoneLines && (displayTopDropLine || displayBottomDropLine)) ? '#FF634724' : 'transparent'
+	}">
+		<div class="drop-zone drop-zone-top">
+			<div class="drop-zone-line drop-zone-line-top" [ngStyle]="{
+				'display': doDisplayDropZoneLines && displayTopDropLine ? 'block' : 'none'
+			}"></div>
+		</div>
+		<div class="drop-zone drop-zone-bottom">
+			<div class="drop-zone-line drop-zone-line-bottom" [ngStyle]="{
+				'display': doDisplayDropZoneLines && displayBottomDropLine ? 'block' : 'none'
+			}"></div>
+		</div>
+	</div>
 </div>

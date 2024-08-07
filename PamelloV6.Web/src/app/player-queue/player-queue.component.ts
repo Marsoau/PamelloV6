@@ -64,16 +64,22 @@ export class PlayerQueueComponent {
 		this.api.commands.PlayerQueueClear();
 	}
 
-	songMoved(event: ReorderEvent) {
-		let fromPosition = parseInt(event.firstKey);
-		let toPosition = parseInt(event.secondKey);
+	QueueSongReorder(event: ReorderEvent) {
+		console.log(event);
 
-		this.api.commands.PlayerQueueMove(fromPosition, toPosition);
-	}
-	songSwapped(event: ReorderEvent) {
-		let fromPosition = parseInt(event.firstKey);
-		let withPosition = parseInt(event.secondKey);
+		if (event.senderName == "playlist") {
+			this.api.commands.PlayerQueueInsertPlaylist(event.targetIndex, event.senderId);
+			return;
+		}
+		else if (event.senderName != "song") return;
 
-		this.api.commands.PlayerQueueSwap(fromPosition, withPosition);
+		console.log("gt");
+
+		if (event.senderSourceName == "queue") {
+			this.api.commands.PlayerQueueMove(event.senderIndex, event.targetIndex);
+		}
+		else {
+			this.api.commands.PlayerQueueInsertSong(event.targetIndex, event.senderId);
+		}
 	}
 }

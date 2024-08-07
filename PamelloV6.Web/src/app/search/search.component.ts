@@ -6,11 +6,12 @@ import { PamelloV6API } from '../../services/api/pamelloV6API.service';
 import { IPamelloSong } from '../../services/api/model/PamelloSong';
 import { IPamelloPlaylist } from '../../services/api/model/PamelloPlaylist';
 import { SearchResult } from '../../services/api/pamelloV6DataAPI';
+import { ReorderItemComponent } from "../reorder-item/reorder-item.component";
 
 @Component({
 	selector: 'app-search',
 	standalone: true,
-	imports: [MiniSongComponent, CommonModule, MiniPlaylistComponent],
+	imports: [MiniSongComponent, CommonModule, MiniPlaylistComponent, ReorderItemComponent],
 	templateUrl: './search.component.html',
 	styleUrl: './search.component.scss'
 })
@@ -50,7 +51,7 @@ export class SearchComponent {
 		this.SearchSongs(0, "");
 		this.SearchPlaylists(0, "");
 
-		this.SwitchCategory("Playlists");
+		this.SwitchCategory("Songs");
 	}
 
 	public SubscribeToEvents() {

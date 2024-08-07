@@ -1,10 +1,30 @@
 <div class="search-results-list-container">
-    @for (result of currentResults.results; track $index) {
-        @if (currentCategoryLabel == "Songs") {
-            <app-mini-song [song]="result" [displayAddToPlaylistButton]="displayAddToPlaylistButton" (selected)="selectedSongChanged.emit($event)" (addToPlaylistClick)="addSongToPlaylistClick.emit($event)"/>
+    @if (currentCategoryLabel == "Songs") {
+        @for (song of songsResults.results; track $index) {
+            <app-reorder-item class="search-results-item"
+                [isDragable]="true"
+                
+                itemSourceName="search"
+                itemName="song"
+
+                [itemId]="song.id"
+            >
+                <app-mini-song [song]="song" [displayAddToPlaylistButton]="displayAddToPlaylistButton" (selected)="selectedSongChanged.emit($event)" (addToPlaylistClick)="addSongToPlaylistClick.emit($event)"/>
+            </app-reorder-item>
         }
-        @if (currentCategoryLabel == "Playlists") {
-            <app-mini-playlist [playlist]="result" (selected)="selectedPlaylistChanged.emit($event)" [displayRemoveButton]="true" (removeClick)="RemovePlaylist($event)"/>
+    }
+    @else if (currentCategoryLabel == "Playlists") {
+        @for (playlist of playlistResults.results; track $index) {
+            <app-reorder-item class="search-results-item"
+            [isDragable]="true"
+
+            itemSourceName="search"
+            itemName="playlist"
+
+            [itemId]="playlist.id"
+            >
+                <app-mini-playlist [playlist]="playlist" (selected)="selectedPlaylistChanged.emit($event)" [displayRemoveButton]="true" (removeClick)="RemovePlaylist($event)"/>
+            </app-reorder-item>
         }
     }
 </div>

@@ -1,13 +1,54 @@
-.song-drop-zone {
-    &-over {
-        .song-drop-zone-decorator {
-            height: 8px;
-            background-color: orange;
-        }
-    }
-
-    &-decorator {
-        height: 4px;
-    }
+:host {
+    display: grid;
 }
 
+.reorder-item-container {
+    display: grid;
+    position: relative;
+}
+
+.drop-zones-container {
+    position: absolute;
+    pointer-events: none;
+
+    height: 100%;
+    width: 100%;
+
+    display: grid;
+    grid-template-rows: 50% 50%;
+
+    .drop-zone {
+        position: relative;
+        pointer-events: none;
+
+        &-top {
+            grid-row: 1;
+        }
+        &-bottom {
+            grid-row: 2;
+            //background-color: #00FF0024;
+        }
+
+        &-line {
+            position: absolute;
+            pointer-events: none;
+
+            height: 2px;
+
+            width: 100%;
+
+            &-top {
+                background-color: tomato;
+
+                z-index: 2;
+                top: -1px;
+            }
+            &-bottom {
+                background-color: tomato;
+                
+                z-index: 2;
+                bottom: -1px;
+            }
+        }
+    }
+}

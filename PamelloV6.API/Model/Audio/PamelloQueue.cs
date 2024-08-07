@@ -209,21 +209,25 @@ namespace PamelloV6.API.Model.Audio
             return song;
 		}
 		public bool MoveSong(int fromPosition, int toPosition) {
-			if (SongAudios.Count <= 1) return false;
+			if (SongAudios.Count < 2) return false;
 
 			fromPosition = NormalizeQueuePosition(fromPosition);
-			toPosition = NormalizeQueuePosition(toPosition);
+			toPosition = NormalizeQueuePosition(toPosition, true);
 
-			if (fromPosition == toPosition) return false;
+			if (fromPosition == toPosition) return true;
 
-			var buffer = SongAudios[fromPosition];
-			SongAudios.RemoveAt(fromPosition);
+            var buffer = SongAudios[fromPosition];
+            SongAudios.RemoveAt(fromPosition);
+			if (fromPosition < toPosition) toPosition--;
+            SongAudios.Insert(toPosition, buffer);
 
-			//if (fromPosition < toPosition) toPosition--;
-			SongAudios.Insert(toPosition, buffer);
-			
-			if (fromPosition == Position) Position = toPosition;
-			else if (toPosition == Position) Position++;
+            if (fromPosition == Position) Position = toPosition;
+            else if (fromPosition < Position && Position <= toPosition) {
+				Position--;
+			}
+			else if (fromPosition > Position && Position >= toPosition) {
+                Position++;
+            }
 
             SendQueueUpdatedEvent();
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 
 @Component({
 	selector: 'app-reorder-item',
@@ -9,65 +9,121 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 	styleUrl: './reorder-item.component.scss'
 })
 export class ReorderItemComponent {
-	@Input() public key: string = "default";
-	@Input() public dropZoneHeight: number = 4;
+	@Input() public isDragable: boolean = false;
+	@Input() public isDropableOn: boolean = false;
+	@Input() public doDisplayDropZoneLines: boolean = false;
 
-	public isOverDropZone: boolean = false;
+	@Input() public itemSourceName: string = "default";
+	@Input() public itemSourceId: number = 0;
+	@Input() public itemName: string = "default";
+	@Input() public itemIndex: number = 0;
+	@Input() public itemId: number = 0;
 
-	@Output() public moved = new EventEmitter<ReorderEvent>();
-	@Output() public swapped = new EventEmitter<ReorderEvent>();
+	@Input() public dropZoneDistance: number = 2;
+
+	public inAfterZone: boolean = false;
+	public displayTopDropLine: boolean = false;
+	public displayBottomDropLine: boolean = false;
+
+	@Output() public reorder = new EventEmitter<ReorderEvent>();
+
+	@HostListener("dragover", ['$event']) HostDragEnter(event: DragEvent) {
+		if (!this.isDropableOn) return;
+
+		let targetElement = event.currentTarget as HTMLElement;
+		if (!targetElement) return;
+
+		this.inAfterZone = event.offsetY > (targetElement.offsetHeight / 3);
+
+		this.displayTopDropLine = !this.inAfterZone;
+		this.displayBottomDropLine = this.inAfterZone;
+
+		console.log(targetElement.scrollTop);
+
+		event.preventDefault();
+	}
+	@HostListener("dragleave") HostDragLeave(event: DragEvent) {
+		this.displayTopDropLine = false;
+		this.displayBottomDropLine = false;
+	}
+	@HostListener("drop", ['$event']) HostDragDrop(event: DragEvent) {
+		this.displayTopDropLine = false;
+		this.displayBottomDropLine = false;
+
+		if (!event.dataTransfer) return;
+
+		let senderSourceName = event.dataTransfer.getData("reorder-item-source-name");
+		let senderSourceIdValue = event.dataTransfer.getData("reorder-item-source-id");
+		let senderName = event.dataTransfer.getData("reorder-item-name");
+		let senderIndexValue = event.dataTransfer.getData("reorder-item-index");
+		let senderIdValue = event.dataTransfer.getData("reorder-item-id");
+		
+		let senderSourceId = parseInt(senderSourceIdValue);
+		let senderIndex = parseInt(senderIndexValue);
+		let senderId = parseInt(senderIdValue);
+
+		if (Number.isNaN(senderIndex) || Number.isNaN(senderId) || Number.isNaN(senderSourceId)) {
+			console.log("wrong transfer data");
+			return;
+		}
+
+		console.log(`move {${senderSourceId}:${senderSourceName}}${senderId}:${senderName} (${senderIndex}) to {${this.itemSourceId}:${this.itemSourceName}}${this.itemId}:${this.itemName} (${this.itemIndex}) in the ${(this.inAfterZone ? "Bottom" : "Top")}`);
+
+		this.reorder.emit(new ReorderEvent(
+			senderSourceName,
+			senderSourceId,
+			senderName,
+			senderIndex,
+			senderId,
+			this.itemIndex + (this.doDisplayDropZoneLines && this.inAfterZone ? 1 : 0),
+			this.itemId,
+
+			this.doDisplayDropZoneLines && this.inAfterZone
+		));
+	}
 
 	public DragStart(event: DragEvent) {
 		if (!event.dataTransfer) return;
 
 		event.dataTransfer.effectAllowed = "all";
-		event.dataTransfer.setData("header", "ReorderItem");
-		event.dataTransfer.setData("reorder-key", `${this.key}`);
-	}
-	public DragOver(event: DragEvent) {
-		event.preventDefault();
-	}
-	public DragDrop(event: DragEvent) {
-		if (!event.dataTransfer) return;
-
-		let firstKey = event.dataTransfer.getData("reorder-key");
-		if (!firstKey) return;
-
-		console.log(`"${firstKey}" swapped with "${this.key}"`);
-
-		this.swapped.emit(new ReorderEvent(firstKey, this.key));
-	}
-
-	public DragZoneOver(event: DragEvent) {
-		this.isOverDropZone = true;
-		event.preventDefault();
-	}
-	public DragZoneLeave(event: DragEvent) {
-		this.isOverDropZone = false;
-	}
-	public DragZoneDrop(event: DragEvent) {
-		this.isOverDropZone = false;
-
-		if (!event.dataTransfer) return;
-
-		let firstKey = event.dataTransfer.getData("reorder-key");
-		if (!firstKey) return;
-
-		console.log(`"${firstKey}" moved to "${this.key}"`);
-
-		this.moved.emit(new ReorderEvent(firstKey, this.key));
+		event.dataTransfer.setData("reorder-item-source-name", `${this.itemSourceName}`);
+		event.dataTransfer.setData("reorder-item-source-id", `${this.itemSourceId}`);
+		event.dataTransfer.setData("reorder-item-name", `${this.itemName}`);
+		event.dataTransfer.setData("reorder-item-index", `${this.itemIndex}`);
+		event.dataTransfer.setData("reorder-item-id", `${this.itemId}`);
 	}
 }
 
 export class ReorderEvent {
-	public firstKey: string;
-	public secondKey: string;
+	public senderSourceName: string;
+	public senderSourceId: number;
+	public senderName: string;
+	public senderIndex: number;
+	public senderId: number;
+	public targetIndex: number;
+	public targetId: number;
+
+	public droppedAfter: boolean;
 
 	public constructor(
-		firstKey: string,
-		secondKey: string
+		senderSourceName: string,
+		senderSourceId: number,
+		senderName: string,
+		senderIndex: number,
+		senderId: number,
+		targetIndex: number,
+		targetId: number,
+
+		droppedAfter: boolean
 	) {
-		this.firstKey = firstKey;
-		this.secondKey = secondKey;
+		this.senderSourceName = senderSourceName;
+		this.senderSourceId = senderSourceId;
+		this.senderName = senderName;
+		this.senderIndex = senderIndex;
+		this.senderId = senderId;
+		this.targetIndex = targetIndex;
+		this.targetId = targetId;
+
+		this.droppedAfter = droppedAfter;
 	}
 }
