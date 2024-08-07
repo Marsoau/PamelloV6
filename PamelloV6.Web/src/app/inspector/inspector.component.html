@@ -107,7 +107,18 @@
             <div class="gray-separator"></div>
             <div class="inspector-list">
                 @for (playlist of playlists; track $index) {
-                    <app-mini-playlist class="inspector-list-item" [playlist]="playlist" [displayRemoveButton]="true" (selected)="this.InspectPlaylist($event)" (removeClick)="SongRemovePlaylist($event)"/>
+                    <app-reorder-item class="inspector-list-item"
+                        itemSourceName="song"
+                        itemName="playlist"
+
+                        [isDragable]="true"
+
+                        [itemSourceId]="inspectedSong?.id ?? 0"
+                        [itemId]="playlist.id"
+                        [itemIndex]="$index"
+                    >
+                        <app-mini-playlist [playlist]="playlist" [displayRemoveButton]="true" (selected)="this.InspectPlaylist($event)" (removeClick)="SongRemovePlaylist($event)"/>
+                    </app-reorder-item>
                 }
             </div>
         </div>
