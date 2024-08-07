@@ -28,6 +28,17 @@ namespace PamelloV6.API.Repositories
 		public PamelloPlayer? GetByName(string name) {
 			return _list.FirstOrDefault(player => player.Name == name);
 		}
-		public override void Delete(int id) => throw new NotImplementedException();
+		public override void Delete(int id) {
+            var player = GetRequired(id);
+
+            _list.Remove(player);
+
+            var playerUsers = player.Users;
+			foreach (var user in playerUsers) {
+				user.SelectedPlayer = null;
+			}
+
+			_events.SendToAll(PamelloEvent.PlayerCreated(player.Id));
+        }
 	}
 }

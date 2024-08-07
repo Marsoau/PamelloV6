@@ -36,6 +36,8 @@
         position:absolute;
         background-color: #FFFFFF;
 
+        z-index: 20;
+
         width: 100%;
 
         cursor: default;
@@ -77,4 +79,15 @@
             }
         }
     }
+}
+.select-player-dismiss-area {
+    position: absolute;
+
+    z-index: 10;
+
+    height: 100%;
+    width: 100%;
+
+    left: 0;
+    top: 0;
 }

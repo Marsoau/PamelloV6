@@ -32,6 +32,11 @@ namespace PamelloV6.API.Model.Events
                 Header = "PlayerCreated",
                 Data = playerId
             };
+        public static PamelloEvent PlayerDeleted(int playerId)
+            => new PamelloEvent() {
+                Header = "PlayerDeleted",
+                Data = playerId
+            };
 
         public static PamelloEvent PlayerNameUpdated(int playerId, string newName)
             => new PamelloEvent() {

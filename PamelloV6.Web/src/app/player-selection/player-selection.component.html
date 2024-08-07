@@ -1,7 +1,7 @@
 <div class="player-selection-wrapper">
     @if (selectionMode) {
         <div class="player-selection-container">
-            <button class="default-button" [disabled]="api.selectedPlayer == null" (click)="PlayerDelete(api.selectedPlayer?.id ?? null)">Delete</button>
+            <button class="default-button" [disabled]="api.selectedPlayer == null" (click)="PlayerDeleteSelected()">Delete</button>
             <div class="select-player-container">
                 <div class="selected-player" (click)="displaySelect = !displaySelect">{{api.selectedPlayer?.name ?? 'None'}}</div>
                 <div class="available-players" [ngStyle]="{
@@ -17,6 +17,9 @@
                     }
                 </div>
             </div>
+            <div class="select-player-dismiss-area" [ngStyle]="{
+                'display': displaySelect ? 'block' : 'none'
+            }" (click)="displaySelect=false"></div>
             
             <!--
             <select class="default-select player-select" (change)="SelectionChanged()" [(ngModel)]="selectValue" [value]="GetSelectValue()">

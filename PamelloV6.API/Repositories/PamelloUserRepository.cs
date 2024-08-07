@@ -67,8 +67,20 @@ namespace PamelloV6.API.Repositories
 
             return Load(userEntity);
         }
+        public List<PamelloUser> GetAllWithSelectedPlayer(int playerId) {
+            var users = new List<PamelloUser>();
 
-		public override void Delete(int id) => throw new NotImplementedException();
+            foreach (var user in _list) {
+                if (user.SelectedPlayer?.Id == playerId) {
+                    users.Add(user);
+                }
+            }
+
+            return users;
+        }
+
+
+        public override void Delete(int id) => throw new NotImplementedException();
 
         public void LoadAll()
         {

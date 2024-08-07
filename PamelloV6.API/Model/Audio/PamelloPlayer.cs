@@ -1,13 +1,18 @@
 ﻿using AngleSharp.Dom.Events;
+using Discord;
 using Discord.WebSocket;
 using PamelloV6.API.Model.Events;
+using PamelloV6.API.Repositories;
 using PamelloV6.Core.DTO;
 using PamelloV6.Core.Enumerators;
+using PamelloV6.Server.Model;
 
 namespace PamelloV6.API.Model.Audio
 {
     public class PamelloPlayer : PamelloEntity
     {
+        private readonly PamelloUserRepository _users;
+
         private static int nextId = 1;
         public override int Id { get; }
 
@@ -44,9 +49,15 @@ namespace PamelloV6.API.Model.Audio
             }
         }
 
+        public List<PamelloUser> Users {
+            get => _users.GetAllWithSelectedPlayer(Id);
+        }
+
         public PamelloPlayer(string name, IServiceProvider services) : base(services) {
             Id = nextId++;
             _name = name;
+
+            _users = services.GetRequiredService<PamelloUserRepository>();
 
             var discordClient = services.GetRequiredService<DiscordSocketClient>();
 

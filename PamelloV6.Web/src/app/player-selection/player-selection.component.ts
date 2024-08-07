@@ -31,10 +31,10 @@ export class PlayerSelectionComponent {
 		this.displaySelect = false;
 
 		this.api.events.PlayerCreated = async (newPlayerId: number) => {
-			let player = await this.api.data.GetPlayer(newPlayerId);
-			if (player == null) return;
-	
-			this.availablePlayers.push(player);
+			this.LoadAwailablePlayers();
+		};
+		this.api.events.PlayerDeleted = async (newPlayerId: number) => {
+			this.LoadAwailablePlayers();
 		};
 	}
 
@@ -62,8 +62,10 @@ export class PlayerSelectionComponent {
 		this.selectionMode = true;
 		this.api.commands.PlayerSelect(newPlayerId);
 	}
-	public async PlayerDelete(playerId: number | null) {
-		
+	public async PlayerDeleteSelected() {
+		if (!this.api.selectedPlayer) return;
+
+		this.api.commands.PlayerDeleteSelected();
 	}
 
 	public async SelectPlayer(playerId: number | null) {

@@ -11,6 +11,9 @@ export class PamelloV6CommandsAPI {
 	public async PlayerCreate(playerName: string) {
 		return await this._api.http.InvokeCommand(`PlayerCreate&playerName=${playerName}`) as number;
 	}
+	public async PlayerDeleteSelected() {
+		return await this._api.http.InvokeCommand(`PlayerDeleteSelected`);
+	}
 	public async PlayerSelect(playerId: number | null) {
 		return await this._api.http.InvokeCommand(`PlayerSelect&playerId=${playerId ?? ""}`);
 	}

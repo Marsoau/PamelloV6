@@ -139,6 +139,9 @@ export class PamelloV6EventsAPI {
     public set PlayerCreated(handler: any) {
         this.AddEventListener("PlayerCreated", handler);
     }
+    public set PlayerDeleted(handler: any) {
+        this.AddEventListener("PlayerDeleted", handler);
+    }
     public set PlayerNameUpdated(handler: any) {
         this.AddEventListener("PlayerNameUpdated", handler);
     }
