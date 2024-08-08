@@ -17,6 +17,9 @@
             @else if (api.selectedPlayer?.state == 3) {
                 <span class="player-duration">Initializing song</span>
             }
+            @else if (api.selectedPlayer?.state == 4) {
+                <span class="player-duration">Downloading song</span>
+            }
             @else {
                 <span class="player-time">{{(sliderDrag ? sliderDragValue : api.selectedPlayer?.currentSongTimePassed ?? 0) | stringTime}}</span>
                 <span class="player-duration">{{(api.selectedPlayer?.currentSongTimeTotal ?? 0) | stringTime}}</span>

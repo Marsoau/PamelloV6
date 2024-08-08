@@ -26,7 +26,7 @@ namespace PamelloV6.DAL.Entity
                 Title = Title,
                 Author = Author,
                 CoverUrl = CoverUrl,
-                SourceUrl = YoutubeId,
+                YoutubeId = YoutubeId,
                 PlayCount = PlayCount,
                 IsDownloaded = IsDownloaded,
 

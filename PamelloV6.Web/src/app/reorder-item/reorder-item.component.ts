@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { DefaultUrlSerializer } from '@angular/router';
 
 @Component({
 	selector: 'app-reorder-item',
@@ -51,6 +52,31 @@ export class ReorderItemComponent {
 		this.displayBottomDropLine = false;
 
 		if (!event.dataTransfer) return;
+		event.preventDefault();
+		
+		for (let i = 0; i < event.dataTransfer.items.length; i++) {
+			let key = event.dataTransfer.items[i].type;
+			console.log(`${key}: ${event.dataTransfer.getData(key)}`);
+		}
+
+		let plaintext = event.dataTransfer.getData("text/plain");
+		let youtubeId = this.GetYoutubeIdFromUrl(plaintext);
+		
+		if (youtubeId) {
+			this.reorder.emit(new ReorderEvent(
+				"youtube",
+				0,
+				youtubeId,
+				0,
+				0,
+				this.itemIndex + (this.doDisplayDropZoneLines && this.inAfterZone ? 1 : 0),
+				this.itemId,
+	
+				this.doDisplayDropZoneLines && this.inAfterZone
+			));
+
+			return;
+		}
 
 		let senderSourceName = event.dataTransfer.getData("reorder-item-source-name");
 		let senderSourceIdValue = event.dataTransfer.getData("reorder-item-source-id");
@@ -63,7 +89,7 @@ export class ReorderItemComponent {
 		let senderId = parseInt(senderIdValue);
 
 		if (Number.isNaN(senderIndex) || Number.isNaN(senderId) || Number.isNaN(senderSourceId)) {
-			console.log("wrong transfer data");
+			console.log("wrong reorder transfer data");
 			return;
 		}
 
@@ -91,6 +117,21 @@ export class ReorderItemComponent {
 		event.dataTransfer.setData("reorder-item-name", `${this.itemName}`);
 		event.dataTransfer.setData("reorder-item-index", `${this.itemIndex}`);
 		event.dataTransfer.setData("reorder-item-id", `${this.itemId}`);
+	}
+
+	private GetYoutubeIdFromUrl(url: string): string | null {
+		let startings = [
+			"https://www.youtube.com/watch?v=",
+			"https://youtu.be/"
+		]
+
+		for (let starting of startings) {
+			if (url.startsWith(starting)) {
+				return url.substring(starting.length, starting.length + 11);
+			}
+		}
+
+		return null;
 	}
 }
 

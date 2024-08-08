@@ -48,7 +48,7 @@ export class InspectorComponent {
 		this.newPlaylistNameInput = "";
 
 		this.SubscribeToEvents();
-		this.InspectPlaylistId(21);
+		this.InspectSongId(3);
 	}
 
 	public SubscribeToEvents() {
@@ -173,12 +173,20 @@ export class InspectorComponent {
 
 		this.api.commands.PlaylistAddSong(this.inspectedPlaylist.id, song.id);
 	}
+	public AddYoutubeSongToPlaylist(youtubeId: string) {
+		if (!this.inspectedPlaylist || this.displayStyle != "Playlist") return;
+
+		this.api.commands.PlaylistAddYoutubeSong(this.inspectedPlaylist.id, youtubeId);
+	}
 
 	public PlaylistSongsReorder(event: ReorderEvent) {
 		console.log(event);
 		if (!this.inspectedPlaylist) return;
 
-		if (event.senderName == "song") {
+		if (event.senderSourceName == "youtube") {
+			this.api.commands.PlaylistInsertYoutubeSong(this.inspectedPlaylist.id, event.targetIndex, event.senderName);
+		}
+		else if (event.senderName == "song") {
 			if (event.senderSourceName == "playlist" && event.senderSourceId == this.inspectedPlaylist.id) {
 				//this.api.commands.PlaylistMoveSong(this.inspectedPlaylist.id, event.senderIndex, event.targetIndex);
 				return;

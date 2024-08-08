@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using PamelloV6.API.Model;
 using PamelloV6.API.Model.Responses;
+using PamelloV6.API.Model.Youtube;
 using PamelloV6.API.Repositories;
+using PamelloV6.API.Services;
 using PamelloV6.Core.Abstract;
 using PamelloV6.DAL;
 using PamelloV6.DAL.Entity;
@@ -20,18 +23,24 @@ namespace PamelloV6.API.Controllers
 		protected readonly PamelloPlaylistRepository _playlists;
 		protected readonly PamelloPlayerRepository _players;
 
+		protected readonly PamelloYoutubeService _youtube;
+
 		public DataController(
 			PamelloUserRepository users,
 			PamelloSongRepository songs,
 			PamelloEpisodeRepository episodes,
 			PamelloPlaylistRepository playlists,
-			PamelloPlayerRepository player
-		) {
+			PamelloPlayerRepository player,
+
+            PamelloYoutubeService youtube
+        ) {
 			_users = users;
 			_songs = songs;
 			_episodes = episodes;
 			_playlists = playlists;
 			_players = player;
+
+			_youtube = youtube;
 		}
 
 		[HttpGet("User")]
@@ -55,12 +64,16 @@ namespace PamelloV6.API.Controllers
 		[HttpGet("Song")]
 		public IActionResult GetSong() {
 			return HandleGetByIdRequest(_songs);
-		}
-		[HttpGet("Songs/Search")]
-		public IActionResult SongsSearch() {
-			return HandleGetSearchRequest(_songs);
-		}
-		[HttpGet("Songs/Info")]
+        }
+        [HttpGet("Songs/Search")]
+        public IActionResult SongsSearch() {
+            return HandleGetSearchRequest(_songs);
+        }
+        [HttpGet("Songs/SearchYoutube")]
+        public IActionResult SongsSearcYoutubeh() {
+            return HandleGetYoutubeSearchRequest();
+        }
+        [HttpGet("Songs/Info")]
 		public IActionResult SongsInfo() {
 			return HandleGetInfoRequest(_songs);
 		}
@@ -160,5 +173,24 @@ namespace PamelloV6.API.Controllers
 
 			return Ok(user.GetDTO());
 		}
-	}
+
+		private IActionResult HandleGetYoutubeSearchRequest() {
+            var qSearch = Request.Query["q"].FirstOrDefault();
+            var qCount = Request.Query["count"].FirstOrDefault();
+            if (qCount is null) {
+                return BadRequest("Count required");
+            }
+
+            if (!int.TryParse(qCount, out int count)) {
+                return BadRequest("Count must be an integer number");
+            }
+
+            var searchResult = _youtube.Search(count, qSearch).Result;
+            return Ok(new {
+                resultsCount = searchResult.ResultsCount,
+                pamelloSongs = searchResult.PamelloSongs.Select(song => song.GetDTO()),
+                youtubeVideos = searchResult.YoutubeVideos,
+            });
+        }
+    }
 }

@@ -163,7 +163,7 @@ namespace PamelloV6.API.Model
 				Title = Name,
 				Author = Author,
 				CoverUrl = CoverUrl,
-				SourceUrl = YoutubeId,
+				YoutubeId = YoutubeId,
 				PlayCount = PlayCount,
 				IsDownloaded = IsDownloaded,
 

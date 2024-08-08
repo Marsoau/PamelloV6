@@ -1,19 +1,26 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp;
 using Microsoft.Extensions.Configuration;
-using PamelloV6.API.Model;
 using System.Text.Json;
 using System.Web;
 using PamelloV6.API.Exceptions;
+using PamelloV6.API.Model.Youtube;
+using PamelloV6.API.Repositories;
+using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
+using Google.Apis.Services;
+using PamelloV6.API.Model;
 
 namespace PamelloV6.API.Services
 {
-	public class YoutubeInfoService
+    public class PamelloYoutubeService
 	{
 		public readonly IHttpClientFactory _httpClientFactory;
+		public readonly IServiceProvider _services;
 
-		public YoutubeInfoService(IHttpClientFactory httpClientFactory) {
+		public PamelloYoutubeService(IHttpClientFactory httpClientFactory, IServiceProvider services) {
 			_httpClientFactory = httpClientFactory;
+			_services = services;
 		}
 
 		public string GetVideoIdFromUrl(string url) {
@@ -116,5 +123,42 @@ namespace PamelloV6.API.Services
 
 			return episodes;
 		}
-	}
+
+        public async Task<YoutubeSearchResult> Search(int pageSize, string? query) {
+            var youtubeService = new YouTubeService(new BaseClientService.Initializer() {
+                ApiKey = "AIzaSyDPBURkXbO9mnQzbpUPWP6UO7EF3ZgIKIQ",
+            });
+
+            var searchRequest = youtubeService.Search.List("snippet");
+            searchRequest.Q = query;
+            searchRequest.MaxResults = pageSize;
+            searchRequest.SafeSearch = SearchResource.ListRequest.SafeSearchEnum.None;
+
+            var searchResponse = await searchRequest.ExecuteAsync();
+			var searchResult = new YoutubeSearchResult();
+
+			var songs = _services.GetRequiredService<PamelloSongRepository>();
+			PamelloSong? song;
+
+            foreach (SearchResult result in searchResponse.Items) {
+                if (result?.Id?.VideoId is not null) {
+					song = songs.GetByYoutubeId(result.Id.VideoId);
+
+					if (song is not null) {
+						searchResult.PamelloSongs.Add(song);
+					}
+					else {
+						searchResult.YoutubeVideos.Add(new YoutubeSearchVideoInfo() {
+							Id = result.Id.VideoId,
+							Name = result.Snippet.Title,
+							Author = result.Snippet.ChannelTitle,
+							ThumbnailUrl = result.Snippet.Thumbnails.Default__?.Url ?? "",
+                        });
+					}
+				}
+			}
+
+			return searchResult;
+        }
+    }
 }

@@ -9,7 +9,7 @@
             <img class="avatar-image" [src]="api.user.coverUrl"/>
             <div class="info-container">
                 <div class="authorized-user-name">{{api.user.name}}</div>
-                <div class="authorized-user-discord-id">{{api.user.discordId}}</div>
+                <div class="authorized-user-discord-id">{{api.user.discordId}} ({{api.user.id}})</div>
             </div>
             <div class="button-container">
                 <button class="default-button" (click)="Unauthorize()">Logout</button>

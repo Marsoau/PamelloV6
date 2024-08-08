@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { PamelloV6API } from '../../services/api/pamelloV6API.service';
 import { IPamelloPlayer } from '../../services/api/model/PamelloPlayer';
-import { SearchResult } from '../../services/api/pamelloV6DataAPI';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 

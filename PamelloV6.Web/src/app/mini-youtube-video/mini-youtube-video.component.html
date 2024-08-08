@@ -1,0 +1,15 @@
+<div class="youtube-video-image">
+    <img [src]="video?.thumbnailUrl"/>
+</div>
+<div class="youtube-video-info">
+    <span class="youtube-video-name">{{video?.name}}</span>
+    <div class="youtube-video-author">{{video?.author}}</div>
+</div>
+<div class="youtube-video-buttons">
+    @if (api.user?.selectedPlayerId != null) {
+        <button class="default-button mini-button" (click)="AddToQueue()">Add To Queue</button>
+    }
+    @if (displayAddToPlaylistButton) {
+        <button class="default-button mini-button" (click)="AddToPlaylist()">Add To Playlist</button>
+    }
+</div>

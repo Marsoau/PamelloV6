@@ -12,7 +12,7 @@ namespace PamelloV6.Core.DTO
 		public string Title { get; set; }
 		public string Author { get; set; }
 		public string CoverUrl { get; set; }
-		public string SourceUrl { get; set; }
+		public string YoutubeId { get; set; }
 		public int PlayCount { get; set; }
 		public bool IsDownloaded { get; set; }
 

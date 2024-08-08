@@ -2,10 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http
 import { Injectable } from "@angular/core";
 import { catchError, lastValueFrom, map } from "rxjs";
 
-@Injectable({
-    providedIn: 'root',
-})
-export class PamelloV6API {
+class PamelloV6APIOld {
     private readonly http: HttpClient;
 
     authorizedUser: PamelloUser | null;
@@ -120,10 +117,10 @@ class PamelloV6Data {
     }
 }
 class PamelloV6Events {
-    private readonly api: PamelloV6API;
+    private readonly api: PamelloV6APIOld;
     private events!: EventSource;
     
-    public constructor(api: PamelloV6API) {
+    public constructor(api: PamelloV6APIOld) {
         this.api = api;
     }
 
@@ -314,10 +311,10 @@ class PamelloV6Events {
     
 }
 class PamelloV6Commands {
-    private readonly api: PamelloV6API;
+    private readonly api: PamelloV6APIOld;
     private readonly http: HttpClient;
     
-    constructor(api: PamelloV6API, http: HttpClient) {
+    constructor(api: PamelloV6APIOld, http: HttpClient) {
         this.api = api;
         this.http = http;
     }
@@ -433,7 +430,7 @@ class PamelloV6Commands {
 }
 
 
-export class PamelloUser {
+class PamelloUser {
     public id!: number;
     public name!: string;
     public coverUrl!: string;
@@ -442,7 +439,7 @@ export class PamelloUser {
     public isAdministrator!: boolean;
     public ownedPlaylistIds!: number[];
 }
-export class PamelloSong {
+class PamelloSong {
     public id!: number;
     public title!: string;
     public author!: string;
@@ -453,21 +450,21 @@ export class PamelloSong {
     public episodeIds!: number[];
     public playlistIds!: number[];
 }
-export class PamelloEpisode {
+class PamelloEpisode {
     public id!: number;
     public songId!: number;
     public name!: string;
     public start!: number;
     public skip!: boolean;
 }
-export class PamelloPlaylist {
+class PamelloPlaylist {
     public id!: number;
     public name!: string;
     public ownerId!: number;
     public isProtected!: boolean;
     public songIds!: number[];
 }
-export class PamelloPlayer {
+class PamelloPlayer {
     public id!: number;
     public name!: string;
     public isPaused!: boolean;
@@ -481,7 +478,7 @@ export class PamelloPlayer {
     public queueIsReversed!: boolean;
     public queueIsNoLeftovers!: boolean;
 }
-export class SearchResult<T> {
+class SearchResult<T> {
     page!: number;
     pagesCount!: number;
     results!: T[];

@@ -27,17 +27,49 @@
             </app-reorder-item>
         }
     }
+    @else if (currentCategoryLabel == "Youtube") {
+        @for (song of youtubeResults.pamelloSongs; track $index) {
+            <app-reorder-item class="search-results-item"
+            [isDragable]="true"
+
+            itemSourceName="search"
+            itemName="song"
+
+            [itemId]="song.id"
+            >
+                <app-mini-song [song]="song" [displayAddToPlaylistButton]="displayAddToPlaylistButton" (selected)="selectedSongChanged.emit($event)" (addToPlaylistClick)="addSongToPlaylistClick.emit($event)"/>
+            </app-reorder-item>
+        }
+        @for (video of youtubeResults.youtubeVideos; track $index) {
+            <app-reorder-item class="search-results-item"
+            [isDragable]="true"
+                
+            itemSourceName="youtube"
+            [itemName]="video.id"
+            >
+                <app-mini-youtube-video [video]="video" [displayAddToPlaylistButton]="displayAddToPlaylistButton" (addToPlaylistClick)="addYoutubeSongToPlaylistClick.emit($event)" />
+            </app-reorder-item>
+        }
+    }
 </div>
 <div class="gray-separator"></div>
 <div class="search-controls-container">
-    <div class="pages-controls-container">
-        <button class="default-button" (click)="PrevPage()">Prev</button>
-        <div class="pages-labels-container">
-            <div>{{currentResults.pagesCount != 0 ? currentResults.page + 1 : 0}} / {{currentResults.pagesCount}}</div>
+    @if (currentCategoryLabel != "Youtube") {
+        <div class="pages-controls-container">
+            <button class="default-button" (click)="PrevPage()">Prev</button>
+            <div class="pages-labels-container">
+                @if (currentCategoryLabel == "Songs") {
+                    <div>{{songsResults.pagesCount != 0 ? songsResults.page + 1 : 0}} / {{songsResults.pagesCount}}</div>
+                }
+                @else if (currentCategoryLabel == "Playlists") {
+                    <div>{{playlistResults.pagesCount != 0 ? playlistResults.page + 1 : 0}} / {{playlistResults.pagesCount}}</div>
+                }
+            </div>
+            <button class="default-button" (click)="NextPage()">Next</button>
         </div>
-        <button class="default-button" (click)="NextPage()">Next</button>
-    </div>
-    <div class="gray-separator"></div>
+        <div class="gray-separator"></div>
+    }
+    @else {<div></div><div></div>}
     <input class="default-input" placeholder="Search request" (input)="setQ($event)" />
     <div class="gray-separator"></div>
     <div class="button-container">

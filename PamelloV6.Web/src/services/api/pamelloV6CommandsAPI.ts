@@ -68,6 +68,12 @@ export class PamelloV6CommandsAPI {
 	public async PlayerQueueInsertSong(queuePosition: number, songId: number) {
 		return await this._api.http.InvokeCommand(`PlayerQueueInsertSong&queuePosition=${queuePosition}&songId=${songId}`);
 	}
+	public async PlayerQueueAddYoutubeSong(youtubeId: string) {
+		return await this._api.http.InvokeCommand(`PlayerQueueAddYoutubeSong&youtubeId=${youtubeId}`);
+	}
+	public async PlayerQueueInsertYoutubeSong(queuePosition: number, youtubeId: string) {
+		return await this._api.http.InvokeCommand(`PlayerQueueInsertYoutubeSong&queuePosition=${queuePosition}&youtubeId=${youtubeId}`);
+	}
 	public async PlayerQueueAddPlaylist(playlistId: number) {
 		return await this._api.http.InvokeCommand(`PlayerQueueAddPlaylist&playlistId=${playlistId}`);
 	}
@@ -118,6 +124,12 @@ export class PamelloV6CommandsAPI {
 	}
 	public async PlaylistInsertSong(playlistId: number, position: number, songId: number) {
 		return await this._api.http.InvokeCommand(`PlaylistInsertSong&playlistId=${playlistId}&position=${position}&songId=${songId}`);
+	}
+	public async PlaylistAddYoutubeSong(playlistId: number, youtubeId: string) {
+		return await this._api.http.InvokeCommand(`PlaylistAddYoutubeSong&playlistId=${playlistId}&youtubeId=${youtubeId}`);
+	}
+	public async PlaylistInsertYoutubeSong(playlistId: number, position: number, youtubeId: string) {
+		return await this._api.http.InvokeCommand(`PlaylistInsertYoutubeSong&playlistId=${playlistId}&position=${position}&youtubeId=${youtubeId}`);
 	}
 	public async PlaylistAddPlaylistSongs(toPlaylistId: number, fromPlaylistId: number) {
 		return await this._api.http.InvokeCommand(`PlaylistAddPlaylistSongs&toPlaylistId=${toPlaylistId}&fromPlaylistId=${fromPlaylistId}`);

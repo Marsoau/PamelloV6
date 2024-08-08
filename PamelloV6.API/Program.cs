@@ -105,7 +105,7 @@ namespace PamelloV6.API
 
 			services.AddTransient<PamelloCommandsModule>();
 
-			services.AddTransient<YoutubeInfoService>();
+			services.AddTransient<PamelloYoutubeService>();
 		}
 
 		public void ConfigureDatabaseServices(IServiceCollection services) {

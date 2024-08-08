@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PamelloV6.API.Exceptions;
 using PamelloV6.API.Model;
 using PamelloV6.API.Model.Events;
+using PamelloV6.API.Model.Youtube;
 using PamelloV6.API.Services;
 using PamelloV6.Core.DTO;
 using PamelloV6.DAL;
@@ -14,7 +15,7 @@ namespace PamelloV6.API.Repositories
 {
     public class PamelloSongRepository : PamelloRepository<PamelloSong>
     {
-        private readonly YoutubeInfoService _youtube;
+        private readonly PamelloYoutubeService _youtube;
 
 		private List<SongEntity> _databaseSongs {
 			get => _database.Songs
@@ -23,7 +24,7 @@ namespace PamelloV6.API.Repositories
                 .ToList();
 		}
 
-		public PamelloSongRepository(YoutubeInfoService youtube,
+		public PamelloSongRepository(PamelloYoutubeService youtube,
 			IServiceProvider services
 		) : base(services) {
             _youtube = youtube;

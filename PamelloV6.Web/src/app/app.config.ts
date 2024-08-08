@@ -2,8 +2,8 @@ import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { PamelloV6API } from '../services/pamelloV6API-old.service';
 import { HttpClient, HttpHandler, provideHttpClient } from '@angular/common/http';
+import { PamelloV6API } from '../services/api/pamelloV6API.service';
 
 export const appConfig: ApplicationConfig = {
 	providers: [

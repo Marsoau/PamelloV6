@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PamelloV6.API.Attributes;
+using PamelloV6.API.Extensions;
 using PamelloV6.API.Modules;
 using PamelloV6.API.Repositories;
 using PamelloV6.DAL.Entity;
@@ -27,7 +28,7 @@ namespace PamelloV6.API.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult Get() {
+		public async Task<IActionResult> Get() {
 			var queriedCommand = Request.Query["name"].FirstOrDefault();
 			if (queriedCommand is null) {
 				return BadRequest("Command name in querry \"name\" required");
@@ -90,8 +91,11 @@ namespace PamelloV6.API.Controllers
             Console.WriteLine();
 
             try {
+                if (command.ReturnType == typeof(Task)) {
+                    return Ok(await command.InvokeAsync(_commands, args));
+                }
                 return Ok(command.Invoke(_commands, args));
-			}
+            }
 			catch (TargetInvocationException tie) {
 				return BadRequest($"Execution of command interrupted by exception, message: {tie.InnerException?.Message}");
 			}

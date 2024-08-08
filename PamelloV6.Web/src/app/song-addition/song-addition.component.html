@@ -3,7 +3,8 @@
 <app-search #search
     [displayAddToPlaylistButton]="inspector.displayStyle == 'Playlist'"
 
-    (selectedSongChanged)="inspector.InspectSong($event)"
-    (selectedPlaylistChanged)="inspector.InspectPlaylist($event)"
+    (selectedSongChanged)="inspector.InspectSongId($event.id)"
+    (selectedPlaylistChanged)="inspector.InspectPlaylistId($event.id)"
     (addSongToPlaylistClick)="inspector.AddSongToPlaylist($event)"
+    (addYoutubeSongToPlaylistClick)="inspector.AddYoutubeSongToPlaylist($event)"
 />

@@ -4,6 +4,8 @@ import { IPamelloSong } from "./model/PamelloSong";
 import { IPamelloEpisode } from "./model/PamelloEpisode";
 import { IPamelloPlaylist } from "./model/PamelloPlaylist";
 import { IPamelloPlayer } from "./model/PamelloPlayer";
+import { ISearchResult } from "./model/search/SearchResult";
+import { IYoutubeSearchResult } from "./model/search/YoutubeSearchResult";
 
 export class PamelloV6DataAPI {
     public constructor(
@@ -37,25 +39,22 @@ export class PamelloV6DataAPI {
     }
 
     public async SearchUsers(page: number, count: number, query: string = "", onerror: any = null) {
-        return await this._api.http.Get<SearchResult<IPamelloUser>>(`Data/Users/Search?q=${query}&page=${page}&count=${count}`, onerror);
+        return await this._api.http.Get<ISearchResult<IPamelloUser>>(`Data/Users/Search?q=${query}&page=${page}&count=${count}`, onerror);
     }
     public async SearchSongs(page: number, count: number, query: string = "", onerror: any = null) {
-        return await this._api.http.Get<SearchResult<IPamelloSong>>(`Data/Songs/Search?q=${query}&page=${page}&count=${count}`, onerror);
+        return await this._api.http.Get<ISearchResult<IPamelloSong>>(`Data/Songs/Search?q=${query}&page=${page}&count=${count}`, onerror);
     }
     public async SearchEpisodes(page: number, count: number, query: string = "", onerror: any = null) {
-        return await this._api.http.Get<SearchResult<IPamelloEpisode>>(`Data/Episodes/Search?q=${query}&page=${page}&count=${count}`, onerror);
+        return await this._api.http.Get<ISearchResult<IPamelloEpisode>>(`Data/Episodes/Search?q=${query}&page=${page}&count=${count}`, onerror);
     }
     public async SearchPlaylists(page: number, count: number, query: string = "", onerror: any = null) {
-        return await this._api.http.Get<SearchResult<IPamelloPlaylist>>(`Data/Playlists/Search?q=${query}&page=${page}&count=${count}`, onerror);
+        return await this._api.http.Get<ISearchResult<IPamelloPlaylist>>(`Data/Playlists/Search?q=${query}&page=${page}&count=${count}`, onerror);
     }
     public async SearchPlayers(page: number, count: number, query: string = "", onerror: any = null) {
-        return await this._api.http.Get<SearchResult<IPamelloPlayer>>(`Data/Players/Search?q=${query}&page=${page}&count=${count}`, onerror);
+        return await this._api.http.Get<ISearchResult<IPamelloPlayer>>(`Data/Players/Search?q=${query}&page=${page}&count=${count}`, onerror);
     }
-}
 
-export interface SearchResult<T> {
-    page: number;
-    pagesCount: number;
-    results: T[];
-    query: string;
+    public async SearchYoutubeSongs(count: number, query: string = "", onerror: any = null) {
+        return await this._api.http.Get<IYoutubeSearchResult>(`Data/Songs/SearchYoutube?q=${query}&count=${count}`, onerror);
+    }
 }

@@ -28,7 +28,7 @@ namespace PamelloV6.API.Modules
 		protected readonly PamelloEpisodeRepository _episodes;
 		protected readonly PamelloPlaylistRepository _playlists;
 		protected readonly PamelloPlayerRepository _players;
-		protected readonly YoutubeInfoService _youtube;
+		protected readonly PamelloYoutubeService _youtube;
         protected readonly UserAuthorizationService _authorization;
 
         public PamelloInteractionModuleBase(
@@ -38,7 +38,7 @@ namespace PamelloV6.API.Modules
 			PamelloPlaylistRepository playlists,
 			PamelloPlayerRepository players,
 
-			YoutubeInfoService youtube,
+			PamelloYoutubeService youtube,
             UserAuthorizationService authorization
         ) {
 			_users = users;

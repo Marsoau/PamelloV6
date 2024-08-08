@@ -23,7 +23,7 @@ namespace PamelloV6.API.Modules
 		protected readonly PamelloPlayerRepository _players;
 
 		protected readonly DiscordSocketClient _discordClient;
-        protected readonly YoutubeInfoService _youtube;
+        protected readonly PamelloYoutubeService _youtube;
 
 
         private PamelloUser? _user;
@@ -45,7 +45,7 @@ namespace PamelloV6.API.Modules
 			PamelloPlayerRepository players,
 
             DiscordSocketClient discordClient,
-            YoutubeInfoService youtube
+            PamelloYoutubeService youtube
         ) {
 			_users = users;
 			_songs = songs;
@@ -179,16 +179,34 @@ namespace PamelloV6.API.Modules
 
         [PamelloCommand]
         public void PlayerQueueAddSong(int songId) {
-			RequireUser();
+            RequireUser();
 
-			var song = _songs.GetRequired(songId);
-			SelectedPlayer.Queue.AddSong(song);
+            var song = _songs.GetRequired(songId);
+            SelectedPlayer.Queue.AddSong(song);
         }
         [PamelloCommand]
         public void PlayerQueueInsertSong(int queuePosition, int songId) {
-			RequireUser();
+            RequireUser();
 
             var song = _songs.GetRequired(songId);
+            SelectedPlayer.Queue.InsertSong(queuePosition, song);
+        }
+        [PamelloCommand]
+        public async Task PlayerQueueAddYoutubeSong(string youtubeId) {
+            RequireUser();
+
+            var song = _songs.GetByYoutubeId(youtubeId);
+            if (song is null) song = await _songs.Add(youtubeId);
+
+            SelectedPlayer.Queue.AddSong(song);
+        }
+        [PamelloCommand]
+        public async Task PlayerQueueInsertYoutubeSong(int queuePosition, string youtubeId) {
+            RequireUser();
+
+            var song = _songs.GetByYoutubeId(youtubeId);
+            if (song is null) song = await _songs.Add(youtubeId);
+
             SelectedPlayer.Queue.InsertSong(queuePosition, song);
         }
         [PamelloCommand]
@@ -312,6 +330,27 @@ namespace PamelloV6.API.Modules
 
             playlist.InsertSong(position, song);
         }
+        [PamelloCommand]
+        public async Task PlaylistAddYoutubeSong(int playlistId, string youtubeId) {
+            RequireUser();
+
+            var playlist = _playlists.GetRequired(playlistId);
+            var song = _songs.GetByYoutubeId(youtubeId);
+            if (song is null) song = await _songs.Add(youtubeId);
+
+            playlist.AddSong(song);
+        }
+        [PamelloCommand]
+        public async Task PlaylistInsertYoutubeSong(int playlistId, int position, string youtubeId) {
+            RequireUser();
+
+            var playlist = _playlists.GetRequired(playlistId);
+            var song = _songs.GetByYoutubeId(youtubeId);
+            if (song is null) song = await _songs.Add(youtubeId);
+
+            playlist.InsertSong(position, song);
+        }
+
         [PamelloCommand]
         public void PlaylistAddPlaylistSongs(int toPlaylistId, int fromPlaylistId) {
             RequireUser();

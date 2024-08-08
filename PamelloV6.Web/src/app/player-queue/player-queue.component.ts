@@ -67,6 +67,11 @@ export class PlayerQueueComponent {
 	QueueSongReorder(event: ReorderEvent) {
 		console.log(event);
 
+		if (event.senderSourceName == "youtube") {
+			this.api.commands.PlayerQueueInsertYoutubeSong(event.targetIndex, event.senderName);
+			return;
+		}
+
 		if (event.senderName == "playlist") {
 			this.api.commands.PlayerQueueInsertPlaylist(event.targetIndex, event.senderId);
 			return;

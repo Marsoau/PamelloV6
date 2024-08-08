@@ -39,4 +39,5 @@ export enum PamelloPlayerState {
     AwaitingSong,
     AwaitingSpeaker,
     AwainingSongAudio,
+    AwainingSongDownload,
 }

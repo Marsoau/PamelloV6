@@ -41,7 +41,7 @@ namespace PamelloV6.Server.Modules
             PamelloPlaylistRepository playlists,
             PamelloPlayerRepository players,
 
-            YoutubeInfoService youtube,
+            PamelloYoutubeService youtube,
             UserAuthorizationService authorization
         ) : base(
             users,
@@ -100,7 +100,7 @@ namespace PamelloV6.Server.Modules
             PamelloPlaylistRepository playlists,
             PamelloPlayerRepository players,
 
-            YoutubeInfoService youtube,
+            PamelloYoutubeService youtube,
             UserAuthorizationService authorization
         ) : base(
 			users,
@@ -166,7 +166,7 @@ namespace PamelloV6.Server.Modules
                 PamelloPlaylistRepository playlists,
                 PamelloPlayerRepository players,
 
-				YoutubeInfoService youtube,
+				PamelloYoutubeService youtube,
                 UserAuthorizationService authorization
             ) : base(
                 users,
@@ -253,7 +253,7 @@ namespace PamelloV6.Server.Modules
             PamelloPlaylistRepository playlists,
             PamelloPlayerRepository players,
 
-            YoutubeInfoService youtube,
+            PamelloYoutubeService youtube,
             UserAuthorizationService authorization
         ) : base(
             users,
@@ -306,7 +306,7 @@ namespace PamelloV6.Server.Modules
                 PamelloPlaylistRepository playlists,
                 PamelloPlayerRepository players,
 
-                YoutubeInfoService youtube,
+                PamelloYoutubeService youtube,
                 UserAuthorizationService authorization
             ) : base(
                 users,
@@ -355,7 +355,7 @@ namespace PamelloV6.Server.Modules
             PamelloPlaylistRepository playlists,
             PamelloPlayerRepository players,
 
-            YoutubeInfoService youtube,
+            PamelloYoutubeService youtube,
             UserAuthorizationService authorization
         ) : base(
             users,

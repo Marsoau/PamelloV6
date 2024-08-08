@@ -12,5 +12,6 @@ namespace PamelloV6.Core.Enumerators
         AwaitingSong,
         AwaitingSpeaker,
         AwainingSongAudio,
+        AwainingSongDownload,
     }
 }
