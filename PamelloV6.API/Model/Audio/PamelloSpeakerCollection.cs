@@ -138,6 +138,11 @@ namespace PamelloV6.API.Model.Audio
 
             await speaker.Disconnect();
         }
+        public async Task DisconnectAll() {
+			foreach (var speaker in _speakers) {
+                await speaker.Disconnect();
+            }
+        }
 
         private void SendSpeakersUpdatedEvent() => _events.SendToAllWithSelectedPlayer(_parentPlayer.Id,
             PamelloEvent.PlayerSpeakersUpdated(Speakers.Select(speaker => speaker.GetDTO()))

@@ -31,14 +31,10 @@ namespace PamelloV6.API.Repositories
 		public override void Delete(int id) {
             var player = GetRequired(id);
 
+			player.Delete();
             _list.Remove(player);
 
-            var playerUsers = player.Users;
-			foreach (var user in playerUsers) {
-				user.SelectedPlayer = null;
-			}
-
-			_events.SendToAll(PamelloEvent.PlayerCreated(player.Id));
+			_events.SendToAll(PamelloEvent.PlayerDeleted(player.Id));
         }
 	}
 }

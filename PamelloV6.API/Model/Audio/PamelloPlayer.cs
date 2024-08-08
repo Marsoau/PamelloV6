@@ -6,6 +6,7 @@ using PamelloV6.API.Repositories;
 using PamelloV6.Core.DTO;
 using PamelloV6.Core.Enumerators;
 using PamelloV6.Server.Model;
+using System.Numerics;
 
 namespace PamelloV6.API.Model.Audio
 {
@@ -53,6 +54,8 @@ namespace PamelloV6.API.Model.Audio
             get => _users.GetAllWithSelectedPlayer(Id);
         }
 
+        private bool _deleted;
+
         public PamelloPlayer(string name, IServiceProvider services) : base(services) {
             Id = nextId++;
             _name = name;
@@ -71,6 +74,8 @@ namespace PamelloV6.API.Model.Audio
             byte[]? audioBytes;
 
             while (true) {
+                if (_deleted) return;
+
                 if (IsPaused) {
                     await Task.Delay(1000);
                     continue;
@@ -117,6 +122,17 @@ namespace PamelloV6.API.Model.Audio
                     Console.WriteLine($"PlayBytes Catch: {x}");
                 }
             }
+        }
+
+        public async Task Delete() {
+            var currentUsers = Users;
+            foreach (var user in currentUsers) {
+                user.SelectedPlayer = null;
+            }
+
+            _deleted = true;
+            await Speakers.DisconnectAll();
+            Queue.Clear();
         }
 
         public override object GetDTO() {
