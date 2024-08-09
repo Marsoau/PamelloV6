@@ -87,6 +87,7 @@ namespace PamelloV6.API.Model.Audio
                 if (_current is not null) {
                     _current.Position.OnSecondTick -= OnCurrentPositionSecondTick;
                     _current.Duration.OnSecondTick -= OnCurrentDurationSecondTick;
+                    _current.OnInitializationProgress -= OnCurrentInitializationProgress;
                 }
                 _current?.Clean();
 				_current = value;
@@ -99,12 +100,22 @@ namespace PamelloV6.API.Model.Audio
 				if (_current is not null) {
 					_current.Position.OnSecondTick += OnCurrentPositionSecondTick;
                     _current.Duration.OnSecondTick += OnCurrentDurationSecondTick;
+                    _current.OnInitializationProgress += OnCurrentInitializationProgress;
                 }
 
                 OnCurrentDurationSecondTick();
                 OnCurrentPositionSecondTick();
             }
 		}
+
+        private void OnCurrentInitializationProgress(int progress) {
+            Console.WriteLine($"Initialized {progress} * 10 minutes");
+
+            _events.SendToAllWithSelectedPlayer(
+                _parentPlayer.Id,
+                PamelloEvent.PlayerInitializationProgress(progress)
+            );
+        }
 
         public void OnCurrentDurationSecondTick() {
             _events.SendToAllWithSelectedPlayer(

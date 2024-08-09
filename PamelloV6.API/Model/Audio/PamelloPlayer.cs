@@ -67,9 +67,20 @@ namespace PamelloV6.API.Model.Audio
             Speakers = new PamelloSpeakerCollection(this, services);
             Queue = new PamelloQueue(this, services);
 
-            Task.Run(MusicLoop);
+            Task.Run(MusicRestartingLoop);
         }
-
+        public async Task MusicRestartingLoop() {
+            while (!_deleted) {
+                try {
+                    await MusicLoop();
+                }
+                catch (Exception x) {
+                    Console.WriteLine($"Exceprion occured in music loop: {x.Message}");
+                    Console.WriteLine(x);
+                }
+            }
+            Console.WriteLine("MusicLoop ended");
+        }
         public async Task MusicLoop() {
             byte[]? audioBytes;
 
@@ -98,13 +109,18 @@ namespace PamelloV6.API.Model.Audio
                 }
 
                 if (!Queue.Current.IsInitialized) {
-                    Console.WriteLine($"Initialzing {Queue.Current.Song.Name}");
-                    if (!await Queue.Current.TryInitialize()) {
-                        Console.WriteLine($"Failed to initialize {Queue.Current.Song.Name}");
-                        Queue.RemoveSong(Queue.Position);
+                    Console.WriteLine($"Initialzing {Queue.Current?.Song?.Name}");
+                    if (!(Queue.Current?.Song?.IsDownloaded ?? true)) {
+                        State = PamelloPlayerState.AwainingSongDownload;
+                        await Queue.Current.Song.StartDownload();
+                    }
+                    State = PamelloPlayerState.AwainingSongAudio;
+                    if (Queue.Current is not null && !await Queue.Current.TryInitialize()) {
+                        Console.WriteLine($"Failed to initialize {Queue.Current?.Song?.Name}");
+                        Queue.GoToNextSong(true);
                         continue;
                     }
-                    Console.WriteLine($"Initialzed {Queue.Current.Song.Name}");
+                    Console.WriteLine($"Initialzed {Queue.Current?.Song?.Name}");
                 }
 
                 if (State != PamelloPlayerState.Ready) {

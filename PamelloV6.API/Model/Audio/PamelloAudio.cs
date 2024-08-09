@@ -4,6 +4,8 @@ using System.Diagnostics;
 
 namespace PamelloV6.API.Model.Audio
 {
+	public delegate void AudioInitializationProgressDelegate(int progress);
+
     public class PamelloAudio
     {
         public readonly PamelloSong Song;
@@ -15,6 +17,8 @@ namespace PamelloV6.API.Model.Audio
 
         public int? nextBreakPoint { get; private set; }
         public int? nextJumpPoint { get; private set; }
+
+		public event AudioInitializationProgressDelegate? OnInitializationProgress;
 
         public bool IsInitialized {
 			get => Song.IsDownloaded && _audioStream is not null;
@@ -29,7 +33,11 @@ namespace PamelloV6.API.Model.Audio
 
         public async Task<bool> TryInitialize() {
             if (!Song.IsDownloaded) {
-                await Song.StartDownload();
+                if (await Song.StartDownload() != DownloadResult.Success) {
+                    Position.TimeValue = 0;
+                    Duration.TimeValue = 0;
+                    return false;
+                }
             }
 
 			_audioStream = await CreateAudioStream();
@@ -146,7 +154,23 @@ namespace PamelloV6.API.Model.Audio
 
 			var memoryStream = new MemoryStream();
 
-			await ffmpegStream.CopyToAsync(memoryStream);
+            var hours3 = AudioTime.FrequencyMultiplier * 3600 * 3;
+            var min8 = AudioTime.FrequencyMultiplier * 60 * 8;
+			var last10minCount = 0;
+
+            int nextByte;
+			while ((nextByte = ffmpegStream.ReadByte()) != -1 && memoryStream.Length < hours3) {
+				memoryStream.WriteByte((byte)nextByte);
+
+				if (memoryStream.Length / min8 > last10minCount) {
+					OnInitializationProgress?.Invoke(++last10minCount);
+                }
+			}
+
+			if (last10minCount > 0) {
+                OnInitializationProgress?.Invoke(0);
+            }
+
 			memoryStream.Position = 0;
 
 			return memoryStream;

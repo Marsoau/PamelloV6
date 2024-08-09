@@ -15,7 +15,12 @@
                 <span class="player-duration">Awaiting speaker</span>
             }
             @else if (api.selectedPlayer?.state == 3) {
-                <span class="player-duration">Initializing song</span>
+                <span class="player-duration">
+                    Initializing song
+                    @if (initializationProgress > 0) {
+                        ({{(initializationProgress * 60 * 8) | stringTime}} initialized)
+                    }
+                </span>
             }
             @else if (api.selectedPlayer?.state == 4) {
                 <span class="player-duration">Downloading song</span>

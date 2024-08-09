@@ -57,6 +57,11 @@ namespace PamelloV6.API.Model.Events
                 Header = "PlayerStateUpdated",
                 Data = newState
             };
+        public static PamelloEvent PlayerInitializationProgress(int progress)
+            => new PamelloEvent() {
+                Header = "PlayerInitializationProgress",
+                Data = progress
+            };
         public static PamelloEvent PlayerCurrentTimeUpdated(int newSeconds)
             => new PamelloEvent() {
                 Header = "PlayerCurrentTimeUpdated",

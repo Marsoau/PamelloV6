@@ -10,10 +10,12 @@ namespace PamelloV6.API.Downloads
 	public enum DownloadResult {
 		Success,
 		CantStart,
-		NoYoutubeIdArg,
-		NoDestinationArg,
-		AgeRestriction,
-	}
+        WrongArgumnets,
+        InvalidYoutubeId,
+        NoAudioStreamFound,
+        AgeRestriction,
+        UnknownError,
+    }
 
 	public delegate void OnProgressDelegate(double progress);
 	public delegate void OnStartDelegate();
@@ -51,12 +53,15 @@ namespace PamelloV6.API.Downloads
 			}
 
 			await process.WaitForExitAsync();
+
             Console.WriteLine($"Download end of {youtubeVideoId}");
 
             IsDownloading = false;
 
 			var finalResult = (DownloadResult)process.ExitCode;
-			OnEnd?.Invoke(finalResult);
+
+            Console.WriteLine($"Download failed, reason: {finalResult}");
+            OnEnd?.Invoke(finalResult);
 
 			return finalResult;
 		}

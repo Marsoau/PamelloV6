@@ -151,6 +151,9 @@ export class PamelloV6EventsAPI {
     public set PlayerStateUpdated(handler: any) {
         this.AddEventListener("PlayerStateUpdated", handler);
     }
+    public set PlayerInitializationProgress(handler: any) {
+        this.AddEventListener("PlayerInitializationProgress", handler);
+    }
     public set PlayerCurrentTimeUpdated(handler: any) {
         this.AddEventListener("PlayerCurrentTimeUpdated", handler);
     }

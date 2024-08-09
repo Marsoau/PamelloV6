@@ -19,12 +19,20 @@ export class PlayerControlsComponent {
 	public sliderDragValue: number;
 	public sliderCurrentValue: string;
 
+	public initializationProgress: number;
+
 	constructor(api: PamelloV6API) {
 		this.api = api;
 
 		this.sliderDrag = false;
 		this.sliderDragValue = 0;
 		this.sliderCurrentValue = "0";
+
+		this.initializationProgress = 0;
+
+		this.api.events.PlayerInitializationProgress = (progress: number) => {
+			this.initializationProgress = progress;
+		}
 	}
 
 	public BackClick() {

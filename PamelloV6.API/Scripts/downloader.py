@@ -1,11 +1,23 @@
 import pytube, sys, codecs
 from pytube import extract
+import urllib;
+
+#CantStart 1
+#WrongArgumnets 2
+#InvalidYoutubeId 3
+#NoAudioStreamFound 4
+#AgeRestriction 5
+#UnknownError 6
 
 if (len(sys.argv) != 3):
-    print("Where argumets???")
-    exit(1)
+	print("#WrongArgumnets")
+	exit(2) #WrongArgumnets
 ytid = sys.argv[1]
 download_path = str(sys.argv[2])
+
+if (len(ytid) != 11):
+	print("#InvalidYoutubeId")
+	exit(3); #InvalidYoutubeId
 
 class FYouTube(pytube.YouTube):
 	def __init__(self, url):
@@ -53,6 +65,19 @@ class FYouTube(pytube.YouTube):
 video = FYouTube(f"https://www.youtube.com/watch?v={ytid}")
 
 try:
-	video.fast_audio.download("", download_path)
+	audioStream = video.fast_audio;
+	if (audioStream is None):
+		print("#NoAudioStreamFound")
+		exit(4); #NoAudioStreamFound
+except urllib.error.HTTPError as httpError:
+	print("#AgeRestriction")
+	exit(5); #AgeRestriction
+except pytube.exceptions.VideoUnavailable as vuError:
+	print("#InvalidYoutubeId")
+	exit(3); #InvalidYoutubeId
+
+try:
+	audioStream.download("", download_path)
 except:
-	exit(2);
+	print("#UnknownError")
+	exit(6); #UnknownError
