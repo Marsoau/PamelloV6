@@ -1,13 +1,11 @@
-﻿using System.ComponentModel;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Reflection;
 
 namespace PamelloV6.API.Config
 {
     public static class PamelloConfig
     {
         public static string BotToken;
-        public static string Speaker1Token;
+        public static string[] SpeakersTokens;
         public static ulong TestGuildId;
 
         private static IConfigurationRoot config;
@@ -30,11 +28,11 @@ namespace PamelloV6.API.Config
             }
         }
         private static void LoadField(FieldInfo field) {
-            var configValue = config[field.Name];
+            var section = config.GetSection(field.Name);
+            var configValue = section.Get(field.FieldType);
             if (configValue is null) throw new Exception($"Cant find \"{field.Name}\" field in config");
 
-            var value = TypeDescriptor.GetConverter(field.FieldType).ConvertFromInvariantString(configValue);
-            field.SetValue(null, value);
+            field.SetValue(null, configValue);
         }
     }
 }

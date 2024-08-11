@@ -1,5 +1,6 @@
 ﻿using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
+using PamelloV6.API.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,12 @@ namespace PamelloV6.Server.Services
 		}
 
 		public DiscordClientService(IServiceProvider services) {
-			DiscordClients = new DiscordSocketClient[2];
+			DiscordClients = new DiscordSocketClient[PamelloConfig.SpeakersTokens.Length + 1];
 
             DiscordClients[0] = services.GetRequiredService<DiscordSocketClient>();
-            DiscordClients[1] = services.GetRequiredKeyedService<DiscordSocketClient>("Speaker1");
+			for (int i = 0; i < PamelloConfig.SpeakersTokens.Length; i++) {
+				DiscordClients[i + 1] = services.GetRequiredKeyedService<DiscordSocketClient>($"Speaker-{i}");
+			}
         }
 	}
 }

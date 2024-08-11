@@ -78,7 +78,9 @@ namespace PamelloV6.API
             };
 
             services.AddSingleton(new DiscordSocketClient(discordConfig));
-            services.AddKeyedSingleton("Speaker1", new DiscordSocketClient(discordConfig));
+			for (int i = 0; i < PamelloConfig.SpeakersTokens.Length; i++) {
+                services.AddKeyedSingleton($"Speaker-{i}", new DiscordSocketClient(discordConfig));
+            }
 
             services.AddSingleton(services => new InteractionService(
 				services.GetRequiredService<DiscordSocketClient>(),
@@ -88,12 +90,12 @@ namespace PamelloV6.API
 				}
 			));
 			services.AddSingleton<InteractionHandler>();
-		}
+            services.AddSingleton<DiscordClientService>();
+        }
 
 		public void ConfigurePamelloServices(IServiceCollection services) {
 			services.AddSingleton<InteractionHandler>();
 
-			services.AddSingleton<DiscordClientService>();
 			services.AddSingleton<UserAuthorizationService>();
 			services.AddSingleton<PamelloEventsService>();
 
@@ -113,19 +115,18 @@ namespace PamelloV6.API
 		}
 
 		public async Task StartupDiscordServicesAsync(IServiceProvider services) {
-			var MainDiscordClient = services.GetRequiredService<DiscordSocketClient>();
-            var S1DiscordClient = services.GetRequiredKeyedService<DiscordSocketClient>("Speaker1");
+			var discordClients = services.GetRequiredService<DiscordClientService>();
 
             var interactionService = services.GetRequiredService<InteractionService>();
 
 			await services.GetRequiredService<InteractionHandler>().InitializeAsync();
 
-			MainDiscordClient.Log += async (message) => {
+            discordClients.MainDiscordClient.Log += async (message) => {
 				Console.WriteLine(message);
 			};
 
 			var discordReady = new TaskCompletionSource();
-			MainDiscordClient.Ready += async () => {
+            discordClients.MainDiscordClient.Ready += async () => {
                 /*
 				var guild = MainDiscordClient.GetGuild(PamelloConfig.TestGuildId);
 
@@ -140,11 +141,13 @@ namespace PamelloV6.API
                 discordReady.SetResult();
 			};
 
-			await MainDiscordClient.LoginAsync(TokenType.Bot, PamelloConfig.BotToken);
-			await MainDiscordClient.StartAsync();
+			await discordClients.MainDiscordClient.LoginAsync(TokenType.Bot, PamelloConfig.BotToken);
+			await discordClients.MainDiscordClient.StartAsync();
 
-            await S1DiscordClient.LoginAsync(TokenType.Bot, PamelloConfig.Speaker1Token);
-            await S1DiscordClient.StartAsync();
+			for (int i = 0; i < discordClients.DiscordClients.Length - 1; i++) {
+                await discordClients.DiscordClients[i + 1].LoginAsync(TokenType.Bot, PamelloConfig.SpeakersTokens[i]);
+                await discordClients.DiscordClients[i + 1].StartAsync();
+            }
 
             await discordReady.Task;
 		}

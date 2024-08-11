@@ -81,14 +81,18 @@ namespace PamelloV6.API.Model.Audio
 		*/
 
         public async Task ConnectSpeakerToUserVc(PamelloUser user) {
-            var mutualGuilds = _clients.MainDiscordClient.GetUser(user.DiscordUser.Id).MutualGuilds ?? [];
-
             SocketGuildUser guildUser;
-            foreach (var guild in mutualGuilds) {
-                guildUser = guild.GetUser(user.DiscordUser.Id);
-                if (guildUser.VoiceChannel is not null) {
-                    await ConnectSpeakerToVc(guild.Id, guildUser.VoiceChannel.Id);
-                    return;
+			IReadOnlyCollection<SocketGuild> mutualGuilds;
+
+            foreach (var client in _clients.DiscordClients) {
+                mutualGuilds = client.GetUser(user.DiscordUser.Id).MutualGuilds ?? [];
+
+                foreach (var guild in mutualGuilds) {
+                    guildUser = guild.GetUser(user.DiscordUser.Id);
+                    if (guildUser.VoiceChannel is not null) {
+                        await ConnectSpeakerToVc(guild.Id, guildUser.VoiceChannel.Id);
+                        return;
+                    }
                 }
             }
 
