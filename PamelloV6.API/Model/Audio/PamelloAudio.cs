@@ -1,5 +1,6 @@
 ﻿using Discord.Audio;
 using PamelloV6.API.Downloads;
+using PamelloV6.API.Exceptions;
 using System.Diagnostics;
 
 namespace PamelloV6.API.Model.Audio
@@ -141,12 +142,16 @@ namespace PamelloV6.API.Model.Audio
                 return null;
 			}
 
-			Stream? ffmpegStream = Process.Start(new ProcessStartInfo {
+			var ffmpegProcess = Process.Start(new ProcessStartInfo {
 				FileName = "ffmpeg",
 				Arguments = $@"-hide_banner -loglevel panic -i ""C:\.PamelloV6Data\Music\{Song.Id}.mp4"" -ac 2 -f s16le -ar 48000 pipe:1",
 				UseShellExecute = false,
 				RedirectStandardOutput = true
-			})?.StandardOutput.BaseStream;
+			});
+
+			if (ffmpegProcess is null) throw new PamelloException("Couldnt start a ffmpeg process");
+
+            var ffmpegStream = ffmpegProcess.StandardOutput.BaseStream;
 
 			if (ffmpegStream is null) {
 				return null;
@@ -154,24 +159,27 @@ namespace PamelloV6.API.Model.Audio
 
 			var memoryStream = new MemoryStream();
 
-            var hours3 = AudioTime.FrequencyMultiplier * 3600 * 3;
+            var lengthLimit = AudioTime.FrequencyMultiplier * (3600);
             var min8 = AudioTime.FrequencyMultiplier * 60 * 8;
 			var last10minCount = 0;
 
             int nextByte;
-			while ((nextByte = ffmpegStream.ReadByte()) != -1 && memoryStream.Length < hours3) {
+			while ((nextByte = ffmpegStream.ReadByte()) != -1 && memoryStream.Length < lengthLimit) {
 				memoryStream.WriteByte((byte)nextByte);
 
 				if (memoryStream.Length / min8 > last10minCount) {
 					OnInitializationProgress?.Invoke(++last10minCount);
                 }
-			}
+            }
 
-			if (last10minCount > 0) {
+            memoryStream.Position = 0;
+
+            if (last10minCount > 0) {
                 OnInitializationProgress?.Invoke(0);
             }
 
-			memoryStream.Position = 0;
+            ffmpegStream.Close();
+            ffmpegProcess.Close();
 
 			return memoryStream;
 		}
