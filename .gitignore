@@ -361,3 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/PamelloV6.WebServer/PamelloV6.WebServer.csproj
