@@ -23,7 +23,7 @@ export class UserAuthorizationComponent {
 	}
 	
 	Unauthorize() {
-		this.api.Disonnect();
+		this.api.events.Unauthorize();
 	}
 	async Authorize() {
 		this.errorMessage = "";
@@ -34,11 +34,7 @@ export class UserAuthorizationComponent {
 			return;
 		}
 
-		let acquireTokenResult = await this.api.AcquireTokenWithCode(code, (errorMessage: string) => {
-			this.errorMessage = errorMessage;
-		});
-
-		if (acquireTokenResult) this.api.Connect((errorMessage: string) => {
+		let acquireTokenResult = await this.api.events.TryAuthorizeWithCode(code, (errorMessage: string) => {
 			this.errorMessage = errorMessage;
 		});
 	}

@@ -8,13 +8,38 @@ namespace PamelloV6.API.Model.Events
 {
     public class RemoteEventListener
     {
-        private readonly HttpResponse _response;
-        public readonly PamelloUser User;
+        public readonly Guid Key;
 
-        public RemoteEventListener(HttpResponse response, PamelloUser user)
+        private readonly HttpResponse _response;
+
+        private PamelloUser? _user;
+        public PamelloUser? User {
+            get {
+                return _user;
+            } 
+            set {
+                var oldUser = _user;
+                _user = value;
+
+                if (User is null) {
+                    Console.WriteLine($"{{\"{Key}\" events UNauthroized user {oldUser}}}");
+                    SendEvent(PamelloEvent.Unauthorized());
+                }
+                else {
+                    Console.WriteLine($"{{\"{Key}\" events Authroized user {User}}}");
+                    SendEvent(PamelloEvent.Authorized(User.Token));
+                }
+            }
+        }
+
+        public RemoteEventListener(HttpResponse response)
         {
+            Key = Guid.NewGuid();
+
             _response = response;
-            User = user;
+
+            Console.WriteLine($"{{Created new events \"{Key}\"}}");
+            SendEvent(PamelloEvent.EventsConnected(Key));
         }
 
         public void SendEvent(PamelloEvent pammelloEvent)

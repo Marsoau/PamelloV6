@@ -4,42 +4,38 @@ import { IPamelloSpeaker } from "./model/PamelloSpeaker";
 import { PamelloV6API } from "./pamelloV6API.service";
 
 export class PamelloV6EventsAPI {
-    private eventSource: EventSource | null;
+    public eventsKey: string;
+    private eventSource: EventSource;
 
     public constructor(
         private readonly _api: PamelloV6API
     ) {
-        this.eventSource = null;
+        this.eventsKey = "";
+        this.eventSource = new EventSource(`${PamelloConfig.BaseUrl}/Events`, );
+
+        this.SubscribeDefault();
+        this.eventSource.addEventListener("error", (event) => {
+            console.log(`es error`)
+            
+        });
+        this.eventSource.addEventListener("open", () => {
+            console.log(`es open`)
+        });
     }
 
     public get isConnected(): boolean {
-        return this.eventSource != null && this.eventSource.readyState == 1
+        return this.eventSource.readyState == 1
     }
 
-    public Connect(onsuccess: any = null, onfail: any = null) {
-        if (!this._api.token) return;
-        if (this.eventSource) this.Disconnect();
-
-        console.log(`Connecting to events`)
-        this.eventSource = new EventSource(`${PamelloConfig.BaseUrl}/Events?as=${this._api.token}`);
-        this.eventSource.addEventListener("error", (event) => {
-            if (this.eventSource?.readyState == 2) return;
-            this.Disconnect();
-
-            console.log(`Failed to connect to events`)
-            
-            if (onfail) onfail();
-        });
-        this.eventSource.addEventListener("open", () => {
-            console.log(`Connected to events successfully`)
-            
-            this.SubscribeDefault();
-            if (onsuccess) onsuccess();
-        });
+    public async TryAuthorizeWithCode(code: number, onerror: any) {
+        this._api.http.Get(`Authorization/Events?code=${code}&events-key=${this.eventsKey}`, onerror);
     }
-    public Disconnect() {
-        this.eventSource?.close();
-        this.eventSource = null;
+    public async TryAuthorizeWithToken(token: string) {
+        this._api.http.Get(`Authorization/Events?user-token=${token}&events-key=${this.eventsKey}`);
+    }
+
+    public async Unauthorize() {
+        this._api.http.Get(`Authorization/Events/Close?events-key=${this.eventsKey}`);
     }
 
     public AddEventListener(event: string, handler: any) {
@@ -54,6 +50,25 @@ export class PamelloV6EventsAPI {
 
     private SubscribeDefault() {
         console.log("Subscribe to default events start");
+
+        this.EventsConnected = (eventsKey: string) => {
+            this.eventsKey = eventsKey;
+            console.log(`Events connected, events key: ${eventsKey}`);
+
+            if (this._api.token) this.TryAuthorizeWithToken(this._api.token);
+        }
+        this.Authorized = (userToken: string) => {
+            console.log(`Authorized, user token: ${userToken}`);
+
+            this._api.token = userToken;
+            this._api.LoadAuthorizedUserData();
+        }
+        this.Unauthorized = () => {
+            console.log(`Unauthorized`);
+
+            this._api.token = "";
+            this._api.LoadAuthorizedUserData();
+        }
 
         this.UserPlayerSelected = (playerId: number) => {
             this._api.user!.selectedPlayerId = playerId;
@@ -130,8 +145,14 @@ export class PamelloV6EventsAPI {
         console.log("Subscribe to default events end");
     }
 
-    public set LogMessage(handler: any) {
-        this.AddEventListener("LogMessage", handler);
+    public set EventsConnected(handler: any) {
+        this.AddEventListener("EventsConnected", handler);
+    }
+    public set Authorized(handler: any) {
+        this.AddEventListener("Authorized", handler);
+    }
+    public set Unauthorized(handler: any) {
+        this.AddEventListener("Unauthorized", handler);
     }
     public set TokenUpdated(handler: any) {
         this.AddEventListener("TokenUpdated", handler);

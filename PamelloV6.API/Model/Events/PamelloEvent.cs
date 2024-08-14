@@ -21,9 +21,19 @@ namespace PamelloV6.API.Model.Events
                 Data = message,
             };
 
-        public static PamelloEvent TokenUpdated()
+        public static PamelloEvent EventsConnected(Guid eventsKey)
             => new PamelloEvent() {
-                Header = "TokenUpdated"
+                Header = "EventsConnected",
+                Data = eventsKey
+            };
+        public static PamelloEvent Authorized(Guid userToken)
+            => new PamelloEvent() {
+                Header = "Authorized",
+                Data = userToken
+            };
+        public static PamelloEvent Unauthorized()
+            => new PamelloEvent() {
+                Header = "Unauthorized"
             };
 
         //Player events

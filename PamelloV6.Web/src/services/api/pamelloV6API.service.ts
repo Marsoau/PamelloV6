@@ -51,58 +51,23 @@ export class PamelloV6API {
     public get isConnected() {
         return this.events.isConnected;
     }
+    public get isAuthorized() {
+        return this.events.isConnected && this.token;
+    }
 
     private async Startup() {
         console.log("Starting up API service");
 
-        this.Connect((errorMessage: string) => {
-            console.log("Starting up fail:", errorMessage);
-        });
-
         console.log("API startup end");
     }
-
-    public async AcquireTokenWithCode(code: number, onerror: any = null) {
-        this.token = await this.http.Get<string>(`Authorization/GetToken?code=${code}`, onerror);
-        
-        if (this.token) return true;
-        return false;
-    }
-    public async Connect(onerror: any = null) {
-        if (!this.token) {
-            if (onerror) onerror("No token was found");
-
-            this.ResetAuthorizedUserData(true);
-            return false;
-        }
-
-        let userAuthorizationResult = await this.UpdateAuthorizedUserData();
-        if (!userAuthorizationResult) {
-            if (onerror) onerror("Failed get user by token");
-            
-            this.ResetAuthorizedUserData(true);
-            return false;
-        }
-        
-        this.events.Connect(() => {}, () => {
-            if (onerror) onerror("Failed to connect");
-            this.Disonnect(false);
-        });
-
-        return true;
-    }
-    public Disonnect(resetToken: boolean = true) {
-        this.events.Disconnect();
-
-        this.ResetAuthorizedUserData(resetToken);
-    }
-
-    private async UpdateAuthorizedUserData() {
+    
+    public async LoadAuthorizedUserData() {
         console.log("Updating authorized user data");
         this.ResetAuthorizedUserData();
 
         this.user = await this.data.GetAuhorizedUser();
         if (!this.user) return false;
+
         console.log(`Loaded authorized user "${this.user.name}"`);
 
         this.LoadSelectedPlayer();
