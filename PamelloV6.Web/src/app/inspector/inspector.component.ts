@@ -74,6 +74,14 @@ export class InspectorComponent {
 
 			this.LoadEpisodes();
 		}
+		this.api.events.SongPlayCountUpdated = (data: any) => {
+			if (!this.inspectedSong || this.inspectedSong.id != data.songId) return;
+			this.inspectedSong.playCount = data.newCount;
+
+			console.log(data);
+
+			this.LoadEpisodes();
+		}
 
 		this.api.events.PlaylistSongsUpdated = (data: any) => {
 			if (!this.inspectedPlaylist || this.inspectedPlaylist.id != data.playlistId) return;

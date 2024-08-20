@@ -51,6 +51,7 @@ namespace PamelloV6.API.Model.Audio
 
 			Position.TimeValue = _audioStream.Position;
 			Duration.TimeValue = _audioStream.Length;
+			Song.PlayCount++;
 
             UpdatePlaybackPoints();
 
@@ -159,7 +160,7 @@ namespace PamelloV6.API.Model.Audio
 
 			var memoryStream = new MemoryStream();
 
-            var lengthLimit = AudioTime.FrequencyMultiplier * (3600);
+            var lengthLimit = AudioTime.FrequencyMultiplier * (3600) * 3;
             var min8 = AudioTime.FrequencyMultiplier * 60 * 8;
 			var last10minCount = 0;
 
