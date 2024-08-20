@@ -1,0 +1,33 @@
+:host {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) 2px auto;
+}
+
+.queue-controls-container {
+    display: flex;
+    justify-content: space-between;
+    
+    margin: 4px;
+
+    .queue-controls-subcontainer {
+        &-left button {
+            margin-right: 4px;
+        }
+        &-right button {
+            margin-left: 4px;
+        }
+    }
+}
+
+.queue-list-container {
+    display: grid;
+    grid-template-rows: auto 1fr;
+
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    .song-item {
+        margin: 4px;
+    }
+}

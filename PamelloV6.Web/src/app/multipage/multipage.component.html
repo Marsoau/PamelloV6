@@ -1,0 +1,33 @@
+<div class="multipage-page-headers-container">
+    @for (pageHeader of pages; track $index) {
+        <div [ngClass]="{
+            'page-header-container-selected': selectedPage == $index
+        }" class="page-header-container" (click)="selectedPage = $index">
+            {{pageHeader}}
+        </div>
+    }
+</div>
+<div class="multipage-page-list-container">
+    <div [style]="{
+        'display': selectedPage == 0 ? 'grid' : 'none'
+    }" class="multipage-page-container">
+        <ng-content select="[page-0]"></ng-content>
+    </div>
+    <div [style]="{
+        'display': selectedPage == 1 ? 'grid' : 'none'
+    }" class="multipage-page-container">
+        <ng-content select="[page-1]"></ng-content>
+    </div>
+    <div [style]="{
+        'display': selectedPage == 2 ? 'grid' : 'none'
+    }" class="multipage-page-container">
+        <ng-content select="[page-2]"></ng-content>
+    </div>
+    <!--
+    @for (child of children; track $index) {
+        <div [style]="{
+            'display': selectedPage == $index ? 'grid' : 'none'
+        }" [innerHtml]="safeHtml(child.nativeElement.innerHTML)" class="multipage-page-container"></div>
+    }
+    -->
+</div>

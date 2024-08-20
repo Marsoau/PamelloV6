@@ -1,0 +1,12 @@
+@if (speaker) {
+    <div class="speaker-guild">{{speaker.guildName}}</div>
+    <div class="speaker-vc">{{speaker.vcName}}</div>
+    <div class="speaker-button-container">
+        <button class="default-button mini-button" (click)="Disconnect()">Disconnect</button>
+    </div>
+}
+@else {
+    <div></div>
+    <div class="speaker-vc">Unknown</div>
+    <div></div>
+}

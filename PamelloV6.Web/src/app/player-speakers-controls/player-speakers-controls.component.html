@@ -1,0 +1,5 @@
+<div class="speakers-list">
+    @for (speaker of api.selectedPlayer?.speakers; track speaker) {
+        <app-player-speaker [speaker]="speaker" (disconnectClick)="SpeakerDisconnect($index)"/>
+    }
+</div>

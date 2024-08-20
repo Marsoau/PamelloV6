@@ -1,0 +1,17 @@
+<div class="song-info-container" (click)="Select()">
+    <img [src]="song?.coverUrl"/>
+    <div class="song-title-container">
+        <div>{{song?.title}}</div>
+    </div>
+</div>
+<div class="song-buttons-container">
+    @if (api.user?.selectedPlayerId != null) {
+        <button class="default-button mini-button" (click)="AddToQueue()">Add To Queue</button>
+    }
+    @if (displayAddToPlaylistButton) {
+        <button class="default-button mini-button" (click)="AddToPlaylist()">Add To Playlist</button>
+    }
+    @if (displayRemoveButton) {
+        <button class="default-button mini-button" (click)="Remove()">Remove</button>
+    }
+</div>

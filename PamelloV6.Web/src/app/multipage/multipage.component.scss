@@ -1,0 +1,43 @@
+:host {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+}
+
+.multipage-page-headers-container {
+    display: flex;
+    background-color: #D0D0D0;
+
+    .page-header-container {
+        color: #808080;
+        background-color: #F0F0F0;
+
+        font-weight: 500;
+
+        padding: 0px 4px;
+
+        margin-right: 2px;
+
+        cursor: pointer;
+
+        &-selected {
+            color: #484848;
+            background-color: #FFFFFF;
+
+            cursor: default;
+        }
+    }
+}
+
+.multipage-page-list-container {
+    display: grid;
+    
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+
+    .multipage-page-container {
+        display: grid;
+
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr);
+    }
+}

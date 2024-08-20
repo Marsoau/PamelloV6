@@ -1,0 +1,57 @@
+:host {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: 36px;
+
+    background-color: #F0F0F0;
+
+    &:hover {
+        background-color: #F8F8F8;
+
+        .youtube-video-buttons {
+            display: flex;
+        }
+    }
+}
+
+.youtube-video-image {
+    img {
+        width: 64px;
+        height: 36px;
+        
+        object-fit: cover;
+    }
+}
+
+.youtube-video-info {
+    color: #484848;
+    font-weight: 500;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    margin: 4px;
+    margin-top: 2px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    .youtube-video-name {
+        font-size: 12px;
+    }
+    .youtube-video-author {
+        font-size: 9px;
+    }
+}
+
+.youtube-video-buttons {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+
+    button {
+        margin: 1px 2px;
+    }
+}

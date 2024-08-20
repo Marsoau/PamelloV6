@@ -1,0 +1,41 @@
+@if (api.isConnected) {
+    <div class="main-container">
+        <div class="main-subcontainer main-subcontainer-left">
+            @if (api.isAuthorized) {
+                <app-player-selection class="controller-item"/>
+            } @else {
+                <app-reqire-authorization>Required authorized user</app-reqire-authorization>
+            }
+            
+            @if (api.isAuthorized) {
+                <app-player-controls class="controller-item"/>
+            } @else {
+                <app-reqire-authorization>Required authorized user</app-reqire-authorization>
+            }
+            @if (api.isAuthorized) {
+                <app-multipage [pages]="['Speakers', 'Episodes']" [selectedPage]="0">
+                    <app-player-speakers-controls page-0/>
+                    <app-player-episodes page-1/>
+                </app-multipage>
+            } @else {
+                <app-reqire-authorization>Required authorized user</app-reqire-authorization>
+            }
+            <app-user-authorization class="controller-item"/>
+        </div>
+        <div class="main-subcontainer main-subcontainer-right">
+            @if (api.isAuthorized) {
+                <app-player-queue class="controller-item"/>
+            } @else {
+                <app-reqire-authorization>Required authorized user</app-reqire-authorization>
+            }
+            @if (api.isAuthorized) {
+                <app-song-addition class="controller-item"/>
+            } @else {
+                <app-reqire-authorization>Required authorized user</app-reqire-authorization>
+            }
+        </div>
+    </div>
+}
+@else {
+    <app-reqire-authorization>No connection to the server</app-reqire-authorization>
+}

@@ -1,0 +1,94 @@
+:host {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-template-rows: 20px;
+
+    background-color: #F0F0F0;
+}
+
+.episode-title-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+
+    .episode-title {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        color: #242424;
+    
+        padding-left: 4px;
+    
+        font-size: 12px;
+        font-weight: 500;
+    
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &:hover button {
+        display: block;
+    }
+}
+.episode-time-container {
+    display: flex;
+
+    background-color: #D0D0D0;
+
+    .episode-time {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        color: #646464;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        padding: 0px 4px;
+    }
+
+    &:hover button {
+        display: block;
+    }
+}
+
+.episode-checkbox-container {
+    display: grid;
+    grid-template-columns: auto 20px;
+
+    .episode-checkbox {
+        grid-column: 2;
+
+        margin: 3px;
+
+        background-color: #E0E0E0;
+
+        &:hover {
+            background-color: #EAEAEA;
+        }
+
+        &-active {
+            background-color: #C0C0C0;
+
+            &:hover {
+                background-color: #C8C8C8;
+            }
+        }
+    }
+    button {
+        margin-right: 0;
+    }
+
+    &:hover button {
+        display: block;
+    }
+}
+
+button {
+    display: none;
+
+    padding: 0px 4px;
+    margin: 2px;
+}

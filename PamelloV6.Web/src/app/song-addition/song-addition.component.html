@@ -1,0 +1,10 @@
+<app-inspector #inspector/>
+<div class="gray-separator"></div>
+<app-search #search
+    [displayAddToPlaylistButton]="inspector.displayStyle == 'Playlist'"
+
+    (selectedSongChanged)="inspector.InspectSongId($event.id)"
+    (selectedPlaylistChanged)="inspector.InspectPlaylistId($event.id)"
+    (addSongToPlaylistClick)="inspector.AddSongToPlaylist($event)"
+    (addYoutubeSongToPlaylistClick)="inspector.AddYoutubeSongToPlaylist($event)"
+/>

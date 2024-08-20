@@ -1,5 +1,6 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using PamelloV6.ClientASP.Models;
+using PamelloV6.ClientASP.ViewModels;
 using System.Diagnostics;
 
 namespace PamelloV6.ClientASP.Controllers

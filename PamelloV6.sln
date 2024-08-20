@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PamelloV6.DAL", "PamelloV6.DAL\PamelloV6.DAL.csproj", "{EEDA90BD-60B5-40D1-A7A3-06279DD813D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PamelloV6.DAL", "PamelloV6.DAL\PamelloV6.DAL.csproj", "{EEDA90BD-60B5-40D1-A7A3-06279DD813D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PamelloV6.Server", "PamelloV6.Server\PamelloV6.Server.csproj", "{E00D6FFF-5E39-4483-A230-EA8039578A61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PamelloV6.Core", "PamelloV6.Core\PamelloV6.Core.csproj", "{32469806-F4B0-4695-954F-05E4B92E4C62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PamelloV6.Core", "PamelloV6.Core\PamelloV6.Core.csproj", "{32469806-F4B0-4695-954F-05E4B92E4C62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PamelloV6.API", "PamelloV6.API\PamelloV6.API.csproj", "{F8CB1827-321C-4A7F-BEEA-EBD3C6FAD87B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PamelloV6.API", "PamelloV6.API\PamelloV6.API.csproj", "{F8CB1827-321C-4A7F-BEEA-EBD3C6FAD87B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PamelloV6.ClientASP", "PamelloV6.ClientASP\PamelloV6.ClientASP.csproj", "{7A9DE2FD-55B4-4841-928E-D82C1B566842}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PamelloV6.ClientASP", "PamelloV6.ClientASP\PamelloV6.ClientASP.csproj", "{7A9DE2FD-55B4-4841-928E-D82C1B566842}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PamelloV6.ClientWPF", "PamelloV6.ClientWPF\PamelloV6.ClientWPF.csproj", "{3B3B053C-D323-488D-B60A-165FF69651C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PamelloV6.ClientWPF", "PamelloV6.ClientWPF\PamelloV6.ClientWPF.csproj", "{3B3B053C-D323-488D-B60A-165FF69651C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PamelloV6.WebServer", "PamelloV6.WebServer\PamelloV6.WebServer.csproj", "{CD6E1B34-D42E-47B1-BF5F-0CAA67BD4B32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +25,6 @@ Global
 		{EEDA90BD-60B5-40D1-A7A3-06279DD813D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEDA90BD-60B5-40D1-A7A3-06279DD813D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEDA90BD-60B5-40D1-A7A3-06279DD813D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E00D6FFF-5E39-4483-A230-EA8039578A61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E00D6FFF-5E39-4483-A230-EA8039578A61}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E00D6FFF-5E39-4483-A230-EA8039578A61}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E00D6FFF-5E39-4483-A230-EA8039578A61}.Release|Any CPU.Build.0 = Release|Any CPU
 		{32469806-F4B0-4695-954F-05E4B92E4C62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{32469806-F4B0-4695-954F-05E4B92E4C62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32469806-F4B0-4695-954F-05E4B92E4C62}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{3B3B053C-D323-488D-B60A-165FF69651C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B3B053C-D323-488D-B60A-165FF69651C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B3B053C-D323-488D-B60A-165FF69651C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD6E1B34-D42E-47B1-BF5F-0CAA67BD4B32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD6E1B34-D42E-47B1-BF5F-0CAA67BD4B32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD6E1B34-D42E-47B1-BF5F-0CAA67BD4B32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD6E1B34-D42E-47B1-BF5F-0CAA67BD4B32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

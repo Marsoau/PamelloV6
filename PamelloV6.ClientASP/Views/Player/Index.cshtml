@@ -1,0 +1,212 @@
+﻿@model PamelloV6.ClientASP.Models.PlayerViewModel;
+@{
+    ViewData["Title"] = "Player";
+}
+<script src="~/js/sse.js" asp-append-version="true"></script>
+
+<div class="player-main-container">
+    <div class="player-left-subcontainer player-any-subcontainer">
+        <div class="player-choise-container player-container">
+            <div class="player-select-container">
+                <select name="player" id="player-select" onchange="SelectedPlayerOptionChanged()">
+                    <option value="none">-</option>
+                    <option value="1">Test 1</option>
+                    <option value="new">New...</option>
+                </select>
+            </div>
+            <div class="player-create-container" style="display: none;">
+                <button onclick="CreateCancelPlayerClick()">Cancel</button>
+                <input placeholder="Player name" id="player-create-input" />
+                <button onclick="CreatePlayerClick()">Create</button>
+            </div>
+        </div>
+        <div class="player-controls-container player-container">
+            <div class="song-cover-container player-controls-cell">
+                <div id="song-cover"></div>
+            </div>
+            <div class="song-info-container player-controls-cell">
+                <div>
+                    <span id="song-title">Title</span>
+                    <span id="song-author">Author</span>
+                </div>
+                <div class="song-time-container">
+                    <span id="song-time">1:02</span>
+                    <span> / </span>
+                    <span id="song-duration">2:37</span>
+                </div>
+            </div>
+            <div class="song-controls-buttons-container player-controls-cell">
+                <button id="prev-button" onclick="prevButtonClick()">B</button>
+                <button id="pp-button" onclick="ppButtonClick()">P</button>
+                <button id="next-button" onclick="nextButtonClick()">F</button>
+            </div>
+            <div class="player-slider-container player-controls-cell">
+                <input class="slider" id="player-slider" type="range" min="0" max="1" value="0" oninput="SliderTimeChanged()" onchange="SliderTimeSubmited()">
+            </div>
+        </div>
+        <div class="multipage-container player-container">
+            <div class="tabs-container" id="multipage-le-tab-container">
+                <div class="multipage-tab" id="multipage-le-tab-log">
+                    <input class="multipage-tab-radio" id="log-tab-radio" type="radio" name="multipage-le-tab" value="log" onchange="MultipageSet('le', 'log')" />
+                    <label for="log-tab-radio">Log</label>
+                </div>
+                <div class="multipage-tab" id="multipage-le-tab-episodes">
+                    <input class="multipage-tab-radio" id="episodes-tab-radio" type="radio" name="multipage-le-tab" value="episodes" onchange="MultipageSet('le', 'episodes')" />
+                    <label for="episodes-tab-radio">Episodes</label>
+                </div>
+                <div class="multipage-tab" id="multipage-le-tab-speakers">
+                    <input class="multipage-tab-radio" id="speakers-tab-radio" type="radio" name="multipage-le-tab" value="speakers" onchange="MultipageSet('le', 'speakers')" />
+                    <label for="speakers-tab-radio">Speakers</label>
+                </div>
+            </div>
+            <div class="pages-container" id="multipage-le-page-container">
+                <div class="multipage-page" id="multipage-le-page-log" style="display: none;">
+                    <div class="multipage-page-wrapper">
+                        <div class="multipage-page-container">
+                        </div>
+                    </div>
+                </div>
+                <div class="multipage-page" id="multipage-le-page-episodes" style="display: none;">
+                    <div class="multipage-page-wrapper">
+                        <div class="multipage-page-container current-episodes-page-container">
+                            <div id="current-song-episodes-list-container">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="multipage-page" id="multipage-le-page-speakers" style="display: none;">
+                    <div class="multipage-page-wrapper">
+                        <div class="multipage-page-container">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="user-container player-container">
+            <div id="user-cover">
+            </div>
+            <div class="user-info-container">
+                <span id="user-name">User name</span>
+                <span id="user-discordid">000000000000000000</span>
+            </div>
+            <div class="user-buttons-container">
+                <button id="logout-button">Logout</button>
+            </div>
+        </div>
+    </div>
+    <div class="player-right-subcontainer player-any-subcontainer">
+        <div class="queue-list-container player-container" id="queue-list">
+
+        </div>
+        <div class="queue-controls-container player-container">
+            <div class="queue-left-controls-container queue-controls-subcontainer">
+                <button class="queue-left-controls-button" id="is-random-queue-button" onclick="randomButtonClick()">Random</button>
+                <button class="queue-left-controls-button" id="is-reversed-queue-button" onclick="reversedButtonClick()">Reversed</button>
+                <button class="queue-left-controls-button" id="is-no-leftovers-queue-button" onclick="noLeftoversButtonClick()">No Leftovers</button>
+            </div>
+            <div class="queue-right-controls-container queue-controls-subcontainer">
+                <button class="queue-right-controls-button" id="shuffle-queue-button">Shuffle</button>
+                <button class="queue-right-controls-button" id="clear-queue-button">Clear</button>
+            </div>
+        </div>
+        <div class="song-addition-multipage multipage-container player-container">
+            <div class="tabs-container" id="multipage-addition-tab-container">
+                <div class="multipage-tab" id="multipage-addition-tab-songs">
+                    <input class="multipage-tab-radio" id="songs-tab-radio" type="radio" name="multipage-addition-tab" value="songs" onchange="MultipageSet('addition', 'songs')" />
+                    <label for="songs-tab-radio">Songs</label>
+                </div>
+                <div class="multipage-tab" id="multipage-addition-tab-playlists">
+                    <input class="multipage-tab-radio" id="playlists-tab-radio" type="radio" name="multipage-addition-tab" value="playlists" onchange="MultipageSet('addition', 'playlists')" />
+                    <label for="playlists-tab-radio">Playlists</label>
+                </div>
+                <div class="multipage-tab" id="multipage-addition-tab-youtube">
+                    <input class="multipage-tab-radio" id="youtube-tab-radio" type="radio" name="multipage-addition-tab" value="youtube" onchange="MultipageSet('addition', 'youtube')" />
+                    <label for="youtube-tab-radio">Youtube</label>
+                </div>
+            </div>
+            <div class="pages-container" id="multipage-addition-page-container">
+                <div class="multipage-page" id="multipage-addition-page-songs" style="display: none;">
+                    <div class="multipage-page-wrapper">
+                        <div class="multipage-page-container songs-page-container">
+                            <div class="selected-song-info-wrapper">
+                                <div class="selected-song-info-container">
+                                    <div class="selected-song-cover-container">
+                                        <div id="selected-song-cover">
+
+                                        </div>
+                                    </div>
+                                    <div class="grey-container"></div>
+                                    <div class="selected-song-info-subcontainer">
+                                        <div class="protected-edit" id="selected-song-title-pe">
+                                            <span class="protected-edit-label">
+                                                Title
+                                            </span>
+                                            <div class="protected-edit-value" onclick="EditPEValue('selected-song-title')">tta</div>
+                                            <div class="protected-edit-input" style="display: none;">
+                                                <input />
+                                                <button onclick="SavePEValue('selected-song-title')">Save</button>
+                                            </div>
+                                        </div>
+                                        <div class="protected-edit" id="selected-song-author-pe">
+                                            <span class="protected-edit-label">
+                                                Author
+                                            </span>
+                                            <div class="protected-edit-value" onclick="EditPEValue('selected-song-author')">asdasd</div>
+                                            <div class="protected-edit-input" style="display: none;">
+                                                <input />
+                                                <button onclick="SavePEValue('selected-song-author')">Save</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="grey-container"></div>
+                                <div class="selected-song-episodes-container">
+                                    <div id="selected-song-episodes-list-container">
+
+                                    </div>
+                                    <div class="grey-container"></div>
+                                    <div class="selected-song-episodes-controls-container">
+                                        <button id="add-selected-song-button" onclick="addSelectedSongButtonClick()">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="grey-container"></div>
+                            <div class="songs-list-container">
+                                <div id="songs-list">
+                                    
+                                </div>
+                                <div class="grey-container"></div>
+                                <div class="songs-controls">
+                                    <button>Prev</button>
+                                    <div class="songs-list-page-number">
+                                        <span>0</span>
+                                        <span> / </span>
+                                        <span>0</span>
+                                    </div>
+                                    <button>Next</button>
+                                    <div class="grey-container"></div>
+                                    <input />
+                                    <button>Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="multipage-page" id="multipage-addition-page-playlists" style="display: none;">
+                    <div class="multipage-page-wrapper">
+                        <div class="multipage-page-container">
+                            playlists
+                        </div>
+                    </div>
+                </div>
+                <div class="multipage-page" id="multipage-addition-page-youtube" style="display: none;">
+                    <div class="multipage-page-wrapper">
+                        <div class="multipage-page-container">
+                            youtube
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

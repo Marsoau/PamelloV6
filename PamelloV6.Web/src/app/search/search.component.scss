@@ -1,0 +1,47 @@
+:host {
+    display: grid;
+    grid-template-rows: 1fr 2px auto;
+}
+
+.search-results-list-container {
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    .search-results-item {
+        margin: 2px;
+    }
+}
+
+.search-controls-container {
+    display: grid;
+    grid-template-columns: auto 2px 1fr 2px auto 2px auto;
+
+    input {
+        min-width: 56px;
+    }
+
+    .pages-controls-container {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+
+        margin: 2px;
+
+        .pages-labels-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            margin: 0px 4px;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            color: #484848;
+        }
+
+    }
+
+    .button-container {
+        margin: 2px;
+    }
+}

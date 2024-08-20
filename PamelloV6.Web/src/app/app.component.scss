@@ -1,0 +1,35 @@
+:host {
+    height: 100vh;
+    width: 100vw;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: 480px minmax(0, 1fr);
+
+    grid-gap: 2px;
+    
+    background-color: #E0E0E0;
+}
+
+.main-subcontainer {
+    display: grid;
+    &-left {
+        grid-template-rows: auto auto minmax(0, 1fr) auto;
+    }
+    &-right {
+        grid-template-rows: minmax(0, 1fr) auto;
+    }
+
+    grid-gap: 2px;
+
+    background-color: #E0E0E0;
+}
+
+.controller-item {
+    background-color: white;
+}

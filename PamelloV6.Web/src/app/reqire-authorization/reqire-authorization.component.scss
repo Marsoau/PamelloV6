@@ -1,0 +1,29 @@
+:host {
+    display: grid;
+}
+
+.reqire-authorization-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    background-color: #f5ebeb;
+
+    .reqire-authorization-subcontainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+
+        span {
+            text-align: center;
+
+            color: #913131;
+            background-color: #e9afaf;
+
+            font-size: 16px;
+            font-weight: 500;
+
+            padding: 2px 6px;
+        }
+    }
+}

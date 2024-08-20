@@ -1,0 +1,28 @@
+@if (errorMessage) {
+    <div class="error-message-container">
+        {{errorMessage}}
+    </div>
+}
+<div class="user-authorization-container">
+    @if (api.user) {
+        <div class="when-authorized-container">
+            <img class="avatar-image" [src]="api.user.coverUrl"/>
+            <div class="info-container">
+                <div class="authorized-user-name">{{api.user.name}}</div>
+                <div class="authorized-user-discord-id">{{api.user.discordId}} ({{api.user.id}})</div>
+            </div>
+            <div class="button-container">
+                <button class="default-button" (click)="Unauthorize()">Logout</button>
+            </div>
+        </div>
+    }
+    @else {
+        <div class="when-not-authorized-container">
+            <div class="input-container">
+                <div class="authorization-label">Authorization Code:</div>
+                <input type="text" id="authorization-input" placeholder="use /get-code in discord" [(ngModel)]="inputValue"/>
+                <button class="default-button" (click)="Authorize()">Authorize</button>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,26 @@
+<div class="episode-title-container">
+    @if (isNameEdit) {
+        <input type="text" name="episode-name-input" [(ngModel)]="nameInputValue"/>
+    }
+    @else {
+        <div class="episode-title" (click)="Select()" [ngStyle]="{
+            'cursor': selected.length ? 'pointer' : 'default'
+        }">{{episode?.name}}</div>
+    }
+    <button class="default-button mini-button edit-title-button" (click)="NameEdit()">{{isNameEdit ? 'Save' : 'Edit'}}</button>
+</div>
+<div class="episode-time-container">
+    <button class="default-button mini-button edit-time-button" (click)="StartEdit()">{{isStartEdit ? 'Save' : 'Edit'}}</button>
+    @if (isStartEdit) {
+        <input type="number" name="episode-start-input" [(ngModel)]="startInputValue"/>
+    }
+    @else {
+        <div class="episode-time">{{episode?.start ?? 0 | stringTime}}</div>
+    }
+</div>
+<div class="episode-checkbox-container">
+    <button class="default-button mini-button edit-time-button" (click)="Remove()">Remove</button>
+    <div class="episode-checkbox" [ngClass]="{
+        'episode-checkbox-active': !episode?.skip
+    }" (click)="SwitchSkip()"></div>
+</div>

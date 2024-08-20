@@ -1,0 +1,40 @@
+<div class="queue-list-container">
+    <div class="queue-list">
+        @for (song of api.selectedPlayerQueueSongs; track $index) {
+            <app-reorder-item class="song-item"
+                itemSourceName="queue"
+                itemName="song"
+    
+                [isDragable]="true"
+                [isDropableOn]="true"
+                [doDisplayDropZoneLines]="true"
+    
+                [itemId]="song.id"
+                [itemIndex]="$index"
+    
+                (reorder)="QueueSongReorder($event)"
+            >
+                <app-queue-song [song]="song" [position]="$index" [isCurrent]="api.selectedPlayer?.queuePosition == $index" [isNext]="api.selectedPlayer?.nextPositionRequest == $index" />
+            </app-reorder-item>
+        }
+    </div>
+    <app-reorder-item class="queue-list-addition-zone"
+        [itemIndex]="api.selectedPlayerQueueSongs.length"
+
+        [isDropableOn]="api.selectedPlayer != null"
+
+        (reorder)="QueueSongReorder($event)"
+    />
+</div>
+<div class="gray-separator"></div>
+<div class="queue-controls-container">
+    <div class="queue-controls-subcontainer-left">
+        <button class="default-button {{api.selectedPlayer?.queueIsRandom ? 'green-button' : ''}}" (click)="RandomClick()">Random</button>
+        <button class="default-button {{api.selectedPlayer?.queueIsReversed ? 'green-button' : ''}}" (click)="ReversedClick()">Reversed</button>
+        <button class="default-button {{api.selectedPlayer?.queueIsNoLeftovers ? 'green-button' : ''}}" (click)="NoLeftoversClick()">No Leftovers</button>
+    </div>
+    <div class="queue-controls-subcontainer-right">
+        <button class="default-button">Shuffle</button>
+        <button class="default-button" (click)="ClearClick()">Clear</button>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+<div class="playlist-title-container" (click)="Select()">
+    <div>{{playlist?.name}} ({{playlist?.songIds?.length ?? 0}})</div>
+</div>
+<div class="playlist-buttons-container">
+    @if (api.user?.selectedPlayerId != null) {
+        <button class="default-button mini-button" (click)="AddToQueue()">Add To Queue</button>
+    }
+    @if (displayRemoveButton) {
+        <button class="default-button mini-button" (click)="Remove()">Remove</button>
+    }
+</div>

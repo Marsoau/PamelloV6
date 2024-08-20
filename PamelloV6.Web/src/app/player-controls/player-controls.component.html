@@ -1,0 +1,51 @@
+<div class="player-controls-container">
+    <div class="player-controls-cell player-controls-cell-cover">
+        <img [src]="api.selectedPlayerSong?.coverUrl"/>
+    </div>
+    <div class="player-controls-cell player-controls-cell-info">
+        <div class="player-song-info-container">
+            <span class="player-song-title">{{api.selectedPlayerSong?.title}}</span>
+            <span class="player-song-author">{{api.selectedPlayerSong?.author}}</span>
+        </div>
+        <div class="player-time-container">
+            @if (api.selectedPlayer?.state == 1) {
+                <span class="player-duration">Awaiting song</span>
+            }
+            @else if (api.selectedPlayer?.state == 2) {
+                <span class="player-duration">Awaiting speaker</span>
+            }
+            @else if (api.selectedPlayer?.state == 3) {
+                <span class="player-duration">
+                    Initializing song
+                    @if (initializationProgress > 0) {
+                        ({{(initializationProgress * 60 * 8) | stringTime}} initialized)
+                    }
+                </span>
+            }
+            @else if (api.selectedPlayer?.state == 4) {
+                <span class="player-duration">Downloading song</span>
+            }
+            @else {
+                <span class="player-time">{{(sliderDrag ? sliderDragValue : api.selectedPlayer?.currentSongTimePassed ?? 0) | stringTime}}</span>
+                <span class="player-duration">{{(api.selectedPlayer?.currentSongTimeTotal ?? 0) | stringTime}}</span>
+            }
+        </div>
+    </div>
+    <div class="player-controls-cell player-controls-cell-buttons">
+        <button class="default-button back-button" (click)="BackClick()" [disabled]="(api.selectedPlayer?.queueSongIds?.length ?? 0) < 2">B</button>
+        <button class="default-button pp-button" (click)="PPClick()" [disabled]="api.selectedPlayer == null">{{api.selectedPlayer?.isPaused ? "R" : "P"}}</button>
+        <button class="default-button forward-button" (click)="ForwardClick()" [disabled]="(api.selectedPlayer?.queueSongIds?.length ?? 0) < 2">F</button>
+    </div>
+    <div class="player-controls-cell player-controls-cell-rewind">
+        <input class="default-slider" id="player-time-slider" type="range" min="0"
+            [(ngModel)]="sliderCurrentValue"
+
+            (mousedown)="sliderDrag = true"
+            (mousemove)="Test()"
+            (change)="SliderChanged()"
+
+            [max]="api.selectedPlayer?.currentSongTimeTotal ?? 0"
+            [value]="sliderDrag ? null : api.selectedPlayer?.currentSongTimePassed ?? 0"
+        />
+    </div>
+</div>
