@@ -126,7 +126,7 @@ namespace PamelloV6.API.Services
 
         public async Task<YoutubeSearchResult> Search(int pageSize, string? query) {
             var youtubeService = new YouTubeService(new BaseClientService.Initializer() {
-                ApiKey = "AIzaSyDPBURkXbO9mnQzbpUPWP6UO7EF3ZgIKIQ",
+                ApiKey = PamelloConfig.YoutubeToken,
             });
 
             var searchRequest = youtubeService.Search.List("snippet");

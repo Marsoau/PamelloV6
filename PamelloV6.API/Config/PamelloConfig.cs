@@ -6,6 +6,8 @@ namespace PamelloV6.API.Config
     {
         public static string BotToken;
         public static string[] SpeakersTokens;
+        public static string YoutubeToken;
+
         public static ulong TestGuildId;
 
         private static IConfigurationRoot config;
