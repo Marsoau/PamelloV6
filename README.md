@@ -20,7 +20,7 @@ Had **Angular Frontend** *(PamelloV6.Web project)* to controll the bot from a we
 
 ---
 
-I will write about **PamelloV7** here because the its own README is more about features then differences from **PamelloV6**
+I will write about **PamelloV7** here because its own README is more about features then differences from **PamelloV6**
 
 ## PamelloV7 1.0
 
