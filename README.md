@@ -8,7 +8,7 @@ First API-first iteration, with actuall Player/Speaker split, and a database to 
 
 Also first to use "song values", which were way to interpret string with url/id/association/name/value to a song, allowed stuff like "random" to get random song from a database
 
-Had **Angular Frontend** *(PamelloV7.Web project)* to controll the bot from a web interface
+Had **Angular Frontend** *(PamelloV6.Web project)* to controll the bot from a web interface
 
 > *Date of initial creation: **June 2024***
 
@@ -20,7 +20,7 @@ Had **Angular Frontend** *(PamelloV7.Web project)* to controll the bot from a we
 
 ---
 
-I will write about it here because the **PamelloV7** README is more about it features then differences from **PamelloV6**
+I will write about **PamelloV7** here because the its README is more about it features then differences from **PamelloV6**
 
 ## PamelloV7 1.0
 
