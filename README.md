@@ -24,29 +24,15 @@ I will write about **PamelloV7** here because the its README is more about it fe
 
 ## PamelloV7 1.0
 
+**A 7th iteration of Pamello**
+
 Fixed **PamelloV6** instability, had better discord commands, and better API
 
 > *Date of initial creation: **November 2024***
 
 ## PamelloV7 2.0
 
-Could have very well been 8th iteration, but instead of full rewrite it was done in partial rewrites of **PamelloV7 1.0**, adding **more difference beween 2.0 and 1.0 of PamelloV7 then beween any iteration before**
-
-1.0 achieved better stability compared to V6, but now i had a lot of ideas of how it can be even better, like:
-- "A more powerfull song values"
-- "Independence from discord and youtube"
-- "Modular approach to allow extension, and allow for more decoupled approach in general"
-
-2.0 then turned out to achieve:
-- "A more powerfull song values" became PEQL: Pamello Entity Query Language, from an idea of "song value" being url/id/association/name/value of a song specifically, to a language desighned for ease and comfort of use, and as much flexibility sa possible without giving up simplicity
-- Framework approach allowed to to split .Server and .Core projects to .Server, .Framework, .Core, and Modules. Also implemented a lot of Framework services to use in .Server and Modules
-- Implemented modules that were compiled to .pv7m files and loaded by a .Server on runtime. All modules can fully interact with server via PamelloV7.Framework
-- "Independence from discord and youtube" was solved by Modules and platform service, that takes on itself a responisibility to find a platform implementation and use it to get song info / download a song, the each platform support was then implemented as its own Module
-- Audio routing system to provide for a developer audio modules like sources, pums, buffers, converters, to create stuff like speakers and other audio dependants with ease
-- Started using Reflection & Source Generation a lot to achieve quite good developer expirience in **PamelloV7.Framework**
-- **Marsoau/NetCord** discord module based on NetCord, extending it a lot with custom interactions, builders, and tokenization for button & modal interactions, resulting in arguably best-in-class DX in working with discord
-
-And there is still many big areas to implement, like **PamelloV7.Client**, **PamelloV7.Launcher**, and more. So there is still some stuff to do in future updates for a long time
+**Could have very well been 8th iteration**, but instead of full rewrite it was done in partial rewrites of **PamelloV7 1.0**, with more difference beween 2.0 and 1.0 of **PamelloV7** then beween any iteration before
 
 > *Date of initial creation: **May 2025***
 
