@@ -36,4 +36,4 @@ Fixed **PamelloV6** instability, had better discord commands, and better API
 
 > *Date of initial creation: **May 2025***
 
-> *Date of first release: **Soon***
+> *Date of first release: **July 2026***
